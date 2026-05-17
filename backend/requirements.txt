@@ -1,0 +1,14 @@
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+python-multipart==0.0.20
+openai==1.58.1
+# Needed when the local environment routes OpenAI/httpx traffic through a SOCKS proxy.
+socksio==1.0.0
+sentence-transformers==3.3.1
+# Keep transformer resolution deterministic for sentence-transformers 3.3.x.
+transformers==4.46.3
+chromadb==0.5.23
+# ChromaDB 0.5.x still calls the older posthog capture signature.
+posthog<6
+pypdf==5.1.0
