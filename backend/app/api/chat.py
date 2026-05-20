@@ -1,11 +1,16 @@
+from __future__ import annotations
+
+import logging
 from inspect import isawaitable
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, status
 
+from app.core.errors import AppError, service_error
 from app.models.schemas import ChatRequest, ChatResponse, Source
 
 router = APIRouter(prefix="/api", tags=["chat"])
+logger = logging.getLogger(__name__)
 
 
 def _source_from_raw(raw: Any) -> Source:
@@ -69,22 +74,18 @@ async def chat(request: ChatRequest) -> ChatResponse:
     try:
         from app.services.rag_service import answer_question
 
+        logger.info("chat_started", extra={"top_k": request.top_k})
         result = answer_question(request.question, request.top_k)
         if isawaitable(result):
             result = await result
-        return _chat_response_from_raw(result)
+        response = _chat_response_from_raw(result)
+        logger.info("chat_finished", extra={"source_count": len(response.sources)})
+        return response
     except ImportError as exc:
-        raise HTTPException(
+        raise AppError(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="RAG service is not available yet.",
+            code="rag_service_unavailable",
+            message="RAG 服务暂不可用。",
         ) from exc
-    except ValueError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(exc),
-        ) from exc
-    except RuntimeError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(exc),
-        ) from exc
+    except (ValueError, RuntimeError) as exc:
+        raise service_error(exc) from exc

@@ -1,9 +1,13 @@
 from __future__ import annotations
 
+import logging
+
 from app.core.config import settings
 from app.services.embedding_service import embed_texts
 from app.services.llm_service import complete_answer
 from app.services.vector_store import RetrievedChunk, query_chunks
+
+logger = logging.getLogger(__name__)
 
 
 def answer_question(question: str, top_k: int | None = None) -> dict:
@@ -14,6 +18,10 @@ def answer_question(question: str, top_k: int | None = None) -> dict:
     effective_top_k = top_k or settings.default_top_k
     query_embedding = embed_texts([cleaned_question])[0]
     chunks = query_chunks(query_embedding, effective_top_k)
+    logger.info(
+        "retrieval_finished",
+        extra={"top_k": effective_top_k, "retrieved_count": len(chunks)},
+    )
     if not chunks:
         return {
             "question": cleaned_question,
@@ -23,6 +31,7 @@ def answer_question(question: str, top_k: int | None = None) -> dict:
 
     prompt = build_prompt(cleaned_question, chunks)
     answer = complete_answer(prompt)
+    logger.info("llm_answer_finished", extra={"source_count": len(chunks)})
 
     return {
         "question": cleaned_question,

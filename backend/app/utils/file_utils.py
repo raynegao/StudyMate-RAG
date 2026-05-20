@@ -17,11 +17,18 @@ def sanitize_filename(filename: str) -> str:
     return safe_name or "document.pdf"
 
 
-async def save_upload_file(upload_file, destination: Path) -> Path:
+async def save_upload_file(
+    upload_file,
+    destination: Path,
+    *,
+    max_bytes: int | None = None,
+) -> Path:
     ensure_directory(destination.parent)
     contents = upload_file.read()
     if isawaitable(contents):
         contents = await contents
+    if max_bytes is not None and len(contents) > max_bytes:
+        raise ValueError(f"上传文件不能超过 {max_bytes // 1024 // 1024} MB。")
     destination.write_bytes(contents)
     return destination
 

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class HealthResponse(BaseModel):
@@ -12,9 +12,9 @@ class HealthResponse(BaseModel):
 
 class UploadResponse(BaseModel):
     document_id: str
-    filename: str | None = None
+    filename: Optional[str] = None
     status: str = "indexed"
-    chunk_count: int | None = None
+    chunk_count: Optional[int] = None
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
@@ -22,14 +22,22 @@ class ChatRequest(BaseModel):
     question: str = Field(..., min_length=1)
     top_k: int = Field(default=4, ge=1, le=10)
 
+    @field_validator("question")
+    @classmethod
+    def question_must_not_be_blank(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("question 不能为空。")
+        return cleaned
+
 
 class Source(BaseModel):
-    document_id: str | None = None
-    filename: str | None = None
-    page: int | None = None
-    chunk_id: str | None = None
-    score: float | None = None
-    text: str | None = None
+    document_id: Optional[str] = None
+    filename: Optional[str] = None
+    page: Optional[int] = None
+    chunk_id: Optional[str] = None
+    score: Optional[float] = None
+    text: Optional[str] = None
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
@@ -40,9 +48,9 @@ class ChatResponse(BaseModel):
 
 class DocumentSummary(BaseModel):
     document_id: str
-    filename: str | None = None
-    chunk_count: int | None = None
-    created_at: str | None = None
+    filename: Optional[str] = None
+    chunk_count: Optional[int] = None
+    created_at: Optional[str] = None
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
@@ -53,4 +61,14 @@ class DocumentsResponse(BaseModel):
 class DeleteDocumentResponse(BaseModel):
     document_id: str
     status: str = "deleted"
-    message: str | None = None
+    message: Optional[str] = None
+
+
+class ErrorBody(BaseModel):
+    code: str
+    message: str
+    details: dict[str, Any] = Field(default_factory=dict)
+
+
+class ErrorResponse(BaseModel):
+    error: ErrorBody

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from typing import Any
 
 import chromadb
@@ -9,6 +10,8 @@ from chromadb.config import Settings as ChromaSettings
 
 from app.core.config import settings
 from app.services.chunking import DocumentChunk
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -41,8 +44,9 @@ def add_chunks(chunks: list[DocumentChunk], embeddings: list[list[float]]) -> No
     if len(chunks) != len(embeddings):
         raise ValueError("chunks 和 embeddings 数量不一致。")
 
-    indexed_at = datetime.now(UTC).isoformat()
+    indexed_at = datetime.now(timezone.utc).isoformat()
     collection = _collection()
+    logger.info("chroma_add_started", extra={"chunk_count": len(chunks)})
     collection.add(
         ids=[chunk.chunk_id for chunk in chunks],
         documents=[chunk.text for chunk in chunks],
@@ -58,6 +62,7 @@ def add_chunks(chunks: list[DocumentChunk], embeddings: list[list[float]]) -> No
             for chunk in chunks
         ],
     )
+    logger.info("chroma_add_finished", extra={"chunk_count": len(chunks)})
 
 
 def query_chunks(query_embedding: list[float], top_k: int) -> list[RetrievedChunk]:
@@ -68,12 +73,15 @@ def query_chunks(query_embedding: list[float], top_k: int) -> list[RetrievedChun
     if collection.count() == 0:
         return []
 
+    logger.info("chroma_query_started", extra={"top_k": top_k})
     result = collection.query(
         query_embeddings=[query_embedding],
         n_results=top_k,
         include=["documents", "metadatas", "distances"],
     )
-    return _parse_query_result(result)
+    chunks = _parse_query_result(result)
+    logger.info("chroma_query_finished", extra={"result_count": len(chunks)})
+    return chunks
 
 
 def list_documents() -> list[dict[str, Any]]:
