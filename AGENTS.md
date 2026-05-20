@@ -35,13 +35,18 @@ StudyMate RAG 是一个课程资料智能问答系统，目标是做成可运行
 
 ## 常用命令
 
-项目尚未初始化。创建代码后需要及时补充实际命令，例如：
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r backend/requirements.txt
+set -a && source .env && set +a
+PYTHONPATH=backend uvicorn app.main:app --reload
+streamlit run frontend/streamlit_app.py
+.venv/bin/python -m compileall backend tests frontend
+.venv/bin/python -m pytest -q
+```
 
-- 后端启动命令
-- 前端启动命令
-- 测试命令
-- lint/format 命令
-- Docker 启动命令
+当前 Phase 2 不包含 Docker 或 docker-compose。
 
 ## 协作偏好
 
