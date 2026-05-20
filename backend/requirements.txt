@@ -12,3 +12,6 @@ chromadb==0.5.23
 # ChromaDB 0.5.x still calls the older posthog capture signature.
 posthog<6
 pypdf==5.1.0
+streamlit==1.41.1
+requests==2.32.3
+pytest==8.3.4
