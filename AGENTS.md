@@ -40,13 +40,14 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r backend/requirements.txt
 set -a && source .env && set +a
-PYTHONPATH=backend uvicorn app.main:app --reload
-streamlit run frontend/streamlit_app.py
-.venv/bin/python -m compileall backend tests frontend
-.venv/bin/python -m pytest -q
+scripts/run_backend.sh
+scripts/run_frontend.sh
+scripts/test.sh
+scripts/smoke_api.sh
+docker compose --env-file .env up --build
 ```
 
-当前 Phase 2 不包含 Docker 或 docker-compose。
+当前展示版包含 Dockerfile、docker-compose.yml、启动脚本、测试脚本、架构/API/演示/简历文档；不包含 Phase 3 的 Hybrid Search、Rerank、Query Rewrite、多轮对话或 Conversation Memory。
 
 ## 协作偏好
 

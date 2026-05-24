@@ -1,8 +1,10 @@
 # StudyMate RAG API
 
-基础地址：`http://127.0.0.1:8000`
+默认基础地址：`http://127.0.0.1:8000`
 
-错误响应统一为：
+交互式文档：`http://127.0.0.1:8000/docs`
+
+## 错误格式
 
 ```json
 {
@@ -16,7 +18,7 @@
 
 ## GET /health
 
-用于确认 FastAPI 服务是否启动。
+确认后端服务是否可用。
 
 ```bash
 curl http://127.0.0.1:8000/health
@@ -33,7 +35,7 @@ curl http://127.0.0.1:8000/health
 
 ## POST /api/upload
 
-上传一个 PDF 文件，系统会保存文件、解析页面文本、切分 chunk、生成 embedding，并写入 ChromaDB。
+上传并索引一个 PDF。
 
 请求类型：`multipart/form-data`
 
@@ -69,7 +71,7 @@ curl -X POST http://127.0.0.1:8000/api/upload \
 
 ## POST /api/chat
 
-基于已上传并索引的课程资料回答问题。
+基于已索引资料回答问题。
 
 请求：
 
@@ -83,7 +85,7 @@ curl -X POST http://127.0.0.1:8000/api/upload \
 字段：
 
 - `question`: 必填，不能是空白字符串。
-- `top_k`: 可选，检索返回的 chunk 数量，范围 1 到 10，默认 4。
+- `top_k`: 可选，范围 1 到 10，默认 4。
 
 响应：
 
@@ -107,7 +109,7 @@ curl -X POST http://127.0.0.1:8000/api/upload \
 常见错误：
 
 - `422 validation_error`: 请求参数不合法，例如问题为空白字符串。
-- `503 llm_not_configured`: 没有设置 `DEEPSEEK_API_KEY`，且没有兼容读取到 `OPENAI_API_KEY`。
+- `503 llm_not_configured`: 没有设置 `DEEPSEEK_API_KEY`。
 - `502 llm_request_failed`: DeepSeek 调用失败。
 
 ## GET /api/documents
@@ -153,5 +155,15 @@ curl -X DELETE http://127.0.0.1:8000/api/documents/abc123
   "document_id": "abc123",
   "status": "deleted",
   "message": "文档已删除。"
+}
+```
+
+如果找不到文档：
+
+```json
+{
+  "document_id": "abc123",
+  "status": "not_found",
+  "message": "未找到该文档。"
 }
 ```
