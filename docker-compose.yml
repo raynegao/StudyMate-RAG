@@ -1,0 +1,52 @@
+name: studymate-rag
+
+services:
+  backend:
+    build: .
+    command: ["scripts/run_backend.sh"]
+    environment:
+      STUDYMATE_BACKEND_HOST: 0.0.0.0
+      STUDYMATE_BACKEND_PORT: 8000
+      STUDYMATE_UPLOAD_DIR: /app/data/uploads
+      STUDYMATE_CHROMA_DIR: /app/data/chroma_db
+      STUDYMATE_CHROMA_COLLECTION: ${STUDYMATE_CHROMA_COLLECTION:-studymate_documents}
+      STUDYMATE_LOCAL_EMBEDDING_MODEL: ${STUDYMATE_LOCAL_EMBEDDING_MODEL:-BAAI/bge-small-zh-v1.5}
+      STUDYMATE_LLM_MODEL: ${STUDYMATE_LLM_MODEL:-deepseek-v4-flash}
+      STUDYMATE_LLM_TEMPERATURE: ${STUDYMATE_LLM_TEMPERATURE:-0.0}
+      STUDYMATE_CHUNK_SIZE: ${STUDYMATE_CHUNK_SIZE:-1000}
+      STUDYMATE_CHUNK_OVERLAP: ${STUDYMATE_CHUNK_OVERLAP:-150}
+      STUDYMATE_TOP_K: ${STUDYMATE_TOP_K:-4}
+      STUDYMATE_EMBEDDING_BATCH_SIZE: ${STUDYMATE_EMBEDDING_BATCH_SIZE:-64}
+      STUDYMATE_MAX_UPLOAD_SIZE_MB: ${STUDYMATE_MAX_UPLOAD_SIZE_MB:-25}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      DEEPSEEK_BASE_URL: ${DEEPSEEK_BASE_URL:-https://api.deepseek.com}
+      HF_HOME: /app/.cache/huggingface
+      HF_HUB_OFFLINE: ${HF_HUB_OFFLINE:-1}
+      TRANSFORMERS_OFFLINE: ${TRANSFORMERS_OFFLINE:-1}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data/uploads:/app/data/uploads
+      - ./data/chroma_db:/app/data/chroma_db
+      - ${HOME}/.cache/huggingface:/app/.cache/huggingface:ro
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  frontend:
+    build: .
+    command: ["scripts/run_frontend.sh"]
+    environment:
+      STUDYMATE_FRONTEND_HOST: 0.0.0.0
+      STUDYMATE_FRONTEND_PORT: 8501
+      STUDYMATE_API_BASE_URL: http://backend:8000
+      STUDYMATE_FRONTEND_TIMEOUT: ${STUDYMATE_FRONTEND_TIMEOUT:-60}
+    ports:
+      - "8501:8501"
+    depends_on:
+      backend:
+        condition: service_healthy
