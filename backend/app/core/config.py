@@ -22,7 +22,7 @@ def _float_env(name: str, default: float) -> float:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = os.getenv("STUDYMATE_APP_NAME", "StudyMate RAG API")
-    app_version: str = os.getenv("STUDYMATE_APP_VERSION", "0.2.0")
+    app_version: str = os.getenv("STUDYMATE_APP_VERSION", "0.3.0")
     log_level: str = os.getenv("STUDYMATE_LOG_LEVEL", "INFO").upper()
     frontend_api_base_url: str = os.getenv(
         "STUDYMATE_API_BASE_URL", "http://127.0.0.1:8000"
@@ -34,9 +34,7 @@ class Settings:
         "STUDYMATE_CHROMA_COLLECTION", "studymate_documents"
     )
 
-    deepseek_api_key: str | None = os.getenv("DEEPSEEK_API_KEY") or os.getenv(
-        "OPENAI_API_KEY"
-    )
+    deepseek_api_key: str | None = os.getenv("DEEPSEEK_API_KEY")
     deepseek_base_url: str = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
     embedding_model: str = os.getenv(
         "STUDYMATE_LOCAL_EMBEDDING_MODEL", "BAAI/bge-small-zh-v1.5"

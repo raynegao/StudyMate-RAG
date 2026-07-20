@@ -10,6 +10,7 @@ from app.core.errors import (
     AppError,
     app_error_handler,
     http_error_handler,
+    unhandled_error_handler,
     validation_error_handler,
 )
 from app.core.logging import configure_logging
@@ -25,6 +26,7 @@ def create_app() -> FastAPI:
     app.add_exception_handler(AppError, app_error_handler)
     app.add_exception_handler(StarletteHTTPException, http_error_handler)
     app.add_exception_handler(RequestValidationError, validation_error_handler)
+    app.add_exception_handler(Exception, unhandled_error_handler)
     app.include_router(health_router)
     app.include_router(documents_router)
     app.include_router(chat_router)

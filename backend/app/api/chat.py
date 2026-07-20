@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import logging
-from inspect import isawaitable
+from inspect import isawaitable, iscoroutinefunction
 from typing import Any
 
 from fastapi import APIRouter, status
+from starlette.concurrency import run_in_threadpool
 
 from app.core.errors import AppError, service_error
 from app.models.schemas import ChatRequest, ChatResponse, Source
@@ -25,6 +26,8 @@ def _source_from_raw(raw: Any) -> Source:
             "page_number",
             "chunk_id",
             "chunk_index",
+            "citation_id",
+            "cited",
             "score",
             "distance",
             "text",
@@ -36,12 +39,17 @@ def _source_from_raw(raw: Any) -> Source:
         chunk_id = raw.get("chunk_id")
         if chunk_id is None and raw.get("chunk_index") is not None:
             chunk_id = str(raw["chunk_index"])
+        distance = raw.get("distance")
+        if distance is None:
+            distance = raw.get("score")
         return Source(
+            citation_id=raw.get("citation_id"),
             document_id=raw.get("document_id"),
             filename=raw.get("filename") or raw.get("source"),
             page=raw.get("page") or raw.get("page_number"),
             chunk_id=chunk_id,
-            score=raw.get("score") or raw.get("distance"),
+            distance=distance,
+            cited=bool(raw.get("cited", False)),
             text=raw.get("text") or raw.get("content"),
             metadata=metadata,
         )
@@ -69,15 +77,26 @@ def _chat_response_from_raw(raw: Any) -> ChatResponse:
     return ChatResponse(answer=str(raw), sources=[])
 
 
+async def _call_service(function, *args):
+    if iscoroutinefunction(function):
+        return await function(*args)
+    result = await run_in_threadpool(function, *args)
+    if isawaitable(result):
+        return await result
+    return result
+
+
 @router.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest) -> ChatResponse:
     try:
         from app.services.rag_service import answer_question
 
         logger.info("chat_started", extra={"top_k": request.top_k})
-        result = answer_question(request.question, request.top_k)
-        if isawaitable(result):
-            result = await result
+        result = await _call_service(
+            answer_question,
+            request.question,
+            request.top_k,
+        )
         response = _chat_response_from_raw(result)
         logger.info("chat_finished", extra={"source_count": len(response.sources)})
         return response
@@ -87,5 +106,5 @@ async def chat(request: ChatRequest) -> ChatResponse:
             code="rag_service_unavailable",
             message="RAG 服务暂不可用。",
         ) from exc
-    except (ValueError, RuntimeError) as exc:
+    except Exception as exc:
         raise service_error(exc) from exc

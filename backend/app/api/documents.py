@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import logging
-from inspect import isawaitable
+from inspect import isawaitable, iscoroutinefunction
 from typing import Any
 
 from fastapi import APIRouter, File, UploadFile, status
+from starlette.concurrency import run_in_threadpool
 
 from app.core.errors import AppError, service_error
 from app.models.schemas import (
@@ -13,9 +14,19 @@ from app.models.schemas import (
     DocumentsResponse,
     UploadResponse,
 )
+from app.utils.file_utils import validate_document_id
 
 router = APIRouter(prefix="/api", tags=["documents"])
 logger = logging.getLogger(__name__)
+
+
+async def _call_service(function, *args):
+    if iscoroutinefunction(function):
+        return await function(*args)
+    result = await run_in_threadpool(function, *args)
+    if isawaitable(result):
+        return await result
+    return result
 
 
 def _document_from_raw(raw: Any) -> DocumentSummary:
@@ -63,7 +74,7 @@ def _upload_response_from_raw(raw: Any, filename: str | None) -> UploadResponse:
 @router.post("/upload", response_model=UploadResponse, status_code=status.HTTP_201_CREATED)
 async def upload_document(file: UploadFile = File(...)) -> UploadResponse:
     filename = file.filename or ""
-    is_pdf = file.content_type == "application/pdf" or filename.lower().endswith(".pdf")
+    is_pdf = filename.lower().endswith(".pdf")
     if not is_pdf:
         raise AppError(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -76,9 +87,7 @@ async def upload_document(file: UploadFile = File(...)) -> UploadResponse:
         from app.services.document_service import index_uploaded_pdf
 
         logger.info("upload_started", extra={"file_name": filename})
-        result = index_uploaded_pdf(file)
-        if isawaitable(result):
-            result = await result
+        result = await _call_service(index_uploaded_pdf, file)
         response = _upload_response_from_raw(result, file.filename)
         logger.info(
             "upload_indexed",
@@ -95,7 +104,7 @@ async def upload_document(file: UploadFile = File(...)) -> UploadResponse:
             code="document_service_unavailable",
             message="文档服务暂不可用。",
         ) from exc
-    except (ValueError, RuntimeError) as exc:
+    except Exception as exc:
         raise service_error(exc) from exc
 
 
@@ -104,9 +113,7 @@ async def list_documents() -> DocumentsResponse:
     try:
         from app.services.document_service import list_indexed_documents
 
-        documents = list_indexed_documents()
-        if isawaitable(documents):
-            documents = await documents
+        documents = await _call_service(list_indexed_documents)
         if isinstance(documents, dict):
             documents = documents.get("documents", [])
         documents = documents or []
@@ -119,7 +126,7 @@ async def list_documents() -> DocumentsResponse:
             code="document_service_unavailable",
             message="文档服务暂不可用。",
         ) from exc
-    except (ValueError, RuntimeError) as exc:
+    except Exception as exc:
         raise service_error(exc) from exc
 
 
@@ -128,10 +135,12 @@ async def delete_document(document_id: str) -> DeleteDocumentResponse:
     try:
         from app.services.document_service import delete_indexed_document
 
-        logger.info("delete_document_started", extra={"document_id": document_id})
-        result = delete_indexed_document(document_id)
-        if isawaitable(result):
-            result = await result
+        safe_document_id = validate_document_id(document_id)
+        logger.info(
+            "delete_document_started",
+            extra={"document_id": safe_document_id},
+        )
+        result = await _call_service(delete_indexed_document, safe_document_id)
         if isinstance(result, DeleteDocumentResponse):
             return result
         if isinstance(result, dict):
@@ -141,16 +150,16 @@ async def delete_document(document_id: str) -> DeleteDocumentResponse:
                 extra={"document_id": document_id, "deleted": deleted},
             )
             return DeleteDocumentResponse(
-                document_id=str(result.get("document_id") or document_id),
+                document_id=str(result.get("document_id") or safe_document_id),
                 status=result.get("status") or ("deleted" if deleted else "not_found"),
                 message=result.get("message"),
             )
-        return DeleteDocumentResponse(document_id=document_id)
+        return DeleteDocumentResponse(document_id=safe_document_id)
     except ImportError as exc:
         raise AppError(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             code="document_service_unavailable",
             message="文档服务暂不可用。",
         ) from exc
-    except (ValueError, RuntimeError) as exc:
+    except Exception as exc:
         raise service_error(exc) from exc

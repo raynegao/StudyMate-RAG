@@ -20,7 +20,7 @@ class UploadResponse(BaseModel):
 
 class ChatRequest(BaseModel):
     question: str = Field(..., min_length=1)
-    top_k: int = Field(default=4, ge=1, le=10)
+    top_k: Optional[int] = Field(default=None, ge=1, le=10)
 
     @field_validator("question")
     @classmethod
@@ -32,11 +32,13 @@ class ChatRequest(BaseModel):
 
 
 class Source(BaseModel):
+    citation_id: Optional[str] = None
     document_id: Optional[str] = None
     filename: Optional[str] = None
     page: Optional[int] = None
     chunk_id: Optional[str] = None
-    score: Optional[float] = None
+    distance: Optional[float] = None
+    cited: bool = False
     text: Optional[str] = None
     metadata: dict[str, Any] = Field(default_factory=dict)
 
