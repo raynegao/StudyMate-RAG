@@ -1,105 +1,98 @@
 # StudyMate RAG
 
-StudyMate RAG 是一个课程资料智能问答系统。用户上传课程 PDF 后，系统会解析文本、切分 chunk、使用本地 BGE 模型生成 embedding、写入 ChromaDB，并通过 DeepSeek Chat 基于检索到的资料片段回答问题，同时返回引用来源。
+StudyMate RAG 是一个面向课程 PDF 的资料问答系统。它使用本地 BGE 模型生成向量、通过 ChromaDB 检索相关片段，再调用 DeepSeek 生成带来源标记的回答。
 
-当前展示版目标：本地可运行、Docker 可启动、接口可测试、前端可演示、项目材料可写进简历。
+![问答与引用界面](output/playwright/studymate-question-and-citations.png)
 
-## 功能
+## 主要功能
 
-- PDF 上传、文本解析和 chunking
-- 本地 `BAAI/bge-small-zh-v1.5` embedding
-- ChromaDB 本地持久化向量库
-- DeepSeek Chat 生成基于资料的回答
-- FastAPI 后端接口和交互式 `/docs`
-- Streamlit 文件上传、问答和引用展示
-- API contract 测试、Docker Compose 和演示文档
+- 分块接收 PDF，并实时限制文件大小
+- 保留中文文件名，阻止路径穿越和危险文档 ID
+- 识别损坏、加密、无文本和纯扫描 PDF，并返回统一 JSON 错误
+- 使用 `BAAI/bge-small-zh-v1.5` 和 ChromaDB 完成语义检索
+- 使用 `[S1]`、`[S2]` 标记回答实际引用的来源
+- 区分“回答已引用”和“仅检索候选”，展示向量距离
+- 支持文档列表、幂等删除和删除前二次确认
+- 支持本地运行、Docker Compose 和自动化质量检查
 
 ## 技术栈
 
-- Backend: FastAPI, Pydantic, Uvicorn
-- RAG: sentence-transformers, ChromaDB, DeepSeek Chat API
-- Frontend: Streamlit
-- Tests: pytest, FastAPI TestClient
-- Deployment: Docker, Docker Compose
+- Python 3.12、FastAPI、Pydantic、Uvicorn
+- sentence-transformers、BGE、ChromaDB
+- DeepSeek Chat API
+- Streamlit
+- pytest、Ruff、coverage、Docker Compose
 
-## 本地运行
+## 快速开始
 
-### 1. 创建环境并安装依赖
+### 1. 安装运行依赖
+
+项目使用 `uv` 和锁定依赖，避免不同机器上的 Python、Torch 和 gRPC 版本漂移。
 
 ```bash
-python3 -m venv .venv
+uv venv --python 3.12
+uv pip sync --python .venv/bin/python --torch-backend cpu backend/requirements.txt
 source .venv/bin/activate
-pip install -r backend/requirements.txt
 ```
 
-### 2. 配置环境变量
+开发和测试环境改用开发锁文件：
 
 ```bash
-cp .env.example .env
+uv pip sync --python .venv/bin/python --torch-backend cpu backend/requirements-dev.txt
 ```
 
-编辑 `.env`，至少填写：
+### 2. 配置 DeepSeek
 
 ```bash
-DEEPSEEK_API_KEY=你的 DeepSeek API Key
+cp .env.example .env.local
+chmod 600 .env.local
 ```
 
-如果本地仍把 DeepSeek key 写在 `OPENAI_API_KEY` 里，当前代码也兼容读取；推荐使用 `DEEPSEEK_API_KEY`，语义更清楚。
-
-加载配置：
+编辑 `.env.local`，填写 `DEEPSEEK_API_KEY`，然后在启动终端加载：
 
 ```bash
 set -a
-source .env
+source .env.local
 set +a
 ```
 
-### 3. 启动后端
+`.env`、`.env.local`、上传文件、Chroma 数据和模型缓存均已被 Git 忽略。
+
+### 3. 本地启动
+
+终端一：
 
 ```bash
 scripts/run_backend.sh
 ```
 
-开发时需要自动重载：
-
-```bash
-STUDYMATE_BACKEND_RELOAD=true scripts/run_backend.sh
-```
-
-后端默认地址：`http://127.0.0.1:8000`
-
-API 文档：`http://127.0.0.1:8000/docs`
-
-### 4. 启动前端
-
-另开一个终端，激活同一个虚拟环境并加载 `.env` 后运行：
+终端二：
 
 ```bash
 scripts/run_frontend.sh
 ```
 
-前端默认地址：`http://127.0.0.1:8501`
+访问：
 
-## Docker Compose 运行
+- Streamlit：`http://127.0.0.1:8501`
+- FastAPI 文档：`http://127.0.0.1:8000/docs`
 
-使用 `.env`：
+首次上传 PDF 会下载 BGE 模型，耗时取决于网络和磁盘速度。
 
-```bash
-docker compose up --build
-```
-
-如果你使用的是本地私密文件 `.env.local`：
+## Docker Compose
 
 ```bash
 docker compose --env-file .env.local up --build
 ```
 
-服务地址：
+Compose 只构建一份应用镜像，后端和前端复用该镜像。运行时使用非 root 用户，上传目录和 Chroma 目录挂载到宿主机，BGE 缓存在 `studymate_hf_cache` volume 中。
 
-- FastAPI: `http://127.0.0.1:8000`
-- Streamlit: `http://127.0.0.1:8501`
+模型缓存完成后，可以在 `.env.local` 中显式开启离线模式：
 
-首次上传 PDF 时，容器会下载 BGE embedding 模型。Compose 使用 `studymate_hf_cache` volume 缓存模型，后续启动会更快。
+```dotenv
+HF_HUB_OFFLINE=1
+TRANSFORMERS_OFFLINE=1
+```
 
 停止服务：
 
@@ -107,25 +100,25 @@ docker compose --env-file .env.local up --build
 docker compose down
 ```
 
-## 测试与验证
+## 公开演示资料
 
-运行静态编译检查和 API contract 测试：
+仓库包含一份完全虚构、无个人信息的中文样例：
+
+- [studymate-demo-course.pdf](output/pdf/studymate-demo-course.pdf)
+- [上传与文档列表截图](output/playwright/studymate-upload-and-documents.png)
+- [问答与引用截图](output/playwright/studymate-question-and-citations.png)
+- [真实问答验收记录](output/demo/studymate-demo-response.json)
+
+重新生成样例 PDF：
 
 ```bash
-scripts/test.sh
+.venv/bin/python scripts/generate_demo_pdf.py
 ```
 
-后端启动后做 smoke check：
+建议问题：
 
-```bash
-scripts/smoke_api.sh
-```
-
-等价手动命令：
-
-```bash
-curl http://127.0.0.1:8000/health
-curl http://127.0.0.1:8000/api/documents
+```text
+蓝色令牌的有效期是多少？它有什么用途？
 ```
 
 ## API 示例
@@ -134,62 +127,48 @@ curl http://127.0.0.1:8000/api/documents
 
 ```bash
 curl -X POST http://127.0.0.1:8000/api/upload \
-  -F "file=@/path/to/course-note.pdf"
+  -F "file=@output/pdf/studymate-demo-course.pdf"
 ```
 
-基于资料提问：
+提问时可以省略 `top_k`，此时使用 `STUDYMATE_TOP_K`：
 
 ```bash
 curl -X POST http://127.0.0.1:8000/api/chat \
   -H "Content-Type: application/json" \
-  -d '{"question":"这份资料的核心概念是什么？","top_k":4}'
+  -d '{"question":"蓝色令牌的有效期是多少？"}'
 ```
 
-列出文档：
+来源中的 `distance` 是向量距离，通常越小越相关；`cited=true` 表示答案中实际出现了对应 `citation_id`。
+
+完整接口说明见 [docs/api.md](docs/api.md)。
+
+## 测试与验证
 
 ```bash
-curl http://127.0.0.1:8000/api/documents
+scripts/test.sh
+docker compose config --quiet
+docker build --check .
 ```
 
-删除文档：
+`scripts/test.sh` 会依次执行 Ruff、`compileall`、pytest coverage 和依赖一致性检查。CI 使用 Python 3.12，并要求后端覆盖率不低于 70%。
 
-```bash
-curl -X DELETE http://127.0.0.1:8000/api/documents/{document_id}
-```
-
-## 展示流程
-
-1. 启动后端和 Streamlit，打开 `http://127.0.0.1:8501`。
-2. 在侧边栏上传一份课程 PDF。
-3. 等待系统完成解析、切分、embedding 和 ChromaDB 入库。
-4. 在主界面输入课程问题。
-5. 查看回答以及引用来源中的文件名、页码、chunk 和原文片段。
-6. 演示结束后可在侧边栏删除文档。
-
-更详细的演示脚本见 [docs/demo.md](docs/demo.md)。
+2026-07-20 的发布检查结果：46 项测试通过，后端覆盖率 84.99%；Docker 镜像构建成功；全新模型缓存卷完成 BGE 下载、PDF 上传、Chroma 持久化和真实 DeepSeek 问答。
 
 ## 项目结构
 
 ```text
-backend/app/main.py          FastAPI 应用入口
-backend/app/api/             health、upload、chat、documents 接口
-backend/app/core/            配置、日志、统一错误处理
-backend/app/services/        PDF 解析、chunk、embedding、ChromaDB、RAG 流程
-backend/app/models/          Pydantic 请求和响应模型
-frontend/streamlit_app.py    Streamlit 前端工作台
-scripts/                     本地启动、测试和 smoke check 脚本
-data/uploads/                本地上传文件目录，不提交真实文件
-data/chroma_db/              ChromaDB 持久化目录，不提交索引数据
-docs/                        架构、API、演示和简历材料
+backend/app/api/          上传、问答和文档管理接口
+backend/app/core/         配置、日志和统一错误处理
+backend/app/models/       Pydantic 请求与响应模型
+backend/app/services/     PDF、chunk、embedding、Chroma 和 RAG 流程
+frontend/                 Streamlit 页面
+scripts/                  启动、测试、smoke 和样例生成脚本
+tests/                    API、服务层和前端辅助函数测试
+docs/                     架构、API、演示和简历材料
+output/                   可公开使用的样例与截图
+data/                     本地上传文件和 Chroma 数据，不提交内容
 ```
-
-## 常见问题
-
-- `llm_not_configured`: 没有加载 `DEEPSEEK_API_KEY`。确认 `.env` 或 `.env.local` 已填写，并在启动前加载。
-- 首次上传很慢：本地或容器第一次会下载 BGE 模型，这是预期行为。
-- 没有引用来源：当前知识库没有可检索内容，先上传并索引 PDF。
-- Docker 中前端连不上后端：Compose 内部使用 `STUDYMATE_API_BASE_URL=http://backend:8000`，不要在容器内写 `127.0.0.1:8000`。
 
 ## 当前边界
 
-展示版不包含用户登录、多知识库、Hybrid Search、Rerank、Query Rewrite、多轮对话、Conversation Memory 或云部署。这些属于后续增强阶段。
+当前版本为 `0.3.0`，聚焦稳定的单知识库 PDF 问答闭环，不包含 OCR、Hybrid Search、Rerank、Query Rewrite、多轮记忆、用户系统或云部署。

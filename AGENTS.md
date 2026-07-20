@@ -1,100 +1,52 @@
-# StudyMate RAG 项目协作说明
+# StudyMate RAG 开发约定
 
 ## 项目目标
 
-StudyMate RAG 是一个课程资料智能问答系统，目标是做成可运行、可部署、可展示的 AI 应用项目，用于港新 AI 硕士申请、AI 应用开发/RAG/Agent 实习简历和项目作品集。
-
-核心能力：用户上传课程资料后，系统解析文档、切分文本、生成向量索引，并支持基于资料内容问答，同时返回引用来源。
+StudyMate RAG 为课程 PDF 提供本地向量检索和带引用的问答能力。当前版本只维护稳定展示闭环，不提前加入 OCR、Hybrid Search、Rerank、Query Rewrite、多轮记忆或多知识库。
 
 ## 技术栈
 
-- Backend: Python, FastAPI, Pydantic, Uvicorn
-- RAG: LangChain, ChromaDB, OpenAI API/DeepSeek API, Embedding Model
-- Frontend: Streamlit
-- Storage: 本地文件系统, SQLite/PostgreSQL, ChromaDB 持久化目录
-- Deployment: Docker, Docker Compose
+- Python 3.12、FastAPI、Pydantic、Uvicorn
+- sentence-transformers、`BAAI/bge-small-zh-v1.5`、ChromaDB
+- DeepSeek Chat API
+- Streamlit
+- uv、pytest、Ruff、coverage、Docker Compose
 
-## 推荐目录
+## 模块边界
 
-- `backend/app/main.py`: FastAPI 入口
-- `backend/app/api/`: 上传、问答、文档管理接口
-- `backend/app/core/`: 配置、安全等基础模块
-- `backend/app/services/`: 文档解析、切分、embedding、向量库、RAG 流程
-- `backend/app/models/`: Pydantic 数据模型
-- `frontend/streamlit_app.py`: Streamlit 前端
-- `data/uploads/`: 上传文件目录
-- `data/chroma_db/`: ChromaDB 持久化目录
-- `docs/`: 架构和 API 文档
-
-## 开发阶段
-
-1. MVP：PDF 上传、文本解析、chunk、embedding、写入 ChromaDB、问答并返回来源。
-2. 工程化：FastAPI 后端、Streamlit 前端、多文档管理、引用展示、错误处理、日志、配置管理。
-3. 增强 RAG：Hybrid Search、Rerank、Query Rewrite、多轮对话、Conversation Memory、多知识库切换。
-4. 部署展示：Docker、Docker Compose、README、架构图、Demo 截图/视频、简历描述。
+- `backend/app/api/`：HTTP 路由、请求校验和响应转换
+- `backend/app/core/`：配置、日志和统一错误处理
+- `backend/app/services/`：PDF 解析、chunking、embedding、向量库和 RAG 流程
+- `backend/app/models/`：Pydantic schema
+- `frontend/streamlit_app.py`：页面状态、上传、问答和文档管理
+- `tests/`：API contract、服务层和前端辅助逻辑测试
+- `scripts/`：启动、测试、smoke 和公开样例生成脚本
 
 ## 常用命令
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r backend/requirements.txt
-set -a && source .env && set +a
+uv venv --python 3.12
+uv pip sync --python .venv/bin/python --torch-backend cpu backend/requirements-dev.txt
+scripts/test.sh
 scripts/run_backend.sh
 scripts/run_frontend.sh
-scripts/test.sh
 scripts/smoke_api.sh
-docker compose --env-file .env up --build
+docker compose --env-file .env.local up --build
 ```
 
-当前展示版包含 Dockerfile、docker-compose.yml、启动脚本、测试脚本、架构/API/演示/简历文档；不包含 Phase 3 的 Hybrid Search、Rerank、Query Rewrite、多轮对话或 Conversation Memory。
+## 修改要求
 
-## 协作偏好
+- 修改前先阅读相关模块、README、依赖输入文件和现有测试。
+- 保持 API 层与服务层分离，不在路由中实现模型或数据库细节。
+- 同步重任务必须离开 FastAPI 事件循环。
+- 客户端只接收稳定、脱敏的 JSON 错误，完整异常只写服务日志。
+- API 行为变化时同步更新测试、`docs/api.md` 和 README。
+- 依赖变更先修改 `requirements.in` 或 `requirements-dev.in`，再重新生成锁文件。
+- 提交前运行 `scripts/test.sh`、Compose 配置检查和 Dockerfile 检查。
 
-- 默认用中文沟通。
-- 优先小步推进 MVP，不一次性堆太多复杂代码。
-- 每个模块先讲清原理，再写代码，再解释关键实现。
-- 代码要适合初学者理解，但目录和边界保持工程化。
-- 做代码任务前先阅读项目结构、README、依赖清单和测试配置。
-- 能运行测试、lint、启动检查或最小验证时要主动验证。
-- 最后简短说明改了什么、验证结果和剩余风险。
+## 数据与安全
 
-## 多 Agent 工作流
-
-本项目采用 Codex 多 Agent / Subagents 工作流，但必须按阶段推进，不能所有 Agent 同时写代码。
-
-### Agent 分工
-
-- Project Architect Agent：设计整体架构、规划目录结构、确定模块边界、维护 `AGENTS.md`，避免项目越做越乱。
-- Backend API Agent：负责 FastAPI 后端、上传/问答/文档接口、请求参数校验、错误处理和 Pydantic schemas。
-- RAG Pipeline Agent：负责 PDF 解析、chunking、embedding、ChromaDB、检索、prompt 构造、LLM 回答和引用来源返回。
-- Frontend Agent：负责 Streamlit 前端、文件上传、问答界面、答案展示、引用来源展示和文档列表展示。
-- Testing & Debugging Agent：负责单元测试、接口测试、最小可运行测试和 bug 检查。
-- DevOps Agent：负责 Dockerfile、docker-compose.yml、`.env.example`、requirements、启动脚本和 README 运行说明。
-
-### 执行顺序
-
-1. 先由 Project Architect Agent 输出架构、目录、模块边界和接口契约。
-2. 用户确认后，Backend API Agent 和 RAG Pipeline Agent 才能开始 MVP 开发。
-3. 后端接口稳定后，Frontend Agent 才能开发 Streamlit 前端。
-4. 每完成一个模块后，由 Testing & Debugging Agent 做最小验证。
-5. DevOps Agent 最后负责容器化、环境示例和运行说明。
-
-### 确认规则
-
-- 初始化阶段只允许修改项目说明、规划文档、`AGENTS.md`、README 草案或目录规划，不直接写业务代码。
-- 进入代码开发前，必须先给出本阶段要改的文件清单，并等待用户明确确认。
-- 每个 Agent 输出都要说明：做了什么、修改了哪些文件、如何运行、是否需要用户确认。
-- 如果用户只要求“初始化”“规划”“讲解”或“先设计”，不得直接开始开发代码。
-
-## 禁止事项
-
-- 不做无关重构。
-- 不覆盖用户已有改动。
-- 不把课程/项目学习过程变成黑箱代做；需要讲清楚关键思路。
-- 不硬编码 API Key、访问令牌或本地绝对路径到源码中。
-- 不把上传文件、向量库、缓存、`.env`、虚拟环境提交到版本控制。
-
-## 参考资料
-
-- 初始项目大纲：`/Users/rayne/Desktop/studymate 大纲.md`
+- 不提交 API Key、`.env`、`.env.local`、上传资料、Chroma 数据、模型缓存或虚拟环境。
+- 不读取、迁移、重建或对外发送现有私人索引内容。
+- 删除操作只能接受 32 位十六进制 `document_id`，并同时处理对应上传文件和向量。
+- 演示和外部模型验收只使用 `output/pdf/` 中的公开虚构资料。

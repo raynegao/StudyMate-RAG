@@ -1,136 +1,103 @@
-# StudyMate RAG Architecture
+# StudyMate RAG 架构
 
-## 目标
+## 目标与边界
 
-StudyMate RAG 展示版聚焦一个稳定闭环：上传课程 PDF，系统解析并索引资料，用户提问后基于检索到的资料片段生成答案，并展示引用来源。
-
-本阶段强调本地可运行、Docker 可启动、接口可测试和项目可展示；不引入用户系统、多知识库、Hybrid Search、Rerank、Query Rewrite、多轮对话或云部署。
+当前版本实现单知识库 PDF 问答闭环：上传、解析、切分、向量化、检索、生成回答和引用展示。OCR、Hybrid Search、Rerank、Query Rewrite、多轮记忆和多知识库不在本版本范围内。
 
 ## 系统结构
 
 ```mermaid
 flowchart LR
-    U["User"] --> F["Streamlit Frontend<br/>:8501"]
-    F -->|"HTTP"| A["FastAPI Backend<br/>:8000"]
-    A --> API["API Routers<br/>health / upload / chat / documents"]
-    API --> S["Service Layer"]
-    S --> P["PDF Parser"]
-    S --> C["Chunking"]
-    S --> E["Local BGE Embedding"]
-    S --> V["ChromaDB<br/>data/chroma_db"]
+    U["用户"] --> F["Streamlit 前端"]
+    F -->|HTTP| A["FastAPI API"]
+    A --> S["服务层"]
+    S --> P["pypdf 解析与 chunking"]
+    S --> E["本地 BGE embedding"]
+    S --> V["ChromaDB"]
     S --> L["DeepSeek Chat API"]
-    P --> D["Uploaded PDFs<br/>data/uploads"]
+    P --> D["上传文件目录"]
+    E --> H["Hugging Face 模型缓存"]
 ```
 
-## 后端边界
+## 模块职责
 
-FastAPI 只负责 HTTP 请求、响应模型和错误转换。RAG 业务逻辑在 service 层完成：
+- `api/`：HTTP 参数、响应 schema、线程池调度和错误转换
+- `services/document_service.py`：上传文件落盘与索引事务
+- `services/pdf_parser.py`：损坏、加密和无文本 PDF 分类
+- `services/chunking.py`：按页切分并保留页码、文件名和 chunk ID
+- `services/embedding_service.py`：延迟加载 BGE，封装初始化和推理异常
+- `services/vector_store.py`：Chroma CRUD 和距离返回
+- `services/rag_service.py`：空库短路、检索、prompt 构造和引用解析
+- `services/llm_service.py`：DeepSeek 客户端与系统级安全约束
+- `core/errors.py`：类型化服务异常和统一 JSON 错误
 
-- `document_service`: 保存上传 PDF、解析、切分、embedding、写入向量库。
-- `rag_service`: 问题 embedding、向量检索、prompt 构造、LLM 调用、引用整理。
-- `vector_store`: 封装 ChromaDB 的写入、查询、文档列表和删除。
-- `embedding_service`: 封装本地 BGE embedding，避免 API 层直接依赖模型实现。
-- `llm_service`: 封装 DeepSeek Chat 调用。
-
-## 数据流
-
-### 上传与索引
+## 上传流程
 
 ```mermaid
 sequenceDiagram
-    participant Client
-    participant API as FastAPI /api/upload
-    participant Doc as document_service
-    participant Parser as pdf_parser
-    participant Chunk as chunking
-    participant Embed as BGE embedding
-    participant Chroma as ChromaDB
+    participant C as 客户端
+    participant A as FastAPI
+    participant D as 文档服务
+    participant P as PDF 与切分
+    participant E as BGE
+    participant V as ChromaDB
 
-    Client->>API: POST PDF
-    API->>Doc: index_uploaded_pdf(file)
-    Doc->>Parser: extract_pdf_pages(path)
-    Parser-->>Doc: pages with text
-    Doc->>Chunk: split_pages_into_chunks(...)
-    Chunk-->>Doc: chunks with metadata
-    Doc->>Embed: embed_texts(chunk texts)
-    Embed-->>Doc: vectors
-    Doc->>Chroma: add chunks + vectors
-    Chroma-->>Doc: persisted
-    Doc-->>API: document_id, filename, chunk_count
-    API-->>Client: UploadResponse
+    C->>A: multipart PDF
+    A->>D: index_uploaded_pdf
+    D->>D: 安全文件名、分块写入、实时限流
+    D->>P: 在线程池解析并切分
+    P-->>D: 带页码的 chunks
+    D->>E: 批量生成 embeddings
+    E-->>D: vectors
+    D->>V: 写入 chunks、metadata、vectors
+    V-->>D: 持久化完成
+    D-->>A: document_id 与统计信息
+    A-->>C: 201 JSON
 ```
 
-### 问答
+上传、解析、embedding 或 Chroma 任一步失败，都会删除本次残留文件。同步的 PDF、模型、Chroma 和 LLM 工作通过线程池移出 FastAPI 事件循环。
+
+## 问答与引用
 
 ```mermaid
 sequenceDiagram
-    participant Client
-    participant API as FastAPI /api/chat
-    participant RAG as rag_service
-    participant Embed as BGE embedding
-    participant Chroma as ChromaDB
-    participant LLM as DeepSeek Chat
+    participant C as 客户端
+    participant A as FastAPI
+    participant R as RAG 服务
+    participant E as BGE
+    participant V as ChromaDB
+    participant L as DeepSeek
 
-    Client->>API: question + top_k
-    API->>RAG: answer_question(question, top_k)
-    RAG->>Embed: embed_texts([question])
-    Embed-->>RAG: query vector
-    RAG->>Chroma: query_chunks(vector, top_k)
-    Chroma-->>RAG: relevant chunks
-    RAG->>LLM: prompt with context
-    LLM-->>RAG: answer
-    RAG-->>API: answer + sources
-    API-->>Client: ChatResponse
+    C->>A: question 与可选 top_k
+    A->>R: answer_question
+    R->>V: 检查知识库是否为空
+    alt 空知识库
+        R-->>A: 友好提示与空 sources
+    else 有资料
+        R->>E: 问题 embedding
+        R->>V: top-k 检索
+        R->>L: 系统约束 + 不可信资料上下文
+        L-->>R: 带 [S1] 标记的回答
+        R->>R: 解析实际引用标记
+        R-->>A: answer + citation_id/distance/cited
+    end
 ```
 
-## 配置
+系统消息明确把 PDF 内容视为不可信资料，并要求忽略资料正文中的指令。前端根据 `cited` 区分模型实际引用与仅被检索到的候选片段。
 
-配置来自环境变量，示例见 `.env.example`。
+## 存储和容器
 
-关键变量：
+- 上传文件：`data/uploads/`
+- Chroma 索引：`data/chroma_db/`
+- BGE 缓存：Docker named volume `studymate_hf_cache`
+- 宿主机目录可通过 `STUDYMATE_HOST_UPLOAD_DIR` 和 `STUDYMATE_HOST_CHROMA_DIR` 覆盖
+- 模型卷名称可通过 `STUDYMATE_HF_CACHE_VOLUME` 覆盖，方便隔离验收
 
-- `DEEPSEEK_API_KEY`: DeepSeek Chat 调用密钥。
-- `DEEPSEEK_BASE_URL`: DeepSeek API 地址，默认 `https://api.deepseek.com`。
-- `STUDYMATE_LOCAL_EMBEDDING_MODEL`: 默认 `BAAI/bge-small-zh-v1.5`。
-- `STUDYMATE_LLM_MODEL`: 默认 `deepseek-v4-flash`。
-- `STUDYMATE_UPLOAD_DIR`: 上传 PDF 存储目录。
-- `STUDYMATE_CHROMA_DIR`: ChromaDB 持久化目录。
-- `STUDYMATE_CHUNK_SIZE` / `STUDYMATE_CHUNK_OVERLAP`: chunk 参数。
-- `STUDYMATE_API_BASE_URL`: Streamlit 调用后端的地址。
+Compose 的后端和前端复用同一生产镜像。镜像只安装运行依赖，并以 UID/GID 10001 的非 root 用户启动。首次下载模型时保持在线；缓存完整后才设置 `HF_HUB_OFFLINE=1` 和 `TRANSFORMERS_OFFLINE=1`。
 
-## 持久化
+## 依赖与质量门禁
 
-- `data/uploads/`: 保存上传的 PDF，仓库只保留 `.gitkeep`。
-- `data/chroma_db/`: 保存 ChromaDB 索引，仓库只保留 `.gitkeep`。
-- Docker Compose 将这两个目录挂载到容器中，重启后本地数据仍保留。
-- BGE 模型缓存使用 Docker volume `studymate_hf_cache`，避免每次重建后重复下载。
-
-## 错误处理
-
-后端统一返回：
-
-```json
-{
-  "error": {
-    "code": "bad_request",
-    "message": "错误说明",
-    "details": {}
-  }
-}
-```
-
-常见错误包括：
-
-- `unsupported_file_type`: 上传文件不是 PDF。
-- `validation_error`: 请求参数不合法。
-- `llm_not_configured`: 没有配置 DeepSeek API Key。
-- `embedding_failed`: 本地 embedding 生成失败。
-- `llm_request_failed`: DeepSeek 请求失败。
-
-## 后续增强方向
-
-- 多文档分组和多知识库隔离。
-- Hybrid Search 和 Rerank。
-- Query Rewrite。
-- 多轮对话和 Conversation Memory。
-- 更完整的可观测性和云部署。
+- Python 固定为 3.12
+- `requirements.txt` 为运行锁，`requirements-dev.txt` 为开发锁
+- CI 执行 Ruff、`compileall`、pytest coverage、Compose 配置和 Dockerfile 检查
+- 后端覆盖率阈值为 70%

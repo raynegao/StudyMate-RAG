@@ -1,0 +1,29 @@
+{
+  "verified_at": "2026-07-20",
+  "environment": "Docker Compose, Python 3.12, fresh BGE cache volume",
+  "question": "蓝色令牌的有效期是多少？它有什么用途？",
+  "answer": "根据课程资料，蓝色令牌的有效期为三个星港周期。[S1][S2] 它的用途是标记已经通过双重校验的观测记录。[S1][S2]",
+  "sources": [
+    {
+      "citation_id": "S1",
+      "filename": "星际导航课程讲义.pdf",
+      "page": 2,
+      "distance": 0.7330179967065507,
+      "cited": true
+    },
+    {
+      "citation_id": "S2",
+      "filename": "星际导航课程讲义.pdf",
+      "page": 1,
+      "distance": 0.7412457772282428,
+      "cited": true
+    },
+    {
+      "citation_id": "S3",
+      "filename": "星际导航课程讲义.pdf",
+      "page": 3,
+      "distance": 0.8568243471390322,
+      "cited": false
+    }
+  ]
+}
