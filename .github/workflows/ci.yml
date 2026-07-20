@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PYTHON_VERSION: "3.12"
+      UV_VERSION: "0.10.9"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install uv and locked development dependencies
+        run: |
+          python -m pip install "uv==${UV_VERSION}"
+          uv venv --python "${PYTHON_VERSION}"
+          uv pip sync --python .venv/bin/python --torch-backend cpu backend/requirements-dev.txt
+          uv pip check --python .venv/bin/python
+
+      - name: Lint Python
+        run: .venv/bin/python -m ruff check backend frontend tests scripts
+
+      - name: Compile Python
+        run: .venv/bin/python -m compileall -q backend frontend tests scripts
+
+      - name: Run tests with coverage
+        run: .venv/bin/python -m pytest -q
+
+      - name: Validate Compose configuration
+        run: docker compose config --quiet
+
+      - name: Check Dockerfile
+        run: docker build --check .

@@ -1,0 +1,19 @@
+# Web API and validation
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+python-multipart==0.0.20
+
+# RAG providers and local embeddings
+openai==1.58.1
+socksio==1.0.0
+torch==2.5.1
+sentence-transformers==3.3.1
+transformers==4.46.3
+chromadb==0.5.23
+posthog<6
+pypdf==5.1.0
+
+# Frontend and HTTP client
+streamlit==1.41.1
+requests==2.32.3

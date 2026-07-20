@@ -1,6 +1,11 @@
 .git/
 .gitignore
 .dockerignore
+.github/
+AGENTS.md
+README.md
+docs/
+output/
 
 .venv/
 venv/
@@ -20,6 +25,9 @@ htmlcov/
 .DS_Store
 .idea/
 .vscode/
+playwright-report/
+test-results/
+scripts/generate_demo_pdf.py
 
 data/uploads/*
 data/chroma_db/*

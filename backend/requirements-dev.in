@@ -1,0 +1,11 @@
+-r requirements.in
+
+# Tests, coverage, lint, and release-demo assets
+pytest==8.3.4
+pytest-cov==6.0.0
+ruff==0.9.10
+httpx==0.28.1
+reportlab==4.3.1
+pdfplumber==0.11.5
+# requests 2.32.x warns with the newer chardet release pulled by pdfplumber.
+chardet==5.2.0

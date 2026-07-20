@@ -1,8 +1,16 @@
 name: studymate-rag
 
+x-app-image: &app-image
+  image: studymate-rag:${STUDYMATE_IMAGE_TAG:-local}
+  build:
+    context: .
+    args:
+      PYTHON_VERSION: "3.12"
+      UV_VERSION: "0.10.9"
+
 services:
   backend:
-    build: .
+    <<: *app-image
     command: ["scripts/run_backend.sh"]
     environment:
       STUDYMATE_BACKEND_HOST: 0.0.0.0
@@ -19,34 +27,62 @@ services:
       STUDYMATE_EMBEDDING_BATCH_SIZE: ${STUDYMATE_EMBEDDING_BATCH_SIZE:-64}
       STUDYMATE_MAX_UPLOAD_SIZE_MB: ${STUDYMATE_MAX_UPLOAD_SIZE_MB:-25}
       DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       DEEPSEEK_BASE_URL: ${DEEPSEEK_BASE_URL:-https://api.deepseek.com}
-      HF_HOME: /app/.cache/huggingface
-      HF_HUB_OFFLINE: ${HF_HUB_OFFLINE:-1}
-      TRANSFORMERS_OFFLINE: ${TRANSFORMERS_OFFLINE:-1}
+      HF_HOME: /home/studymate/.cache/huggingface
+      HF_HUB_OFFLINE: ${HF_HUB_OFFLINE:-0}
+      TRANSFORMERS_OFFLINE: ${TRANSFORMERS_OFFLINE:-0}
     ports:
       - "8000:8000"
     volumes:
-      - ./data/uploads:/app/data/uploads
-      - ./data/chroma_db:/app/data/chroma_db
-      - ${HOME}/.cache/huggingface:/app/.cache/huggingface:ro
+      - type: bind
+        source: ${STUDYMATE_HOST_UPLOAD_DIR:-./data/uploads}
+        target: /app/data/uploads
+      - type: bind
+        source: ${STUDYMATE_HOST_CHROMA_DIR:-./data/chroma_db}
+        target: /app/data/chroma_db
+      - type: volume
+        source: studymate_hf_cache
+        target: /home/studymate/.cache/huggingface
     healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/health"]
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5)",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 60s
 
   frontend:
-    build: .
+    <<: *app-image
     command: ["scripts/run_frontend.sh"]
     environment:
       STUDYMATE_FRONTEND_HOST: 0.0.0.0
       STUDYMATE_FRONTEND_PORT: 8501
       STUDYMATE_API_BASE_URL: http://backend:8000
       STUDYMATE_FRONTEND_TIMEOUT: ${STUDYMATE_FRONTEND_TIMEOUT:-60}
+      STUDYMATE_FRONTEND_UPLOAD_TIMEOUT: ${STUDYMATE_FRONTEND_UPLOAD_TIMEOUT:-300}
     ports:
       - "8501:8501"
     depends_on:
       backend:
         condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8501/_stcore/health', timeout=5)",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  studymate_hf_cache:
+    name: ${STUDYMATE_HF_CACHE_VOLUME:-studymate_hf_cache}
