@@ -18,7 +18,8 @@ StudyMate RAG：课程资料智能问答系统
 - 51 项自动化测试通过，后端语句覆盖率 84.99%
 - 30 题公开合成集上，BGE Recall@1 与 MRR@1 均为 100%
 - 30 次真实 DeepSeek 调用的关键词回答正确率、引用准确率和 grounded-answer rate 均为 100%
-- 平均 DeepSeek 生成延迟 1.51 秒，P95 为 2.08 秒
+- 默认配置的平均检索延迟 26.18 毫秒，P95 为 59.51 毫秒
+- 平均 DeepSeek 生成延迟 1.31 秒，P95 为 1.94 秒
 - Docker Compose 前后端健康检查通过
 - 隔离 Docker E2E 完成真实 BGE、PDF 上传、Chroma 重启持久化、真实 DeepSeek 问答和删除清理
 - 公开虚构样例完成真实 DeepSeek 问答，答案包含有效来源标记

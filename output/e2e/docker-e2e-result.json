@@ -1,5 +1,5 @@
 {
-  "verified_at": "2026-08-17T03:39:16.968741+00:00",
+  "verified_at": "2026-08-17T03:53:16.379251+00:00",
   "environment": "isolated Docker Compose project with real BGE, ChromaDB and DeepSeek",
   "public_fixture": "output/pdf/studymate-demo-course.pdf",
   "backend_health": {
@@ -19,5 +19,5 @@
   "persistence_after_backend_restart": true,
   "delete_status": "deleted",
   "isolated_cleanup_verified": true,
-  "duration_seconds": 48.43017875030637
+  "duration_seconds": 28.542167250066996
 }

@@ -149,7 +149,8 @@ docker compose down
 - BGE MRR@1：100%
 - 30 次真实 DeepSeek 调用的关键词回答正确率：100%
 - 引用准确率与 grounded-answer rate：100%
-- 平均 DeepSeek 生成延迟：1.51 秒；P95：2.08 秒
+- 默认配置的平均检索延迟：26.18 毫秒；P95：59.51 毫秒
+- 平均 DeepSeek 生成延迟：1.31 秒；P95：1.94 秒
 
 ```bash
 .venv/bin/python scripts/generate_evaluation_assets.py
