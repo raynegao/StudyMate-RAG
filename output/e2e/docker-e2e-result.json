@@ -1,0 +1,23 @@
+{
+  "verified_at": "2026-08-17T03:39:16.968741+00:00",
+  "environment": "isolated Docker Compose project with real BGE, ChromaDB and DeepSeek",
+  "public_fixture": "output/pdf/studymate-demo-course.pdf",
+  "backend_health": {
+    "status": "ok",
+    "service": "studymate-rag-api"
+  },
+  "frontend_health": {
+    "status": "ok"
+  },
+  "upload": {
+    "filename": "星际导航课程讲义.pdf",
+    "chunk_count": 3
+  },
+  "deepseek_answer_correct": true,
+  "cited_source_count": 1,
+  "listed_before_restart": true,
+  "persistence_after_backend_restart": true,
+  "delete_status": "deleted",
+  "isolated_cleanup_verified": true,
+  "duration_seconds": 48.43017875030637
+}

@@ -101,3 +101,6 @@ Compose 的后端和前端复用同一生产镜像。镜像只安装运行依赖
 - `requirements.txt` 为运行锁，`requirements-dev.txt` 为开发锁
 - CI 执行 Ruff、`compileall`、pytest coverage、Compose 配置和 Dockerfile 检查
 - 后端覆盖率阈值为 70%
+- `evaluation/benchmark.json` 提供 30 题公开标注，`scripts/evaluate_rag.py` 使用真实 BGE 计算 Recall@K、MRR、延迟和真实 DeepSeek 的答案/引用指标
+- `scripts/run_docker_e2e.py` 在临时数据目录中自动验证前后端、真实模型、Chroma 重启持久化与删除清理
+- `Real-stack E2E` GitHub workflow 采用手动触发，避免 Secret 和外部模型网络波动影响常规 CI

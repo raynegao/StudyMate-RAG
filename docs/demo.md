@@ -50,7 +50,7 @@ docker compose --env-file .env.local up --build
 
 ## 已验证结果
 
-2026-07-20 使用全新的临时上传目录、Chroma 目录和 BGE 缓存卷完成以下检查：
+2026-08-17 使用隔离的临时上传目录和 Chroma 目录完成以下自动化检查：
 
 - Docker 镜像构建与前后端健康检查通过
 - 首次 BGE 下载成功
@@ -59,6 +59,8 @@ docker compose --env-file .env.local up --build
 - DeepSeek 返回正确答案并包含 `[S1][S2]`
 - 前端正确区分实际引用与检索候选
 - 浏览器控制台无错误或警告
+- 后端重启后文档与 Chroma 向量仍可检索
+- 删除请求同时清理文档记录和索引，测试项目随后自动关闭
 
 问答响应摘要见 [studymate-demo-response.json](../output/demo/studymate-demo-response.json)。
 
@@ -67,6 +69,8 @@ docker compose --env-file .env.local up --build
 ![上传与文档列表](../output/playwright/studymate-upload-and-documents.png)
 
 ![问答与引用](../output/playwright/studymate-question-and-citations.png)
+
+完整的上传、索引、提问、引用和删除确认流程见 [75 秒演示视频](../output/demo/studymate-rag-demo-75s.mp4)。视频由 `scripts/build_demo_video.sh` 从已验收的浏览器截图生成；可用 `ffprobe` 核对时长。
 
 ## 本地运行备选
 

@@ -1,0 +1,226 @@
+{
+  "name": "StudyMate RAG Public Chinese Benchmark",
+  "version": "1.0.0",
+  "description": "A fully fictional Chinese benchmark for reproducible retrieval and grounded-answer evaluation.",
+  "documents": [
+    {
+      "filename": "studymate-eval-observatory.pdf",
+      "title": "极光观测站操作基础",
+      "subtitle": "公开虚构评测资料 A",
+      "pages": [
+        {
+          "page": 2,
+          "heading": "观测准备与准入参数",
+          "sections": [
+            {
+              "title": "紫晶校准牌",
+              "text": "紫晶校准牌用于标记已经通过零点校准的传感器。校准牌的激活窗口为 18 分钟，超过窗口后必须重新执行零点校准，而且校准牌不能转移给其他设备。"
+            },
+            {
+              "title": "天顶脉冲采样",
+              "text": "一次有效的天顶脉冲采样必须包含连续 7 次测量，相邻两次测量的间隔不得超过 4 秒。只要缺少一次测量，整组采样就需要重新开始。"
+            },
+            {
+              "title": "漂移准入阈值",
+              "text": "漂移评分的自动准入阈值是 0.63。评分大于或等于 0.63 的记录进入自动归档队列，低于 0.63 的记录转入人工复核。"
+            },
+            {
+              "title": "冷启动预热",
+              "text": "主镜完成冷启动后需要预热 11 分钟才能开始正式观测。预热期间可以检查网络，但不得写入正式观测记录。"
+            }
+          ]
+        },
+        {
+          "page": 3,
+          "heading": "数据清洗、同步与封装",
+          "sections": [
+            {
+              "title": "偏振噪声处理",
+              "text": "偏振噪声使用窗口宽度为 5 的中值滤波器处理。窗口必须保持奇数宽度，以便为每个中心样本选择稳定的邻域。"
+            },
+            {
+              "title": "东塔同步计划",
+              "text": "东塔每天在协调世界时 02:30 执行一次完整同步。同步生成的审计记录保留 45 天，过期记录由归档服务批量移除。"
+            },
+            {
+              "title": "原始包封装",
+              "text": "原始观测包必须先完成校验和检查，再使用 Lumen-3 算法压缩。没有通过校验和检查的数据包不得进入压缩阶段。"
+            }
+          ]
+        },
+        {
+          "page": 4,
+          "heading": "故障隔离与备用链路",
+          "sections": [
+            {
+              "title": "A17 温控告警",
+              "text": "当镜头温度高于 -12 摄氏度时，控制器触发 A17 告警。值班人员应暂停曝光并检查制冷回路，而不是继续提高采样频率。"
+            },
+            {
+              "title": "红色隔离标签",
+              "text": "红色隔离标签持续 2 个观测轮次。两个轮次都未再次出现故障后，设备才可以从隔离区移回常规观测队列。"
+            },
+            {
+              "title": "备用通信频段",
+              "text": "主链路不可用时，观测站切换到 8.4 GHz 备用频段。备用频段只传输状态摘要和告警，不传输完整图像。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "studymate-eval-ecology.pdf",
+      "title": "封闭生态舱维护手册",
+      "subtitle": "公开虚构评测资料 B",
+      "pages": [
+        {
+          "page": 2,
+          "heading": "植物舱环境与休眠流程",
+          "sections": [
+            {
+              "title": "琥珀苔灌溉",
+              "text": "琥珀苔每 6 天灌溉一次，每平方米使用 1.8 升循环水。灌溉当天仍保持 9 小时紫光照明，不能用增加照明时间代替补水。"
+            },
+            {
+              "title": "雾培温室",
+              "text": "雾培温室的相对湿度应保持在 68% 到 74%，标准温度为 21 摄氏度。湿度短时超过上限时先降低喷雾频率。"
+            },
+            {
+              "title": "休眠种子唤醒",
+              "text": "休眠种子在 -6 摄氏度冷藏 14 天后进入唤醒流程。冷藏时间不足会降低发芽同步性，不能通过提高温度补偿。"
+            }
+          ]
+        },
+        {
+          "page": 3,
+          "heading": "动物监测与样本器材",
+          "sections": [
+            {
+              "title": "银翅雀声学信标",
+              "text": "银翅雀佩戴的声学信标工作频率为 42 kHz，在无遮挡环境中的标称检测半径为 120 米。墙体和高密度植被会缩短实际距离。"
+            },
+            {
+              "title": "授粉走廊",
+              "text": "授粉走廊的最小净宽度是 3.5 米。走廊内不得堆放运输箱，否则会干扰昆虫的固定飞行路径。"
+            },
+            {
+              "title": "绿色样本瓶盖",
+              "text": "绿色样本瓶盖最多使用 8 次，达到次数后必须更换。清洗只能恢复洁净度，不能重置使用次数。"
+            }
+          ]
+        },
+        {
+          "page": 4,
+          "heading": "土壤、营养液与应急通风",
+          "sections": [
+            {
+              "title": "土壤酸碱度",
+              "text": "育苗区土壤的目标 pH 范围是 6.2 到 6.8。低于范围时少量补充碱性缓冲液，高于范围时暂停施用含钙添加剂。"
+            },
+            {
+              "title": "营养液配比",
+              "text": "标准营养液中氮、磷、钾的质量比例为 4:2:3。调整总浓度时必须保持三种元素之间的比例不变。"
+            },
+            {
+              "title": "二氧化碳应急阀",
+              "text": "当二氧化碳浓度高于 950 ppm 时，应急通风阀自动开启。浓度回落到安全区间后仍需保持通风 3 分钟。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "studymate-eval-computing.pdf",
+      "title": "棱镜计算平台运行规范",
+      "subtitle": "公开虚构评测资料 C",
+      "pages": [
+        {
+          "page": 2,
+          "heading": "调度、缓存与资源预留",
+          "sections": [
+            {
+              "title": "灯塔调度器",
+              "text": "灯塔调度器的默认时间片是 24 毫秒。高优先级队列与普通队列按照 3:1 的次数比例获得执行机会，以避免普通任务长期饥饿。"
+            },
+            {
+              "title": "珍珠缓存",
+              "text": "珍珠缓存条目的默认生存时间是 96 秒。读取命中不会延长生存时间，只有重新写入才会刷新计时。"
+            },
+            {
+              "title": "冷启动内存",
+              "text": "计算节点冷启动时必须预留 256 MB 内存给诊断代理。预留区不得被用户任务申请，即使节点暂时没有运行诊断。"
+            }
+          ]
+        },
+        {
+          "page": 3,
+          "heading": "校验、重试与日志保留",
+          "sections": [
+            {
+              "title": "棱镜校验和",
+              "text": "棱镜校验和使用十六进制多项式 0x1D。发送端和接收端必须使用相同多项式，否则数据块会被判定为损坏。"
+            },
+            {
+              "title": "网络重试",
+              "text": "网络请求最多重试 4 次，相邻重试之间固定等待 250 毫秒。达到上限后请求进入失败队列，不再自动发送。"
+            },
+            {
+              "title": "审计日志",
+              "text": "平台审计日志在线保留 21 天，随后转入只读归档。只读归档不接受字段修改，但允许按任务编号检索。"
+            }
+          ]
+        },
+        {
+          "page": 4,
+          "heading": "沙箱并发、快照与恢复目标",
+          "sections": [
+            {
+              "title": "蓝色沙箱",
+              "text": "单个蓝色沙箱最多同时运行 12 个作业。第 13 个作业会停留在等待队列，直到已有作业释放执行槽位。"
+            },
+            {
+              "title": "状态快照",
+              "text": "运行状态每 15 分钟生成一次快照。快照写入完成后才更新索引，未完成的快照不会出现在恢复列表中。"
+            },
+            {
+              "title": "恢复点目标",
+              "text": "故障恢复流程允许最多丢失 2 笔事务。若预计丢失超过 2 笔，系统必须停止自动恢复并等待管理员确认。"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {"id": "OBS-01", "question": "传感器通过零点校准后用什么标记？", "gold_document": "studymate-eval-observatory.pdf", "gold_page": 2, "answer_keywords": ["紫晶校准牌", "零点校准"]},
+    {"id": "OBS-02", "question": "校准标记激活以后多长时间失效？", "gold_document": "studymate-eval-observatory.pdf", "gold_page": 2, "answer_keywords": ["18", "分钟"]},
+    {"id": "OBS-03", "question": "怎样才算一组有效的天顶脉冲采样？", "gold_document": "studymate-eval-observatory.pdf", "gold_page": 2, "answer_keywords": ["7", "4 秒"]},
+    {"id": "OBS-04", "question": "漂移评分达到多少可以自动归档？", "gold_document": "studymate-eval-observatory.pdf", "gold_page": 2, "answer_keywords": ["0.63", "自动归档"]},
+    {"id": "OBS-05", "question": "处理偏振噪声时中值滤波器的窗口宽度是多少？", "gold_document": "studymate-eval-observatory.pdf", "gold_page": 3, "answer_keywords": ["5", "中值滤波"]},
+    {"id": "OBS-06", "question": "东塔每天几点同步，审计记录保存多久？", "gold_document": "studymate-eval-observatory.pdf", "gold_page": 3, "answer_keywords": ["02:30", "45 天"]},
+    {"id": "OBS-07", "question": "原始观测包通过检查后采用哪种压缩算法？", "gold_document": "studymate-eval-observatory.pdf", "gold_page": 3, "answer_keywords": ["Lumen-3", "校验和"]},
+    {"id": "OBS-08", "question": "什么温度条件会触发 A17 告警？", "gold_document": "studymate-eval-observatory.pdf", "gold_page": 4, "answer_keywords": ["-12", "高于"]},
+    {"id": "OBS-09", "question": "红色隔离标签会持续几个观测轮次？", "gold_document": "studymate-eval-observatory.pdf", "gold_page": 4, "answer_keywords": ["2", "观测轮次"]},
+    {"id": "OBS-10", "question": "主链路中断后状态摘要走哪个备用频段？", "gold_document": "studymate-eval-observatory.pdf", "gold_page": 4, "answer_keywords": ["8.4 GHz", "状态摘要"]},
+    {"id": "ECO-01", "question": "琥珀苔多久补水一次？", "gold_document": "studymate-eval-ecology.pdf", "gold_page": 2, "answer_keywords": ["6 天", "灌溉"]},
+    {"id": "ECO-02", "question": "每平方米琥珀苔需要多少循环水？", "gold_document": "studymate-eval-ecology.pdf", "gold_page": 2, "answer_keywords": ["1.8 升", "每平方米"]},
+    {"id": "ECO-03", "question": "雾培温室应维持什么湿度和温度？", "gold_document": "studymate-eval-ecology.pdf", "gold_page": 2, "answer_keywords": ["68%", "74%", "21"]},
+    {"id": "ECO-04", "question": "休眠种子进入唤醒前如何冷藏？", "gold_document": "studymate-eval-ecology.pdf", "gold_page": 2, "answer_keywords": ["-6", "14 天"]},
+    {"id": "ECO-05", "question": "银翅雀的信标频率和无遮挡检测半径分别是多少？", "gold_document": "studymate-eval-ecology.pdf", "gold_page": 3, "answer_keywords": ["42 kHz", "120 米"]},
+    {"id": "ECO-06", "question": "授粉昆虫通道至少需要多宽？", "gold_document": "studymate-eval-ecology.pdf", "gold_page": 3, "answer_keywords": ["3.5 米", "最小"]},
+    {"id": "ECO-07", "question": "绿色样本瓶盖何时必须更换？", "gold_document": "studymate-eval-ecology.pdf", "gold_page": 3, "answer_keywords": ["8 次", "更换"]},
+    {"id": "ECO-08", "question": "育苗区土壤合格的 pH 区间是什么？", "gold_document": "studymate-eval-ecology.pdf", "gold_page": 4, "answer_keywords": ["6.2", "6.8"]},
+    {"id": "ECO-09", "question": "标准营养液里的氮磷钾质量比是多少？", "gold_document": "studymate-eval-ecology.pdf", "gold_page": 4, "answer_keywords": ["4:2:3", "氮"]},
+    {"id": "ECO-10", "question": "二氧化碳达到什么条件会自动开应急阀？", "gold_document": "studymate-eval-ecology.pdf", "gold_page": 4, "answer_keywords": ["950 ppm", "高于"]},
+    {"id": "CMP-01", "question": "灯塔调度器一个默认时间片有多长？", "gold_document": "studymate-eval-computing.pdf", "gold_page": 2, "answer_keywords": ["24 毫秒", "时间片"]},
+    {"id": "CMP-02", "question": "高优先级队列和普通队列按什么比例获得执行机会？", "gold_document": "studymate-eval-computing.pdf", "gold_page": 2, "answer_keywords": ["3:1", "高优先级"]},
+    {"id": "CMP-03", "question": "珍珠缓存条目默认多久过期，读取命中会续期吗？", "gold_document": "studymate-eval-computing.pdf", "gold_page": 2, "answer_keywords": ["96 秒", "不会"]},
+    {"id": "CMP-04", "question": "节点启动时给诊断代理留出多少内存？", "gold_document": "studymate-eval-computing.pdf", "gold_page": 2, "answer_keywords": ["256 MB", "诊断代理"]},
+    {"id": "CMP-05", "question": "棱镜校验和采用哪个十六进制多项式？", "gold_document": "studymate-eval-computing.pdf", "gold_page": 3, "answer_keywords": ["0x1D", "多项式"]},
+    {"id": "CMP-06", "question": "请求失败时最多重发几次，每次等待多久？", "gold_document": "studymate-eval-computing.pdf", "gold_page": 3, "answer_keywords": ["4 次", "250 毫秒"]},
+    {"id": "CMP-07", "question": "平台审计日志在线保存多少天？", "gold_document": "studymate-eval-computing.pdf", "gold_page": 3, "answer_keywords": ["21 天", "只读归档"]},
+    {"id": "CMP-08", "question": "一个蓝色沙箱能同时执行多少作业？", "gold_document": "studymate-eval-computing.pdf", "gold_page": 4, "answer_keywords": ["12", "作业"]},
+    {"id": "CMP-09", "question": "运行状态快照的生成周期是多少？", "gold_document": "studymate-eval-computing.pdf", "gold_page": 4, "answer_keywords": ["15 分钟", "快照"]},
+    {"id": "CMP-10", "question": "自动故障恢复最多允许损失多少笔事务？", "gold_document": "studymate-eval-computing.pdf", "gold_page": 4, "answer_keywords": ["2 笔", "事务"]}
+  ]
+}

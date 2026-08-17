@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import requests
+import tomllib
 
 from frontend import streamlit_app
 
@@ -13,6 +14,14 @@ class SuccessfulResponse:
     @staticmethod
     def json():
         return {"status": "ok"}
+
+
+def test_streamlit_and_backend_upload_limits_match():
+    with open(".streamlit/config.toml", "rb") as file:
+        config = tomllib.load(file)
+
+    assert config["server"]["maxUploadSize"] == 25
+    assert streamlit_app.MAX_UPLOAD_SIZE_MB == 25
 
 
 def test_api_post_uses_upload_timeout_override(monkeypatch):

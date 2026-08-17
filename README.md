@@ -1,8 +1,25 @@
 # StudyMate RAG
 
+[![CI](https://github.com/raynegao/StudyMate-RAG/actions/workflows/ci.yml/badge.svg)](https://github.com/raynegao/StudyMate-RAG/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 StudyMate RAG 是一个面向课程 PDF 的资料问答系统。它使用本地 BGE 模型生成向量、通过 ChromaDB 检索相关片段，再调用 DeepSeek 生成带来源标记的回答。
 
 ![问答与引用界面](output/playwright/studymate-question-and-citations.png)
+
+## English summary
+
+StudyMate RAG is a local-first question-answering system for Chinese course PDFs. It combines `BAAI/bge-small-zh-v1.5` embeddings, ChromaDB retrieval, DeepSeek generation and verifiable page-level citations behind a FastAPI API and Streamlit interface. The repository includes locked Python 3.12 dependencies, non-root Docker images, automated quality gates, a 30-question public benchmark and an isolated real-stack Docker E2E check.
+
+Key evidence:
+
+- 30 questions over 3 fully fictional public PDFs, with gold document, page and answer-keyword annotations
+- Recall@1 and MRR@1 of 100% for BGE on the public synthetic benchmark
+- 100% deterministic keyword answer accuracy and citation accuracy across 30 real DeepSeek calls
+- Isolated Docker verification of real BGE, ChromaDB persistence across backend restart, DeepSeek answers and cleanup
+- Machine-readable results and a reproducible 75-second demonstration video
+
+See the [quantitative evaluation](docs/evaluation.md), [architecture](docs/architecture.md), [API contract](docs/api.md) and [75-second demo video](output/demo/studymate-rag-demo-75s.mp4).
 
 ## 主要功能
 
@@ -108,6 +125,7 @@ docker compose down
 - [上传与文档列表截图](output/playwright/studymate-upload-and-documents.png)
 - [问答与引用截图](output/playwright/studymate-question-and-citations.png)
 - [真实问答验收记录](output/demo/studymate-demo-response.json)
+- [75 秒完整演示视频](output/demo/studymate-rag-demo-75s.mp4)
 
 重新生成样例 PDF：
 
@@ -120,6 +138,28 @@ docker compose down
 ```text
 蓝色令牌的有效期是多少？它有什么用途？
 ```
+
+## 量化评测
+
+仓库包含 3 份完全虚构的公开 PDF 和 30 道中文问题。每道题都标注标准文档、页码和答案关键词，评测脚本使用真实 BGE，并对比字符 n-gram 词法基线、3 组 chunk size 和 3 组 `top_k`。
+
+当前公开合成集结果：
+
+- BGE Recall@1：100%
+- BGE MRR@1：100%
+- 30 次真实 DeepSeek 调用的关键词回答正确率：100%
+- 引用准确率与 grounded-answer rate：100%
+- 平均 DeepSeek 生成延迟：1.51 秒；P95：2.08 秒
+
+```bash
+.venv/bin/python scripts/generate_evaluation_assets.py
+.venv/bin/python scripts/evaluate_rag.py
+
+set -a && source .env.local && set +a
+.venv/bin/python scripts/evaluate_rag.py --with-llm
+```
+
+完整方法、对比表和局限性见 [docs/evaluation.md](docs/evaluation.md)，机器可读结果见 [evaluation-results.json](output/evaluation/evaluation-results.json)。这些结果来自小规模合成基准，证明可复现性，不代表真实课程域的泛化上限。
 
 ## API 示例
 
@@ -148,11 +188,14 @@ curl -X POST http://127.0.0.1:8000/api/chat \
 scripts/test.sh
 docker compose config --quiet
 docker build --check .
+.venv/bin/python scripts/run_docker_e2e.py
 ```
 
 `scripts/test.sh` 会依次执行 Ruff、`compileall`、pytest coverage 和依赖一致性检查。CI 使用 Python 3.12，并要求后端覆盖率不低于 70%。
 
-2026-07-20 的发布检查结果：46 项测试通过，后端覆盖率 84.99%；Docker 镜像构建成功；全新模型缓存卷完成 BGE 下载、PDF 上传、Chroma 持久化和真实 DeepSeek 问答。
+`scripts/run_docker_e2e.py` 使用临时上传与 Chroma 目录启动隔离 Compose 项目，自动验证真实 BGE、真实 DeepSeek、前后端健康、后端重启持久化、文档删除和清理。GitHub 的 `Real-stack E2E` workflow 可以在配置仓库 Secret 后手动运行，不会让外部 API 依赖阻塞常规 CI。
+
+2026-08-17 的发布检查结果：51 项测试通过，后端覆盖率 84.99%；Compose 与 Dockerfile 检查通过；30 题真实 BGE/DeepSeek 评测完成；隔离 Docker E2E 完成真实模型调用与重启持久化验证。
 
 ## 项目结构
 
@@ -165,6 +208,7 @@ frontend/                 Streamlit 页面
 scripts/                  启动、测试、smoke 和样例生成脚本
 tests/                    API、服务层和前端辅助函数测试
 docs/                     架构、API、演示和简历材料
+evaluation/               公开 30 题基准及标准文档/页码/答案标注
 output/                   可公开使用的样例与截图
 data/                     本地上传文件和 Chroma 数据，不提交内容
 ```
@@ -172,3 +216,7 @@ data/                     本地上传文件和 Chroma 数据，不提交内容
 ## 当前边界
 
 当前版本为 `0.3.0`，聚焦稳定的单知识库 PDF 问答闭环，不包含 OCR、Hybrid Search、Rerank、Query Rewrite、多轮记忆、用户系统或云部署。
+
+## License
+
+This project is released under the [MIT License](LICENSE).

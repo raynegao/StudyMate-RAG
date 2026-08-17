@@ -11,6 +11,7 @@ REQUEST_TIMEOUT = float(os.getenv("STUDYMATE_FRONTEND_TIMEOUT", "60"))
 UPLOAD_REQUEST_TIMEOUT = float(
     os.getenv("STUDYMATE_FRONTEND_UPLOAD_TIMEOUT", "300")
 )
+MAX_UPLOAD_SIZE_MB = int(os.getenv("STUDYMATE_MAX_UPLOAD_SIZE_MB", "25"))
 LAST_CHAT_RESULT_KEY = "last_chat_result"
 PENDING_DELETE_KEY = "pending_delete_document_id"
 
@@ -167,7 +168,10 @@ def render_documents() -> None:
 
 def render_upload() -> None:
     st.sidebar.subheader("上传 PDF")
-    uploaded_file = st.sidebar.file_uploader("选择课程资料", type=["pdf"])
+    uploaded_file = st.sidebar.file_uploader(
+        f"选择课程资料（最大 {MAX_UPLOAD_SIZE_MB} MB）",
+        type=["pdf"],
+    )
     if not uploaded_file:
         return
 

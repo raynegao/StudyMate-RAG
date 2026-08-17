@@ -35,6 +35,7 @@ COPY --from=builder /opt/venv /opt/venv
 COPY --chown=studymate:studymate backend ./backend
 COPY --chown=studymate:studymate frontend ./frontend
 COPY --chown=studymate:studymate scripts ./scripts
+COPY --chown=studymate:studymate .streamlit ./.streamlit
 
 RUN install -d -o studymate -g studymate \
         /app/data/uploads \

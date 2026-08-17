@@ -32,7 +32,7 @@ services:
       HF_HUB_OFFLINE: ${HF_HUB_OFFLINE:-0}
       TRANSFORMERS_OFFLINE: ${TRANSFORMERS_OFFLINE:-0}
     ports:
-      - "8000:8000"
+      - "${STUDYMATE_BACKEND_PUBLISHED_PORT:-8000}:8000"
     volumes:
       - type: bind
         source: ${STUDYMATE_HOST_UPLOAD_DIR:-./data/uploads}
@@ -65,8 +65,9 @@ services:
       STUDYMATE_API_BASE_URL: http://backend:8000
       STUDYMATE_FRONTEND_TIMEOUT: ${STUDYMATE_FRONTEND_TIMEOUT:-60}
       STUDYMATE_FRONTEND_UPLOAD_TIMEOUT: ${STUDYMATE_FRONTEND_UPLOAD_TIMEOUT:-300}
+      STUDYMATE_MAX_UPLOAD_SIZE_MB: ${STUDYMATE_MAX_UPLOAD_SIZE_MB:-25}
     ports:
-      - "8501:8501"
+      - "${STUDYMATE_FRONTEND_PUBLISHED_PORT:-8501}:8501"
     depends_on:
       backend:
         condition: service_healthy
