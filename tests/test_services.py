@@ -23,7 +23,7 @@ from app.core.errors import (
     VectorStoreError,
 )
 from app.services.chunking import DocumentChunk, split_pages_into_chunks
-from app.services.pdf_parser import PageText, extract_pdf_pages
+from app.services.pdf_parser import PageText, extract_pdf_pages, sanitize_extracted_text
 from app.services.vector_store import RetrievedChunk
 from app.utils.file_utils import (
     sanitize_filename,
@@ -96,6 +96,10 @@ def test_extract_pdf_pages_rejects_pdf_without_text(tmp_path):
 
     with pytest.raises(PdfTextUnavailableError):
         extract_pdf_pages(pdf_path)
+
+
+def test_sanitize_extracted_text_replaces_invalid_unicode_surrogates():
+    assert sanitize_extracted_text("课程\udc80资料") == "课程?资料"
 
 
 def test_chunking_keeps_overlap_and_source_metadata():

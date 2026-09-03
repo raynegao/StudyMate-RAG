@@ -6,10 +6,13 @@ from pathlib import Path
 from pypdf import PdfReader
 
 from scripts.evaluate_rag import keywords_present, load_benchmark
+from scripts.evaluate_real_course import load_manifest
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 BENCHMARK_PATH = ROOT_DIR / "evaluation" / "benchmark.json"
 PDF_DIR = ROOT_DIR / "output" / "pdf" / "evaluation"
+REAL_BENCHMARK_PATH = ROOT_DIR / "evaluation" / "real_course_benchmark.json"
+REAL_RESULT_PATH = ROOT_DIR / "output" / "evaluation" / "real-course-results.json"
 
 
 def test_evaluation_benchmark_has_30_unique_questions_and_three_documents():
@@ -38,3 +41,34 @@ def test_keyword_matching_normalizes_spacing_and_punctuation():
     answer = "默认值为 8.4GHz；只传输状态摘要。"
 
     assert keywords_present(answer, ["8.4 GHz", "状态摘要"])
+
+
+def test_real_course_benchmark_is_anonymous_and_well_formed():
+    benchmark = load_manifest(REAL_BENCHMARK_PATH)
+
+    assert len(benchmark["documents"]) == 3
+    assert len(benchmark["questions"]) == 15
+    assert all(
+        document["filename"].startswith("course-")
+        for document in benchmark["documents"]
+    )
+    serialized = json.dumps(benchmark, ensure_ascii=False)
+    assert "/Users/" not in serialized
+    assert "junior_year_spring" not in serialized
+
+
+def test_real_course_result_is_private_and_complete():
+    result = json.loads(REAL_RESULT_PATH.read_text(encoding="utf-8"))
+
+    assert result["benchmark"]["all_content_fictional"] is False
+    assert result["benchmark"]["source_hashes_verified"] is True
+    assert result["benchmark"]["source_page_counts_verified"] is True
+    assert result["benchmark"]["gold_keywords_verified"] is True
+    assert result["privacy"]["source_files_committed"] is False
+    assert result["privacy"]["source_paths_in_output"] is False
+    assert result["privacy"]["source_text_in_output"] is False
+    assert result["privacy"]["external_llm_calls"] is False
+    assert len(result["question_results"]) == 15
+    serialized = json.dumps(result, ensure_ascii=False)
+    assert "/Users/" not in serialized
+    assert "junior_year_spring" not in serialized

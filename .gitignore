@@ -27,6 +27,7 @@ data/uploads/*
 data/chroma_db/*
 !data/uploads/.gitkeep
 !data/chroma_db/.gitkeep
+evaluation/private/
 
 # OS and editor
 .DS_Store
