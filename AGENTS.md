@@ -21,7 +21,7 @@ StudyMate RAG 为课程 PDF 提供本地向量检索和带引用的问答能力�
 - `frontend/streamlit_app.py`：页面状态、上传、问答和文档管理
 - `tests/`：API contract、服务层和前端辅助逻辑测试
 - `scripts/`：启动、测试、smoke 和公开样例生成脚本
-- `evaluation/`：公开虚构基准、标准文档/页码和答案关键词标注
+- `evaluation/`：公开虚构基准、匿名真实课程清单，以及 Git 忽略的本机来源映射
 - `output/evaluation/`、`output/e2e/`：可公开、可机读的量化与真实栈验收证据
 
 ## 常用命令
@@ -35,6 +35,7 @@ scripts/run_frontend.sh
 scripts/smoke_api.sh
 .venv/bin/python scripts/generate_evaluation_assets.py
 .venv/bin/python scripts/evaluate_rag.py
+.venv/bin/python scripts/evaluate_real_course.py
 .venv/bin/python scripts/run_docker_e2e.py
 docker compose --env-file .env.local up --build
 ```
@@ -49,6 +50,7 @@ docker compose --env-file .env.local up --build
 - 依赖变更先修改 `requirements.in` 或 `requirements-dev.in`，再重新生成锁文件。
 - 提交前运行 `scripts/test.sh`、Compose 配置检查和 Dockerfile 检查。
 - 评测集或检索逻辑变化时重新生成公开 PDF、量化结果和 `docs/evaluation.md`；真实栈变化时重跑隔离 Docker E2E。
+- 真实课程评测只提交匿名别名、完整性哈希、页码和最小答案关键词；原 PDF、本机路径、学校/教师信息和学生数据必须留在 `evaluation/private/` 或其他 Git 忽略位置。
 
 ## 数据与安全
 

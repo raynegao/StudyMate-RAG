@@ -64,3 +64,5 @@ The machine-readable result, including per-question grounded-answer evidence, is
 - The benchmark is deliberately small and synthetic, so it measures reproducibility rather than production-domain generalization.
 - Keyword correctness is deterministic and auditable, but it does not replace expert grading of nuanced free-form answers.
 - DeepSeek output and latency can change across provider versions and network conditions; retrieval results are locally reproducible without an API key.
+
+The synthetic benchmark is complemented by an [anonymous real-course evaluation](real-course-evaluation.md) whose source PDFs remain local and Git-ignored.

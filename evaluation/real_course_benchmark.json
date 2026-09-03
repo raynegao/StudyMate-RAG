@@ -1,0 +1,137 @@
+{
+  "name": "StudyMate RAG Anonymous Real Course Benchmark",
+  "version": "1.0.0",
+  "description": "An anonymized Chinese QA benchmark derived from three real university course PDFs.",
+  "privacy": {
+    "source_files_committed": false,
+    "source_paths_committed": false,
+    "institution_names_committed": false,
+    "instructor_names_committed": false,
+    "student_data_committed": false,
+    "questions_paraphrased": true
+  },
+  "documents": [
+    {
+      "filename": "course-a.pdf",
+      "sha256": "824d537a89fe5a094907d764573013c7d934c99097e92ca750f8656d5377a439",
+      "page_count": 76
+    },
+    {
+      "filename": "course-b.pdf",
+      "sha256": "4b4a435d5c78c16a355c921e8895c0130cddfcf110ed164ed6cae4fb29b704e2",
+      "page_count": 78
+    },
+    {
+      "filename": "course-c.pdf",
+      "sha256": "b59f671bcf5852171eadecb98fff820c468415d912c869e347273fa260824d54",
+      "page_count": 79
+    }
+  ],
+  "questions": [
+    {
+      "id": "REAL-A-01",
+      "question": "线性回归的基本目标是什么？",
+      "gold_document": "course-a.pdf",
+      "gold_page": 7,
+      "answer_keywords": ["直线", "最小化", "预测值", "真实值"]
+    },
+    {
+      "id": "REAL-A-02",
+      "question": "为什么线性回归可以用解析方法得到最优权重？对应的方法叫什么？",
+      "gold_document": "course-a.pdf",
+      "gold_page": 10,
+      "answer_keywords": ["最小二乘法", "凸函数", "导数为0"]
+    },
+    {
+      "id": "REAL-A-03",
+      "question": "梯度下降为了减小损失，应当沿哪个方向更新参数？",
+      "gold_document": "course-a.pdf",
+      "gold_page": 25,
+      "answer_keywords": ["梯度", "相反方向", "损失"]
+    },
+    {
+      "id": "REAL-A-04",
+      "question": "小批量随机梯度下降每次怎样选取数据并更新参数？",
+      "gold_document": "course-a.pdf",
+      "gold_page": 38,
+      "answer_keywords": ["小批量随机梯度下降法", "random minibatches", "negative gradient"]
+    },
+    {
+      "id": "REAL-A-05",
+      "question": "在什么噪声假设下，最大化似然等价于最小化均方误差？",
+      "gold_document": "course-a.pdf",
+      "gold_page": 73,
+      "answer_keywords": ["正态", "最大化似然", "最小化均方误差"]
+    },
+    {
+      "id": "REAL-B-01",
+      "question": "信息熵在无损编码中的定义是什么？",
+      "gold_document": "course-b.pdf",
+      "gold_page": 13,
+      "answer_keywords": ["无损编码", "最小平均编码长度"]
+    },
+    {
+      "id": "REAL-B-02",
+      "question": "信息熵描述的是单个事件还是信源整体的什么性质？",
+      "gold_document": "course-b.pdf",
+      "gold_page": 14,
+      "answer_keywords": ["不确定性", "平均"]
+    },
+    {
+      "id": "REAL-B-03",
+      "question": "固定真实分布 P 时，预测分布 Q 与 P 的接近程度如何影响交叉熵？",
+      "gold_document": "course-b.pdf",
+      "gold_page": 19,
+      "answer_keywords": ["越接近", "越小", "越远", "越大"]
+    },
+    {
+      "id": "REAL-B-04",
+      "question": "分类优化中，交叉熵相较 MSE 的梯度形态有什么优势？",
+      "gold_document": "course-b.pdf",
+      "gold_page": 36,
+      "answer_keywords": ["交叉熵", "梯度", "平坦区域"]
+    },
+    {
+      "id": "REAL-B-05",
+      "question": "Softmax 在多分类任务中把神经元输出转换成什么形式？",
+      "gold_document": "course-b.pdf",
+      "gold_page": 45,
+      "answer_keywords": ["multi-class classification", "概率", "1"]
+    },
+    {
+      "id": "REAL-C-01",
+      "question": "逻辑回归虽然名称中有回归，实际上解决什么问题并属于什么模型？",
+      "gold_document": "course-c.pdf",
+      "gold_page": 4,
+      "answer_keywords": ["二分类", "线性模型"]
+    },
+    {
+      "id": "REAL-C-02",
+      "question": "单层感知机为什么不能直接解决 XOR 问题？",
+      "gold_document": "course-c.pdf",
+      "gold_page": 20,
+      "answer_keywords": ["线性不可分", "感知机无法直接解决"]
+    },
+    {
+      "id": "REAL-C-03",
+      "question": "多层感知机为何能够处理单层感知机无法解决的问题？",
+      "gold_document": "course-c.pdf",
+      "gold_page": 28,
+      "answer_keywords": ["线性不可分", "多层感知机", "非线性"]
+    },
+    {
+      "id": "REAL-C-04",
+      "question": "单层感知机与多层感知机在可解决问题范围上的主要区别是什么？",
+      "gold_document": "course-c.pdf",
+      "gold_page": 33,
+      "answer_keywords": ["线性可分", "隐藏层", "非线性激活函数"]
+    },
+    {
+      "id": "REAL-C-05",
+      "question": "ReLU 在输入小于零时梯度如何，这可能导致什么问题？",
+      "gold_document": "course-c.pdf",
+      "gold_page": 41,
+      "answer_keywords": ["Dead ReLU Problem", "梯度", "0"]
+    }
+  ]
+}

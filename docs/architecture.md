@@ -92,6 +92,7 @@ sequenceDiagram
 - BGE 缓存：Docker named volume `studymate_hf_cache`
 - 宿主机目录可通过 `STUDYMATE_HOST_UPLOAD_DIR` 和 `STUDYMATE_HOST_CHROMA_DIR` 覆盖
 - 模型卷名称可通过 `STUDYMATE_HF_CACHE_VOLUME` 覆盖，方便隔离验收
+- Compose 发布端口默认绑定 `127.0.0.1`；只有在额外访问控制就绪后才通过 `STUDYMATE_PUBLISHED_HOST` 改为其他地址
 
 Compose 的后端和前端复用同一生产镜像。镜像只安装运行依赖，并以 UID/GID 10001 的非 root 用户启动。首次下载模型时保持在线；缓存完整后才设置 `HF_HUB_OFFLINE=1` 和 `TRANSFORMERS_OFFLINE=1`。
 
@@ -102,5 +103,6 @@ Compose 的后端和前端复用同一生产镜像。镜像只安装运行依赖
 - CI 执行 Ruff、`compileall`、pytest coverage、Compose 配置和 Dockerfile 检查
 - 后端覆盖率阈值为 70%
 - `evaluation/benchmark.json` 提供 30 题公开标注，`scripts/evaluate_rag.py` 使用真实 BGE 计算 Recall@K、MRR、延迟和真实 DeepSeek 的答案/引用指标
+- `evaluation/real_course_benchmark.json` 提供 15 题匿名真实课程标注，`scripts/evaluate_real_course.py` 从 Git 忽略的本机映射读取原 PDF，只运行本地检索并输出脱敏指标
 - `scripts/run_docker_e2e.py` 在临时数据目录中自动验证前后端、真实模型、Chroma 重启持久化与删除清理
 - `Real-stack E2E` GitHub workflow 采用手动触发，避免 Secret 和外部模型网络波动影响常规 CI

@@ -104,6 +104,8 @@ docker compose --env-file .env.local up --build
 
 Compose 只构建一份应用镜像，后端和前端复用该镜像。运行时使用非 root 用户，上传目录和 Chroma 目录挂载到宿主机，BGE 缓存在 `studymate_hf_cache` volume 中。
 
+Compose 默认只把 `8000` 和 `8501` 发布到宿主机回环地址 `127.0.0.1`。只有在已经配置防火墙、认证或可信反向代理时，才应显式设置 `STUDYMATE_PUBLISHED_HOST=0.0.0.0`；当前应用没有用户认证，不应直接暴露到公网。
+
 模型缓存完成后，可以在 `.env.local` 中显式开启离线模式：
 
 ```dotenv
@@ -162,6 +164,19 @@ set -a && source .env.local && set +a
 
 完整方法、对比表和局限性见 [docs/evaluation.md](docs/evaluation.md)，机器可读结果见 [evaluation-results.json](output/evaluation/evaluation-results.json)。这些结果来自小规模合成基准，证明可复现性，不代表真实课程域的泛化上限。
 
+### 匿名真实课程评测
+
+仓库另含 3 份真实大学课程 PDF、15 道中文问题的匿名检索评测清单。原 PDF、原文件名、本机路径、学校/教师信息和学生数据均不提交；公开内容只有匿名别名、完整性哈希、页码标注和最小答案关键词。评测全程只使用本地 BGE，不向外部 LLM 发送课程内容。
+
+```bash
+cp evaluation/real_course_sources.example.json \
+  evaluation/private/real-course-sources.json
+# 编辑 Git 忽略的映射文件，使 course-a.pdf 等别名指向授权的本地 PDF。
+.venv/bin/python scripts/evaluate_real_course.py
+```
+
+当前真实课程集的默认结果为 BGE Recall@1 `66.67%`、MRR@1 `66.67%`；字符 n-gram Recall@1 为 `26.67%`。完整方法和隐私边界见 [匿名真实课程评测](docs/real-course-evaluation.md)。
+
 ## API 示例
 
 上传 PDF：
@@ -190,6 +205,7 @@ scripts/test.sh
 docker compose config --quiet
 docker build --check .
 .venv/bin/python scripts/run_docker_e2e.py
+.venv/bin/python scripts/evaluate_real_course.py
 ```
 
 `scripts/test.sh` 会依次执行 Ruff、`compileall`、pytest coverage 和依赖一致性检查。CI 使用 Python 3.12，并要求后端覆盖率不低于 70%。
@@ -209,8 +225,8 @@ frontend/                 Streamlit 页面
 scripts/                  启动、测试、smoke 和样例生成脚本
 tests/                    API、服务层和前端辅助函数测试
 docs/                     架构、API、演示和简历材料
-evaluation/               公开 30 题基准及标准文档/页码/答案标注
-output/                   可公开使用的样例与截图
+evaluation/               公开合成基准、匿名真实课程清单和 Git 忽略的私有映射
+output/                   可公开使用的样例、截图与脱敏评测结果
 data/                     本地上传文件和 Chroma 数据，不提交内容
 ```
 

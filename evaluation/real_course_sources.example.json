@@ -1,0 +1,5 @@
+{
+  "course-a.pdf": "/absolute/path/to/first-course-document.pdf",
+  "course-b.pdf": "/absolute/path/to/second-course-document.pdf",
+  "course-c.pdf": "/absolute/path/to/third-course-document.pdf"
+}
