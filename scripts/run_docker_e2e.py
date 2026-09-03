@@ -69,6 +69,29 @@ def prepare_bind_directory(path: Path) -> None:
     path.chmod(0o777)
 
 
+def make_bind_mounts_removable(
+    compose: list[str], *, compose_env: dict[str, str]
+) -> None:
+    """Restore host-runner access to files written by container UID 10001."""
+    subprocess.run(
+        [
+            *compose,
+            "run",
+            "--rm",
+            "--no-deps",
+            "--user",
+            "0",
+            "backend",
+            "sh",
+            "-c",
+            "chmod -R a+rwX /app/data/uploads /app/data/chroma_db",
+        ],
+        cwd=ROOT_DIR,
+        env=compose_env,
+        check=False,
+    )
+
+
 def run_e2e(*, env_file: Path | None, output_path: Path) -> dict[str, Any]:
     if not DEMO_PDF.exists():
         raise FileNotFoundError(f"Missing public demo PDF: {DEMO_PDF}")
@@ -204,6 +227,15 @@ def run_e2e(*, env_file: Path | None, output_path: Path) -> dict[str, Any]:
             )
             raise
         finally:
+            # Stop writers first, then use the already-built backend image as root
+            # to make nested bind-mount files removable by a non-root CI runner.
+            subprocess.run(
+                [*compose, "stop"],
+                cwd=ROOT_DIR,
+                env=compose_env,
+                check=False,
+            )
+            make_bind_mounts_removable(compose, compose_env=compose_env)
             subprocess.run(
                 [*compose, "down", "--remove-orphans"],
                 cwd=ROOT_DIR,
