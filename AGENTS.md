@@ -48,6 +48,7 @@ docker compose --env-file .env.local up --build
 - 客户端只接收稳定、脱敏的 JSON 错误，完整异常只写服务日志。
 - API 行为变化时同步更新测试、`docs/api.md` 和 README。
 - 依赖变更先修改 `requirements.in` 或 `requirements-dev.in`，再重新生成锁文件。
+- 保留 `backend/.pip-tools.toml` 的 unsafe-package 输出和 `requirements.in` 的 PyTorch CPU find-links；Dependabot 依赖这两项生成可安装且不含 CUDA 运行时的锁文件。
 - 提交前运行 `scripts/test.sh`、Compose 配置检查和 Dockerfile 检查。
 - 评测集或检索逻辑变化时重新生成公开 PDF、量化结果和 `docs/evaluation.md`；真实栈变化时重跑隔离 Docker E2E。
 - 真实课程评测只提交匿名别名、完整性哈希、页码和最小答案关键词；原 PDF、本机路径、学校/教师信息和学生数据必须留在 `evaluation/private/` 或其他 Git 忽略位置。
