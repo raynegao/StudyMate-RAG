@@ -48,7 +48,11 @@ def wait_for_health(url: str, *, timeout_seconds: float = 240) -> dict[str, Any]
 
 def request_json(method: str, url: str, **kwargs) -> dict[str, Any]:
     response = requests.request(method, url, timeout=kwargs.pop("timeout", 360), **kwargs)
-    response.raise_for_status()
+    if not response.ok:
+        detail = response.text.strip().replace("\n", " ")[:1000]
+        raise RuntimeError(
+            f"{method} {url} returned HTTP {response.status_code}: {detail}"
+        )
     return response.json()
 
 
@@ -58,6 +62,11 @@ def compose_command(env_file: Path | None, project_name: str) -> list[str]:
         command.extend(["--env-file", str(env_file)])
     command.extend(["-p", project_name])
     return command
+
+
+def prepare_bind_directory(path: Path) -> None:
+    path.mkdir()
+    path.chmod(0o777)
 
 
 def run_e2e(*, env_file: Path | None, output_path: Path) -> dict[str, Any]:
@@ -77,8 +86,11 @@ def run_e2e(*, env_file: Path | None, output_path: Path) -> dict[str, Any]:
         temp_path = Path(temp_dir)
         upload_dir = temp_path / "uploads"
         chroma_dir = temp_path / "chroma"
-        upload_dir.mkdir()
-        chroma_dir.mkdir()
+        # Linux bind mounts preserve host permissions. The production container
+        # runs as UID 10001, so isolated runner directories must be writable by
+        # that non-root user. The parent directory is temporary and removed at exit.
+        prepare_bind_directory(upload_dir)
+        prepare_bind_directory(chroma_dir)
         compose_env = os.environ.copy()
         compose_env.update(
             {
@@ -177,6 +189,20 @@ def run_e2e(*, env_file: Path | None, output_path: Path) -> dict[str, Any]:
                 encoding="utf-8",
             )
             return result
+        except Exception:
+            subprocess.run(
+                [*compose, "ps"],
+                cwd=ROOT_DIR,
+                env=compose_env,
+                check=False,
+            )
+            subprocess.run(
+                [*compose, "logs", "--no-color", "backend", "frontend"],
+                cwd=ROOT_DIR,
+                env=compose_env,
+                check=False,
+            )
+            raise
         finally:
             subprocess.run(
                 [*compose, "down", "--remove-orphans"],
