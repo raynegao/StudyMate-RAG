@@ -20,5 +20,5 @@ posthog<6
 pypdf==5.1.0
 
 # Frontend and HTTP client
-streamlit==1.41.1
+streamlit==1.59.1
 requests==2.32.3
