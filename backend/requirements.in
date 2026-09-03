@@ -21,4 +21,4 @@ pypdf==5.1.0
 
 # Frontend and HTTP client
 streamlit==1.41.1
-requests==2.32.3
+requests==2.34.2
