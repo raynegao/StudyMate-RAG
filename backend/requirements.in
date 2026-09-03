@@ -8,6 +8,9 @@ python-multipart==0.0.20
 openai==1.58.1
 socksio==1.0.0
 torch==2.5.1
+# Keep Torch's Python 3.12 runtime requirement explicit so Dependabot's
+# platform-specific lock refresh does not remove it.
+setuptools==83.0.0
 sentence-transformers==3.3.1
 transformers==4.46.3
 chromadb==0.5.23

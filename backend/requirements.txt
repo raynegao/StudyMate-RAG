@@ -319,7 +319,9 @@ scipy==1.18.0
 sentence-transformers==3.3.1
     # via -r backend/requirements.in
 setuptools==83.0.0
-    # via torch
+    # via
+    #   -r backend/requirements.in
+    #   torch
 shellingham==1.5.4
     # via typer
 six==1.17.0
