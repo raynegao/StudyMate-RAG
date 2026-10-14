@@ -24,7 +24,8 @@ if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
 from app.core.config import settings  # noqa: E402
-from app.services.chunking import DocumentChunk, split_pages_into_chunks  # noqa: E402
+from app.services.chunking import DocumentChunk  # noqa: E402
+from app.services.embedding_service import chunk_pages_for_embedding  # noqa: E402
 from app.services.pdf_parser import extract_pdf_pages  # noqa: E402
 from scripts.evaluate_rag import (  # noqa: E402
     character_ngrams,
@@ -44,9 +45,9 @@ SOURCE_MAP_PATH = ROOT_DIR / "evaluation" / "private" / "real-course-sources.jso
 RESULT_PATH = ROOT_DIR / "output" / "evaluation" / "real-course-results.json"
 REPORT_PATH = ROOT_DIR / "docs" / "real-course-evaluation.md"
 EXPERIMENTS = ((300, 60), (600, 100), (1000, 150))
-TOP_K_VALUES = (1, 3, 5)
-DEFAULT_CHUNK_SIZE = 1000
-DEFAULT_CHUNK_OVERLAP = 150
+TOP_K_VALUES = (1, 3, 4, 5, 6)
+DEFAULT_CHUNK_SIZE = settings.chunk_size
+DEFAULT_CHUNK_OVERLAP = settings.chunk_overlap
 
 
 def sha256_file(path: Path) -> str:
@@ -89,6 +90,12 @@ def load_manifest(path: Path = BENCHMARK_PATH) -> dict[str, Any]:
             raise ValueError(f"Invalid gold page for {question.get('id')}.")
         if not question.get("answer_keywords"):
             raise ValueError(f"Missing answer keywords for {question.get('id')}.")
+        page_count = next(d["page_count"] for d in documents if d["filename"] == question["gold_document"])
+        accepted = question.get("accepted_pages", [question["gold_page"]])
+        if not accepted or question["gold_page"] not in accepted or any(
+            not isinstance(p, int) or not 1 <= p <= page_count for p in accepted
+        ):
+            raise ValueError(f"Invalid accepted pages for {question['id']}.")
     return manifest
 
 
@@ -128,9 +135,10 @@ def validate_sources(
         }
 
     for question in manifest["questions"]:
-        text = page_text[question["gold_document"]][question["gold_page"]]
-        if not keywords_present(text, question["answer_keywords"]):
-            raise ValueError(f"Gold keywords not found for {question['id']}.")
+        for page in question.get("accepted_pages", [question["gold_page"]]):
+            text = page_text[question["gold_document"]][page]
+            if not keywords_present(text, question["answer_keywords"]):
+                raise ValueError(f"Gold keywords not found for {question['id']} p.{page}.")
     return page_text
 
 
@@ -146,7 +154,7 @@ def build_chunks(
         alias = document["filename"]
         pages = extract_pdf_pages(sources[alias])
         chunks.extend(
-            split_pages_into_chunks(
+            chunk_pages_for_embedding(
                 pages,
                 document_id=document_id(alias),
                 filename=alias,
@@ -255,6 +263,9 @@ def run_benchmark(manifest_path: Path, source_map_path: Path) -> dict[str, Any]:
                         "retrieved_document": top_chunk.filename,
                         "retrieved_page": top_chunk.page_number,
                         "top1_relevant": is_relevant(top_chunk, question),
+                        "original_page_top1_relevant": top_chunk.filename == question["gold_document"] and top_chunk.page_number == question["gold_page"],
+                        "accepted_pages": question.get("accepted_pages", [question["gold_page"]]),
+                        "gold_rank": next(rank for rank, (chunk, _) in enumerate(bge_rankings[question["id"]], 1) if is_relevant(chunk, question)),
                     }
                 )
 
@@ -284,6 +295,8 @@ def run_benchmark(manifest_path: Path, source_map_path: Path) -> dict[str, Any]:
             "embedding_model": settings.embedding_model,
             "sentence_transformers": package_version("sentence-transformers"),
             "torch": package_version("torch"),
+            "chunk_max_tokens": settings.chunk_max_tokens,
+            "default_top_k": settings.default_top_k,
         },
         "retrieval": retrieval_results,
         "question_results": question_results,
@@ -329,6 +342,8 @@ This evaluation uses {results['benchmark']['question_count']} paraphrased Chines
 - The evaluator verifies source SHA-256 values, page counts and gold keywords before running.
 - Only local BGE embeddings are used; no source text or question is sent to an external LLM.
 - Results contain anonymous aliases and page numbers, never local paths or source text.
+- The reviewed entropy question accepts pages 14 and 15. Original-page-only recall is retained separately in JSON; changing annotations is not counted as a retrieval improvement.
+- Splits respect sentence boundaries and a {settings.chunk_max_tokens}-token budget. Default character limit/overlap/top-k: {DEFAULT_CHUNK_SIZE}/{DEFAULT_CHUNK_OVERLAP}/{settings.default_top_k}.
 
 ## Default result
 

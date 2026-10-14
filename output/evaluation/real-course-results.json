@@ -1,8 +1,8 @@
 {
   "benchmark": {
     "name": "StudyMate RAG Anonymous Real Course Benchmark",
-    "version": "1.0.0",
-    "manifest_sha256": "937fd0257cbd976cfd7d3a182b0ff6f52c49c4da9236a496d86dde5c96329d98",
+    "version": "1.1.0",
+    "manifest_sha256": "e9b78cfa3d48bd49e2a26659da18521b449731af0543021163b1d48d887bae0e",
     "document_count": 3,
     "question_count": 15,
     "all_content_fictional": false,
@@ -22,13 +22,15 @@
     "external_llm_calls": false
   },
   "run": {
-    "generated_at": "2026-09-03T13:36:24.551960+00:00",
-    "git_revision": "dbab17e",
+    "generated_at": "2026-09-05T09:17:13.654226+00:00",
+    "git_revision": "12f8f9f",
     "python": "3.12.13",
     "platform": "macOS-26.5.1-arm64-arm-64bit",
     "embedding_model": "BAAI/bge-small-zh-v1.5",
     "sentence_transformers": "3.3.1",
-    "torch": "2.5.1"
+    "torch": "2.5.1",
+    "chunk_max_tokens": 384,
+    "default_top_k": 6
   },
   "retrieval": [
     {
@@ -38,11 +40,12 @@
       "chunk_overlap": 60,
       "top_k": 1,
       "chunk_count": 275,
-      "indexing_latency_ms": 1689.9189581163228,
-      "recall_at_k": 0.6666666666666666,
-      "mrr_at_k": 0.6666666666666666,
-      "retrieval_latency_mean_ms": 34.47832508633534,
-      "retrieval_latency_p95_ms": 56.88216723501682
+      "indexing_latency_ms": 1234.0404577553272,
+      "recall_at_k": 0.7333333333333333,
+      "strict_original_page_recall_at_k": 0.6666666666666666,
+      "mrr_at_k": 0.7333333333333333,
+      "retrieval_latency_mean_ms": 30.241302587091923,
+      "retrieval_latency_p95_ms": 60.32625027000904
     },
     {
       "retriever": "character n-gram",
@@ -51,11 +54,12 @@
       "chunk_overlap": 60,
       "top_k": 1,
       "chunk_count": 275,
-      "indexing_latency_ms": 5.332124885171652,
+      "indexing_latency_ms": 5.396457854658365,
       "recall_at_k": 0.3333333333333333,
+      "strict_original_page_recall_at_k": 0.3333333333333333,
       "mrr_at_k": 0.3333333333333333,
-      "retrieval_latency_mean_ms": 6.105738909294208,
-      "retrieval_latency_p95_ms": 69.68245794996619
+      "retrieval_latency_mean_ms": 1.524905643115441,
+      "retrieval_latency_p95_ms": 2.8413748368620872
     },
     {
       "retriever": "BGE dense",
@@ -64,11 +68,12 @@
       "chunk_overlap": 60,
       "top_k": 3,
       "chunk_count": 275,
-      "indexing_latency_ms": 1689.9189581163228,
+      "indexing_latency_ms": 1234.0404577553272,
       "recall_at_k": 0.8666666666666667,
-      "mrr_at_k": 0.7555555555555556,
-      "retrieval_latency_mean_ms": 34.47832508633534,
-      "retrieval_latency_p95_ms": 56.88216723501682
+      "strict_original_page_recall_at_k": 0.8666666666666667,
+      "mrr_at_k": 0.788888888888889,
+      "retrieval_latency_mean_ms": 30.241302587091923,
+      "retrieval_latency_p95_ms": 60.32625027000904
     },
     {
       "retriever": "character n-gram",
@@ -77,11 +82,40 @@
       "chunk_overlap": 60,
       "top_k": 3,
       "chunk_count": 275,
-      "indexing_latency_ms": 5.332124885171652,
+      "indexing_latency_ms": 5.396457854658365,
       "recall_at_k": 0.6666666666666666,
+      "strict_original_page_recall_at_k": 0.6666666666666666,
       "mrr_at_k": 0.5,
-      "retrieval_latency_mean_ms": 6.105738909294208,
-      "retrieval_latency_p95_ms": 69.68245794996619
+      "retrieval_latency_mean_ms": 1.524905643115441,
+      "retrieval_latency_p95_ms": 2.8413748368620872
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 300,
+      "chunk_overlap": 60,
+      "top_k": 4,
+      "chunk_count": 275,
+      "indexing_latency_ms": 1234.0404577553272,
+      "recall_at_k": 0.8666666666666667,
+      "strict_original_page_recall_at_k": 0.8666666666666667,
+      "mrr_at_k": 0.788888888888889,
+      "retrieval_latency_mean_ms": 30.241302587091923,
+      "retrieval_latency_p95_ms": 60.32625027000904
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 300,
+      "chunk_overlap": 60,
+      "top_k": 4,
+      "chunk_count": 275,
+      "indexing_latency_ms": 5.396457854658365,
+      "recall_at_k": 0.8666666666666667,
+      "strict_original_page_recall_at_k": 0.8666666666666667,
+      "mrr_at_k": 0.55,
+      "retrieval_latency_mean_ms": 1.524905643115441,
+      "retrieval_latency_p95_ms": 2.8413748368620872
     },
     {
       "retriever": "BGE dense",
@@ -90,11 +124,12 @@
       "chunk_overlap": 60,
       "top_k": 5,
       "chunk_count": 275,
-      "indexing_latency_ms": 1689.9189581163228,
+      "indexing_latency_ms": 1234.0404577553272,
       "recall_at_k": 0.9333333333333333,
-      "mrr_at_k": 0.7688888888888888,
-      "retrieval_latency_mean_ms": 34.47832508633534,
-      "retrieval_latency_p95_ms": 56.88216723501682
+      "strict_original_page_recall_at_k": 0.9333333333333333,
+      "mrr_at_k": 0.8022222222222222,
+      "retrieval_latency_mean_ms": 30.241302587091923,
+      "retrieval_latency_p95_ms": 60.32625027000904
     },
     {
       "retriever": "character n-gram",
@@ -103,11 +138,40 @@
       "chunk_overlap": 60,
       "top_k": 5,
       "chunk_count": 275,
-      "indexing_latency_ms": 5.332124885171652,
+      "indexing_latency_ms": 5.396457854658365,
       "recall_at_k": 0.9333333333333333,
-      "mrr_at_k": 0.5566666666666666,
-      "retrieval_latency_mean_ms": 6.105738909294208,
-      "retrieval_latency_p95_ms": 69.68245794996619
+      "strict_original_page_recall_at_k": 0.9333333333333333,
+      "mrr_at_k": 0.5633333333333332,
+      "retrieval_latency_mean_ms": 1.524905643115441,
+      "retrieval_latency_p95_ms": 2.8413748368620872
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 300,
+      "chunk_overlap": 60,
+      "top_k": 6,
+      "chunk_count": 275,
+      "indexing_latency_ms": 1234.0404577553272,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 0.8133333333333332,
+      "retrieval_latency_mean_ms": 30.241302587091923,
+      "retrieval_latency_p95_ms": 60.32625027000904
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 300,
+      "chunk_overlap": 60,
+      "top_k": 6,
+      "chunk_count": 275,
+      "indexing_latency_ms": 5.396457854658365,
+      "recall_at_k": 0.9333333333333333,
+      "strict_original_page_recall_at_k": 0.9333333333333333,
+      "mrr_at_k": 0.5633333333333332,
+      "retrieval_latency_mean_ms": 1.524905643115441,
+      "retrieval_latency_p95_ms": 2.8413748368620872
     },
     {
       "retriever": "BGE dense",
@@ -116,11 +180,12 @@
       "chunk_overlap": 100,
       "top_k": 1,
       "chunk_count": 236,
-      "indexing_latency_ms": 1508.0920001491904,
-      "recall_at_k": 0.6666666666666666,
-      "mrr_at_k": 0.6666666666666666,
-      "retrieval_latency_mean_ms": 34.03999467069904,
-      "retrieval_latency_p95_ms": 56.52816640213132
+      "indexing_latency_ms": 1313.9834590256214,
+      "recall_at_k": 0.7333333333333333,
+      "strict_original_page_recall_at_k": 0.6666666666666666,
+      "mrr_at_k": 0.7333333333333333,
+      "retrieval_latency_mean_ms": 29.83054993674159,
+      "retrieval_latency_p95_ms": 59.98533358797431
     },
     {
       "retriever": "character n-gram",
@@ -129,11 +194,12 @@
       "chunk_overlap": 100,
       "top_k": 1,
       "chunk_count": 236,
-      "indexing_latency_ms": 6.409709341824055,
+      "indexing_latency_ms": 6.396416109055281,
       "recall_at_k": 0.26666666666666666,
+      "strict_original_page_recall_at_k": 0.26666666666666666,
       "mrr_at_k": 0.26666666666666666,
-      "retrieval_latency_mean_ms": 1.3789279386401176,
-      "retrieval_latency_p95_ms": 2.0699589513242245
+      "retrieval_latency_mean_ms": 1.4378944722314675,
+      "retrieval_latency_p95_ms": 2.712458837777376
     },
     {
       "retriever": "BGE dense",
@@ -142,11 +208,12 @@
       "chunk_overlap": 100,
       "top_k": 3,
       "chunk_count": 236,
-      "indexing_latency_ms": 1508.0920001491904,
+      "indexing_latency_ms": 1313.9834590256214,
       "recall_at_k": 0.8666666666666667,
-      "mrr_at_k": 0.7666666666666667,
-      "retrieval_latency_mean_ms": 34.03999467069904,
-      "retrieval_latency_p95_ms": 56.52816640213132
+      "strict_original_page_recall_at_k": 0.8666666666666667,
+      "mrr_at_k": 0.8,
+      "retrieval_latency_mean_ms": 29.83054993674159,
+      "retrieval_latency_p95_ms": 59.98533358797431
     },
     {
       "retriever": "character n-gram",
@@ -155,50 +222,110 @@
       "chunk_overlap": 100,
       "top_k": 3,
       "chunk_count": 236,
-      "indexing_latency_ms": 6.409709341824055,
-      "recall_at_k": 0.6,
-      "mrr_at_k": 0.41111111111111115,
-      "retrieval_latency_mean_ms": 1.3789279386401176,
-      "retrieval_latency_p95_ms": 2.0699589513242245
-    },
-    {
-      "retriever": "BGE dense",
-      "embedding_model": "BAAI/bge-small-zh-v1.5",
-      "chunk_size": 600,
-      "chunk_overlap": 100,
-      "top_k": 5,
-      "chunk_count": 236,
-      "indexing_latency_ms": 1508.0920001491904,
-      "recall_at_k": 0.8666666666666667,
-      "mrr_at_k": 0.7666666666666667,
-      "retrieval_latency_mean_ms": 34.03999467069904,
-      "retrieval_latency_p95_ms": 56.52816640213132
-    },
-    {
-      "retriever": "character n-gram",
-      "embedding_model": null,
-      "chunk_size": 600,
-      "chunk_overlap": 100,
-      "top_k": 5,
-      "chunk_count": 236,
-      "indexing_latency_ms": 6.409709341824055,
-      "recall_at_k": 0.8,
-      "mrr_at_k": 0.45777777777777773,
-      "retrieval_latency_mean_ms": 1.3789279386401176,
-      "retrieval_latency_p95_ms": 2.0699589513242245
-    },
-    {
-      "retriever": "BGE dense",
-      "embedding_model": "BAAI/bge-small-zh-v1.5",
-      "chunk_size": 1000,
-      "chunk_overlap": 150,
-      "top_k": 1,
-      "chunk_count": 233,
-      "indexing_latency_ms": 1182.310041040182,
+      "indexing_latency_ms": 6.396416109055281,
       "recall_at_k": 0.6666666666666666,
-      "mrr_at_k": 0.6666666666666666,
-      "retrieval_latency_mean_ms": 34.35605010017753,
-      "retrieval_latency_p95_ms": 56.878500152379274
+      "strict_original_page_recall_at_k": 0.6,
+      "mrr_at_k": 0.4444444444444445,
+      "retrieval_latency_mean_ms": 1.4378944722314675,
+      "retrieval_latency_p95_ms": 2.712458837777376
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 600,
+      "chunk_overlap": 100,
+      "top_k": 4,
+      "chunk_count": 236,
+      "indexing_latency_ms": 1313.9834590256214,
+      "recall_at_k": 0.8666666666666667,
+      "strict_original_page_recall_at_k": 0.8666666666666667,
+      "mrr_at_k": 0.8,
+      "retrieval_latency_mean_ms": 29.83054993674159,
+      "retrieval_latency_p95_ms": 59.98533358797431
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 600,
+      "chunk_overlap": 100,
+      "top_k": 4,
+      "chunk_count": 236,
+      "indexing_latency_ms": 6.396416109055281,
+      "recall_at_k": 0.7333333333333333,
+      "strict_original_page_recall_at_k": 0.7333333333333333,
+      "mrr_at_k": 0.46111111111111114,
+      "retrieval_latency_mean_ms": 1.4378944722314675,
+      "retrieval_latency_p95_ms": 2.712458837777376
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 600,
+      "chunk_overlap": 100,
+      "top_k": 5,
+      "chunk_count": 236,
+      "indexing_latency_ms": 1313.9834590256214,
+      "recall_at_k": 0.8666666666666667,
+      "strict_original_page_recall_at_k": 0.8666666666666667,
+      "mrr_at_k": 0.8,
+      "retrieval_latency_mean_ms": 29.83054993674159,
+      "retrieval_latency_p95_ms": 59.98533358797431
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 600,
+      "chunk_overlap": 100,
+      "top_k": 5,
+      "chunk_count": 236,
+      "indexing_latency_ms": 6.396416109055281,
+      "recall_at_k": 0.8,
+      "strict_original_page_recall_at_k": 0.8,
+      "mrr_at_k": 0.4744444444444444,
+      "retrieval_latency_mean_ms": 1.4378944722314675,
+      "retrieval_latency_p95_ms": 2.712458837777376
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 600,
+      "chunk_overlap": 100,
+      "top_k": 6,
+      "chunk_count": 236,
+      "indexing_latency_ms": 1313.9834590256214,
+      "recall_at_k": 0.9333333333333333,
+      "strict_original_page_recall_at_k": 0.9333333333333333,
+      "mrr_at_k": 0.8111111111111111,
+      "retrieval_latency_mean_ms": 29.83054993674159,
+      "retrieval_latency_p95_ms": 59.98533358797431
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 600,
+      "chunk_overlap": 100,
+      "top_k": 6,
+      "chunk_count": 236,
+      "indexing_latency_ms": 6.396416109055281,
+      "recall_at_k": 0.8666666666666667,
+      "strict_original_page_recall_at_k": 0.8666666666666667,
+      "mrr_at_k": 0.4855555555555556,
+      "retrieval_latency_mean_ms": 1.4378944722314675,
+      "retrieval_latency_p95_ms": 2.712458837777376
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 1000,
+      "chunk_overlap": 150,
+      "top_k": 1,
+      "chunk_count": 233,
+      "indexing_latency_ms": 996.6070000082254,
+      "recall_at_k": 0.7333333333333333,
+      "strict_original_page_recall_at_k": 0.6666666666666666,
+      "mrr_at_k": 0.7333333333333333,
+      "retrieval_latency_mean_ms": 29.816033225506544,
+      "retrieval_latency_p95_ms": 60.010792221874
     },
     {
       "retriever": "character n-gram",
@@ -207,11 +334,12 @@
       "chunk_overlap": 150,
       "top_k": 1,
       "chunk_count": 233,
-      "indexing_latency_ms": 5.694750230759382,
+      "indexing_latency_ms": 5.988083314150572,
       "recall_at_k": 0.26666666666666666,
+      "strict_original_page_recall_at_k": 0.26666666666666666,
       "mrr_at_k": 0.26666666666666666,
-      "retrieval_latency_mean_ms": 1.3362331005434196,
-      "retrieval_latency_p95_ms": 2.0872908644378185
+      "retrieval_latency_mean_ms": 1.328194576005141,
+      "retrieval_latency_p95_ms": 2.012750133872032
     },
     {
       "retriever": "BGE dense",
@@ -220,11 +348,12 @@
       "chunk_overlap": 150,
       "top_k": 3,
       "chunk_count": 233,
-      "indexing_latency_ms": 1182.310041040182,
+      "indexing_latency_ms": 996.6070000082254,
       "recall_at_k": 0.8666666666666667,
-      "mrr_at_k": 0.7666666666666667,
-      "retrieval_latency_mean_ms": 34.35605010017753,
-      "retrieval_latency_p95_ms": 56.878500152379274
+      "strict_original_page_recall_at_k": 0.8666666666666667,
+      "mrr_at_k": 0.8,
+      "retrieval_latency_mean_ms": 29.816033225506544,
+      "retrieval_latency_p95_ms": 60.010792221874
     },
     {
       "retriever": "character n-gram",
@@ -233,11 +362,40 @@
       "chunk_overlap": 150,
       "top_k": 3,
       "chunk_count": 233,
-      "indexing_latency_ms": 5.694750230759382,
-      "recall_at_k": 0.6,
-      "mrr_at_k": 0.41111111111111115,
-      "retrieval_latency_mean_ms": 1.3362331005434196,
-      "retrieval_latency_p95_ms": 2.0872908644378185
+      "indexing_latency_ms": 5.988083314150572,
+      "recall_at_k": 0.6666666666666666,
+      "strict_original_page_recall_at_k": 0.6,
+      "mrr_at_k": 0.4444444444444445,
+      "retrieval_latency_mean_ms": 1.328194576005141,
+      "retrieval_latency_p95_ms": 2.012750133872032
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 1000,
+      "chunk_overlap": 150,
+      "top_k": 4,
+      "chunk_count": 233,
+      "indexing_latency_ms": 996.6070000082254,
+      "recall_at_k": 0.8666666666666667,
+      "strict_original_page_recall_at_k": 0.8666666666666667,
+      "mrr_at_k": 0.8,
+      "retrieval_latency_mean_ms": 29.816033225506544,
+      "retrieval_latency_p95_ms": 60.010792221874
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 1000,
+      "chunk_overlap": 150,
+      "top_k": 4,
+      "chunk_count": 233,
+      "indexing_latency_ms": 5.988083314150572,
+      "recall_at_k": 0.7333333333333333,
+      "strict_original_page_recall_at_k": 0.7333333333333333,
+      "mrr_at_k": 0.46111111111111114,
+      "retrieval_latency_mean_ms": 1.328194576005141,
+      "retrieval_latency_p95_ms": 2.012750133872032
     },
     {
       "retriever": "BGE dense",
@@ -246,11 +404,12 @@
       "chunk_overlap": 150,
       "top_k": 5,
       "chunk_count": 233,
-      "indexing_latency_ms": 1182.310041040182,
+      "indexing_latency_ms": 996.6070000082254,
       "recall_at_k": 0.8666666666666667,
-      "mrr_at_k": 0.7666666666666667,
-      "retrieval_latency_mean_ms": 34.35605010017753,
-      "retrieval_latency_p95_ms": 56.878500152379274
+      "strict_original_page_recall_at_k": 0.8666666666666667,
+      "mrr_at_k": 0.8,
+      "retrieval_latency_mean_ms": 29.816033225506544,
+      "retrieval_latency_p95_ms": 60.010792221874
     },
     {
       "retriever": "character n-gram",
@@ -259,11 +418,40 @@
       "chunk_overlap": 150,
       "top_k": 5,
       "chunk_count": 233,
-      "indexing_latency_ms": 5.694750230759382,
+      "indexing_latency_ms": 5.988083314150572,
       "recall_at_k": 0.8,
-      "mrr_at_k": 0.45777777777777773,
-      "retrieval_latency_mean_ms": 1.3362331005434196,
-      "retrieval_latency_p95_ms": 2.0872908644378185
+      "strict_original_page_recall_at_k": 0.8,
+      "mrr_at_k": 0.4744444444444444,
+      "retrieval_latency_mean_ms": 1.328194576005141,
+      "retrieval_latency_p95_ms": 2.012750133872032
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 1000,
+      "chunk_overlap": 150,
+      "top_k": 6,
+      "chunk_count": 233,
+      "indexing_latency_ms": 996.6070000082254,
+      "recall_at_k": 0.9333333333333333,
+      "strict_original_page_recall_at_k": 0.9333333333333333,
+      "mrr_at_k": 0.8111111111111111,
+      "retrieval_latency_mean_ms": 29.816033225506544,
+      "retrieval_latency_p95_ms": 60.010792221874
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 1000,
+      "chunk_overlap": 150,
+      "top_k": 6,
+      "chunk_count": 233,
+      "indexing_latency_ms": 5.988083314150572,
+      "recall_at_k": 0.8666666666666667,
+      "strict_original_page_recall_at_k": 0.8666666666666667,
+      "mrr_at_k": 0.4855555555555556,
+      "retrieval_latency_mean_ms": 1.328194576005141,
+      "retrieval_latency_p95_ms": 2.012750133872032
     }
   ],
   "question_results": [
@@ -273,7 +461,12 @@
       "gold_page": 7,
       "retrieved_document": "course-a.pdf",
       "retrieved_page": 7,
-      "top1_relevant": true
+      "top1_relevant": true,
+      "original_page_top1_relevant": true,
+      "accepted_pages": [
+        7
+      ],
+      "gold_rank": 1
     },
     {
       "id": "REAL-A-02",
@@ -281,7 +474,12 @@
       "gold_page": 10,
       "retrieved_document": "course-a.pdf",
       "retrieved_page": 10,
-      "top1_relevant": true
+      "top1_relevant": true,
+      "original_page_top1_relevant": true,
+      "accepted_pages": [
+        10
+      ],
+      "gold_rank": 1
     },
     {
       "id": "REAL-A-03",
@@ -289,7 +487,12 @@
       "gold_page": 25,
       "retrieved_document": "course-a.pdf",
       "retrieved_page": 25,
-      "top1_relevant": true
+      "top1_relevant": true,
+      "original_page_top1_relevant": true,
+      "accepted_pages": [
+        25
+      ],
+      "gold_rank": 1
     },
     {
       "id": "REAL-A-04",
@@ -297,7 +500,12 @@
       "gold_page": 38,
       "retrieved_document": "course-a.pdf",
       "retrieved_page": 38,
-      "top1_relevant": true
+      "top1_relevant": true,
+      "original_page_top1_relevant": true,
+      "accepted_pages": [
+        38
+      ],
+      "gold_rank": 1
     },
     {
       "id": "REAL-A-05",
@@ -305,7 +513,12 @@
       "gold_page": 73,
       "retrieved_document": "course-a.pdf",
       "retrieved_page": 73,
-      "top1_relevant": true
+      "top1_relevant": true,
+      "original_page_top1_relevant": true,
+      "accepted_pages": [
+        73
+      ],
+      "gold_rank": 1
     },
     {
       "id": "REAL-B-01",
@@ -313,7 +526,12 @@
       "gold_page": 13,
       "retrieved_document": "course-b.pdf",
       "retrieved_page": 13,
-      "top1_relevant": true
+      "top1_relevant": true,
+      "original_page_top1_relevant": true,
+      "accepted_pages": [
+        13
+      ],
+      "gold_rank": 1
     },
     {
       "id": "REAL-B-02",
@@ -321,15 +539,26 @@
       "gold_page": 14,
       "retrieved_document": "course-b.pdf",
       "retrieved_page": 15,
-      "top1_relevant": false
+      "top1_relevant": true,
+      "original_page_top1_relevant": false,
+      "accepted_pages": [
+        14,
+        15
+      ],
+      "gold_rank": 1
     },
     {
       "id": "REAL-B-03",
       "gold_document": "course-b.pdf",
       "gold_page": 19,
       "retrieved_document": "course-b.pdf",
-      "retrieved_page": 23,
-      "top1_relevant": false
+      "retrieved_page": 25,
+      "top1_relevant": false,
+      "original_page_top1_relevant": false,
+      "accepted_pages": [
+        19
+      ],
+      "gold_rank": 3
     },
     {
       "id": "REAL-B-04",
@@ -337,7 +566,12 @@
       "gold_page": 36,
       "retrieved_document": "course-b.pdf",
       "retrieved_page": 36,
-      "top1_relevant": true
+      "top1_relevant": true,
+      "original_page_top1_relevant": true,
+      "accepted_pages": [
+        36
+      ],
+      "gold_rank": 1
     },
     {
       "id": "REAL-B-05",
@@ -345,7 +579,12 @@
       "gold_page": 45,
       "retrieved_document": "course-b.pdf",
       "retrieved_page": 41,
-      "top1_relevant": false
+      "top1_relevant": false,
+      "original_page_top1_relevant": false,
+      "accepted_pages": [
+        45
+      ],
+      "gold_rank": 5
     },
     {
       "id": "REAL-C-01",
@@ -353,7 +592,12 @@
       "gold_page": 4,
       "retrieved_document": "course-c.pdf",
       "retrieved_page": 4,
-      "top1_relevant": true
+      "top1_relevant": true,
+      "original_page_top1_relevant": true,
+      "accepted_pages": [
+        4
+      ],
+      "gold_rank": 1
     },
     {
       "id": "REAL-C-02",
@@ -361,7 +605,12 @@
       "gold_page": 20,
       "retrieved_document": "course-c.pdf",
       "retrieved_page": 21,
-      "top1_relevant": false
+      "top1_relevant": false,
+      "original_page_top1_relevant": false,
+      "accepted_pages": [
+        20
+      ],
+      "gold_rank": 2
     },
     {
       "id": "REAL-C-03",
@@ -369,7 +618,12 @@
       "gold_page": 28,
       "retrieved_document": "course-c.pdf",
       "retrieved_page": 28,
-      "top1_relevant": true
+      "top1_relevant": true,
+      "original_page_top1_relevant": true,
+      "accepted_pages": [
+        28
+      ],
+      "gold_rank": 1
     },
     {
       "id": "REAL-C-04",
@@ -377,7 +631,12 @@
       "gold_page": 33,
       "retrieved_document": "course-c.pdf",
       "retrieved_page": 28,
-      "top1_relevant": false
+      "top1_relevant": false,
+      "original_page_top1_relevant": false,
+      "accepted_pages": [
+        33
+      ],
+      "gold_rank": 6
     },
     {
       "id": "REAL-C-05",
@@ -385,7 +644,12 @@
       "gold_page": 41,
       "retrieved_document": "course-c.pdf",
       "retrieved_page": 41,
-      "top1_relevant": true
+      "top1_relevant": true,
+      "original_page_top1_relevant": true,
+      "accepted_pages": [
+        41
+      ],
+      "gold_rank": 1
     }
   ]
 }

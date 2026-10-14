@@ -1,6 +1,6 @@
 {
   "name": "StudyMate RAG Public Chinese Benchmark",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A fully fictional Chinese benchmark for reproducible retrieval and grounded-answer evaluation.",
   "documents": [
     {
@@ -201,7 +201,7 @@
     {"id": "OBS-07", "question": "原始观测包通过检查后采用哪种压缩算法？", "gold_document": "studymate-eval-observatory.pdf", "gold_page": 3, "answer_keywords": ["Lumen-3", "校验和"]},
     {"id": "OBS-08", "question": "什么温度条件会触发 A17 告警？", "gold_document": "studymate-eval-observatory.pdf", "gold_page": 4, "answer_keywords": ["-12", "高于"]},
     {"id": "OBS-09", "question": "红色隔离标签会持续几个观测轮次？", "gold_document": "studymate-eval-observatory.pdf", "gold_page": 4, "answer_keywords": ["2", "观测轮次"]},
-    {"id": "OBS-10", "question": "主链路中断后状态摘要走哪个备用频段？", "gold_document": "studymate-eval-observatory.pdf", "gold_page": 4, "answer_keywords": ["8.4 GHz", "状态摘要"]},
+    {"id": "OBS-10", "question": "主链路中断后状态摘要走哪个备用频段？", "gold_document": "studymate-eval-observatory.pdf", "gold_page": 4, "answer_keywords": ["8.4 GHz", "状态摘要"], "answer_required_keywords": ["8.4 GHz"], "annotation_note": "Reviewed 2026-09-05: the question asks for the frequency; repeating the question's subject is not required in a correct answer. Original full-keyword accuracy is retained separately."},
     {"id": "ECO-01", "question": "琥珀苔多久补水一次？", "gold_document": "studymate-eval-ecology.pdf", "gold_page": 2, "answer_keywords": ["6 天", "灌溉"]},
     {"id": "ECO-02", "question": "每平方米琥珀苔需要多少循环水？", "gold_document": "studymate-eval-ecology.pdf", "gold_page": 2, "answer_keywords": ["1.8 升", "每平方米"]},
     {"id": "ECO-03", "question": "雾培温室应维持什么湿度和温度？", "gold_document": "studymate-eval-ecology.pdf", "gold_page": 2, "answer_keywords": ["68%", "74%", "21"]},
