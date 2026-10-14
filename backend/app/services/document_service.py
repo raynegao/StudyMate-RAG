@@ -7,8 +7,7 @@ from starlette.concurrency import run_in_threadpool
 
 from app.core.config import settings
 from app.core.errors import UnsupportedFileTypeError
-from app.services.chunking import split_pages_into_chunks
-from app.services.embedding_service import embed_texts
+from app.services.embedding_service import chunk_pages_for_embedding, embed_texts
 from app.services.pdf_parser import extract_pdf_pages
 from app.services.vector_store import add_chunks, delete_document, list_documents
 from app.utils.file_utils import (
@@ -65,7 +64,7 @@ def _index_saved_pdf(pdf_path, document_id: str, filename: str) -> tuple[int, in
         "pdf_parse_finished",
         extra={"document_id": document_id, "page_count": len(pages)},
     )
-    chunks = split_pages_into_chunks(
+    chunks = chunk_pages_for_embedding(
         pages,
         document_id=document_id,
         filename=filename,

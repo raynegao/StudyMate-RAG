@@ -1,0 +1,116 @@
+{
+  "verified_at": "2026-09-05T09:45:28.295337+00:00",
+  "profile": "real-course-v2",
+  "document_count": 3,
+  "chunk_count": 275,
+  "max_chunk_tokens": 230,
+  "runtime_config": {
+    "knowledge_base_name": "真实课程资料库",
+    "chat_mode": "retrieval_only",
+    "max_upload_size_mb": 70,
+    "default_top_k": 6,
+    "chat_request_timeout_seconds": 60.0
+  },
+  "external_llm_calls": false,
+  "legacy_index_read": false,
+  "retrieval_recall": {
+    "1": 0.7333333333333333,
+    "3": 0.8666666666666667,
+    "5": 0.9333333333333333,
+    "6": 1.0
+  },
+  "original_page_recall_at_6": 1.0,
+  "out_of_domain_refused": true,
+  "records": [
+    {
+      "id": "REAL-A-01",
+      "gold_rank": 1,
+      "original_page_rank": 1,
+      "latency_ms": 6276.018916629255
+    },
+    {
+      "id": "REAL-A-02",
+      "gold_rank": 1,
+      "original_page_rank": 1,
+      "latency_ms": 83.59004184603691
+    },
+    {
+      "id": "REAL-A-03",
+      "gold_rank": 1,
+      "original_page_rank": 1,
+      "latency_ms": 98.62125013023615
+    },
+    {
+      "id": "REAL-A-04",
+      "gold_rank": 1,
+      "original_page_rank": 1,
+      "latency_ms": 19.431250169873238
+    },
+    {
+      "id": "REAL-A-05",
+      "gold_rank": 1,
+      "original_page_rank": 1,
+      "latency_ms": 67.6263328641653
+    },
+    {
+      "id": "REAL-B-01",
+      "gold_rank": 1,
+      "original_page_rank": 1,
+      "latency_ms": 67.05424981191754
+    },
+    {
+      "id": "REAL-B-02",
+      "gold_rank": 1,
+      "original_page_rank": 3,
+      "latency_ms": 18.909332808107138
+    },
+    {
+      "id": "REAL-B-03",
+      "gold_rank": 3,
+      "original_page_rank": 3,
+      "latency_ms": 81.602041143924
+    },
+    {
+      "id": "REAL-B-04",
+      "gold_rank": 1,
+      "original_page_rank": 1,
+      "latency_ms": 69.72120888531208
+    },
+    {
+      "id": "REAL-B-05",
+      "gold_rank": 5,
+      "original_page_rank": 5,
+      "latency_ms": 13.601458165794611
+    },
+    {
+      "id": "REAL-C-01",
+      "gold_rank": 1,
+      "original_page_rank": 1,
+      "latency_ms": 14.550207648426294
+    },
+    {
+      "id": "REAL-C-02",
+      "gold_rank": 2,
+      "original_page_rank": 2,
+      "latency_ms": 67.9916669614613
+    },
+    {
+      "id": "REAL-C-03",
+      "gold_rank": 1,
+      "original_page_rank": 1,
+      "latency_ms": 20.535250194370747
+    },
+    {
+      "id": "REAL-C-04",
+      "gold_rank": 6,
+      "original_page_rank": 6,
+      "latency_ms": 13.537207618355751
+    },
+    {
+      "id": "REAL-C-05",
+      "gold_rank": 1,
+      "original_page_rank": 1,
+      "latency_ms": 13.419750146567822
+    }
+  ]
+}

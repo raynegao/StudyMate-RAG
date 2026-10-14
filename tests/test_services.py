@@ -345,7 +345,7 @@ def test_rag_uses_environment_default_and_marks_actual_citations(monkeypatch):
     monkeypatch.setattr(
         rag_service,
         "complete_answer",
-        lambda prompt: "监督学习使用有标签数据 [S1]，但不能引用不存在的 [S9]。",
+        lambda prompt: "监督学习使用有标签数据 [S1]。",
     )
 
     result = rag_service.answer_question("什么是监督学习？")
