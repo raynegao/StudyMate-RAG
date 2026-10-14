@@ -57,7 +57,7 @@ class UnsupportedFileTypeError(ServiceError):
 
 
 class UploadTooLargeError(ServiceError):
-    status_code = status.HTTP_413_REQUEST_ENTITY_TOO_LARGE
+    status_code = status.HTTP_413_CONTENT_TOO_LARGE
     code = "upload_too_large"
     public_message = "上传文件超过大小限制。"
 
@@ -69,13 +69,13 @@ class InvalidPdfError(ServiceError):
 
 
 class EncryptedPdfError(ServiceError):
-    status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+    status_code = status.HTTP_422_UNPROCESSABLE_CONTENT
     code = "encrypted_pdf"
     public_message = "暂不支持加密 PDF，请先移除密码保护。"
 
 
 class PdfTextUnavailableError(ServiceError):
-    status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+    status_code = status.HTTP_422_UNPROCESSABLE_CONTENT
     code = "pdf_no_extractable_text"
     public_message = "PDF 中没有可解析文本，请确认文件不是空白或纯扫描件。"
 
@@ -87,7 +87,7 @@ class EmbeddingServiceError(ServiceError):
 
 
 class EmbeddingInputTooLongError(EmbeddingServiceError):
-    status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+    status_code = status.HTTP_422_UNPROCESSABLE_CONTENT
     code = "embedding_input_too_long"
     public_message = "文本超过模型输入长度限制，请缩短问题或重新分块资料。"
 
@@ -111,7 +111,7 @@ class DocumentSelectionRequiredError(ServiceError):
 
 
 class SummaryTooLargeError(ServiceError):
-    status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+    status_code = status.HTTP_422_UNPROCESSABLE_CONTENT
     code = "summary_too_large"
     public_message = "文档超过当前整篇概括预算（最多 8 批，每批 12000 字符），请拆分 PDF 后再概括；不会只读开头冒充整篇总结。"
 
@@ -228,7 +228,7 @@ async def validation_error_handler(
         },
     )
     return JSONResponse(
-        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         content=error_payload(
             code="validation_error",
             message="请求参数不合法。",

@@ -1,0 +1,8 @@
+# Pin the lint scope explicitly. Ruff's built-in default rule set widened between the
+# 0.9 and 0.17 releases; this keeps the quality gate equal to what the project has
+# always enforced (pyflakes plus the pycodestyle error subset) regardless of Ruff version.
+target-version = "py312"
+src = [".", "backend"]
+
+[lint]
+select = ["E4", "E7", "E9", "F"]

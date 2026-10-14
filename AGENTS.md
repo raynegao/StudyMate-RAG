@@ -61,7 +61,9 @@ docker compose --env-file .env.local up --build
 - DeepSeek V4 整篇概括显式非思考，具体问答保留思考；两者 4096 token 输出上限，检查 `finish_reason=length`，不得将空正文或截断回答作为成功返回。
 - 客户端只接收稳定、脱敏的 JSON 错误，完整异常只写服务日志。
 - API 行为变化时同步更新测试、`docs/api.md` 和 README。
-- 依赖变更先修改 `requirements.in` 或 `requirements-dev.in`，再重新生成锁文件。
+- 依赖变更先修改 `requirements.in` 或 `requirements-dev.in`，再用锁文件头部记录的 `uv pip compile --universal --torch-backend cpu` 命令重新生成锁文件。
+- torch、transformers、sentence-transformers、chromadb 和 openai 的大版本升级不能顺手做：它们分别影响向量数值、Chroma 磁盘索引格式（0.5 → 1.x）和请求参数，每一项都要单独迁移、重跑公开评测并确认 `real-course-v2` 索引无需重建。
+- Ruff 规则集固定在根目录 `ruff.toml`（pyflakes 与 pycodestyle 错误子集），升级 Ruff 时不要靠它的内置默认值。
 - 提交前运行 `scripts/test.sh`、Compose 配置检查和 Dockerfile 检查。
 - 评测集或检索逻辑变化时重新生成公开 PDF、量化结果和 `docs/evaluation.md`；真实栈变化时重跑隔离 Docker E2E。
 - 真实课程评测只提交匿名别名、完整性哈希、页码和最小答案关键词；原 PDF、本机路径、学校/教师信息和学生数据必须留在 `evaluation/private/` 或其他 Git 忽略位置。
