@@ -8,36 +8,50 @@ This evaluation uses 15 paraphrased Chinese questions over 3 real university cou
 - The evaluator verifies source SHA-256 values, page counts and gold keywords before running.
 - Only local BGE embeddings are used; no source text or question is sent to an external LLM.
 - Results contain anonymous aliases and page numbers, never local paths or source text.
+- The reviewed entropy question accepts pages 14 and 15. Original-page-only recall is retained separately in JSON; changing annotations is not counted as a retrieval improvement.
+- Splits respect sentence boundaries and a 384-token budget. Default character limit/overlap/top-k: 300/60/6.
 
 ## Default result
 
-- BGE Recall@1: 66.67%
-- BGE MRR@1: 66.67%
-- Mean retrieval latency: 34.356 ms
-- P95 retrieval latency: 56.879 ms
+- BGE Recall@1: 73.33%
+- BGE MRR@1: 73.33%
+- Mean retrieval latency: 30.241 ms
+- P95 retrieval latency: 60.326 ms
 
 ## Retrieval results
 
 | Retriever | Chunk size | Overlap | Top K | Chunks | Recall@K | MRR@K | Mean ms/query | P95 ms/query |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| BGE dense | 300 | 60 | 1 | 275 | 66.67% | 66.67% | 34.478 | 56.882 |
-| character n-gram | 300 | 60 | 1 | 275 | 33.33% | 33.33% | 6.106 | 69.682 |
-| BGE dense | 300 | 60 | 3 | 275 | 86.67% | 75.56% | 34.478 | 56.882 |
-| character n-gram | 300 | 60 | 3 | 275 | 66.67% | 50.00% | 6.106 | 69.682 |
-| BGE dense | 300 | 60 | 5 | 275 | 93.33% | 76.89% | 34.478 | 56.882 |
-| character n-gram | 300 | 60 | 5 | 275 | 93.33% | 55.67% | 6.106 | 69.682 |
-| BGE dense | 600 | 100 | 1 | 236 | 66.67% | 66.67% | 34.040 | 56.528 |
-| character n-gram | 600 | 100 | 1 | 236 | 26.67% | 26.67% | 1.379 | 2.070 |
-| BGE dense | 600 | 100 | 3 | 236 | 86.67% | 76.67% | 34.040 | 56.528 |
-| character n-gram | 600 | 100 | 3 | 236 | 60.00% | 41.11% | 1.379 | 2.070 |
-| BGE dense | 600 | 100 | 5 | 236 | 86.67% | 76.67% | 34.040 | 56.528 |
-| character n-gram | 600 | 100 | 5 | 236 | 80.00% | 45.78% | 1.379 | 2.070 |
-| BGE dense | 1000 | 150 | 1 | 233 | 66.67% | 66.67% | 34.356 | 56.879 |
-| character n-gram | 1000 | 150 | 1 | 233 | 26.67% | 26.67% | 1.336 | 2.087 |
-| BGE dense | 1000 | 150 | 3 | 233 | 86.67% | 76.67% | 34.356 | 56.879 |
-| character n-gram | 1000 | 150 | 3 | 233 | 60.00% | 41.11% | 1.336 | 2.087 |
-| BGE dense | 1000 | 150 | 5 | 233 | 86.67% | 76.67% | 34.356 | 56.879 |
-| character n-gram | 1000 | 150 | 5 | 233 | 80.00% | 45.78% | 1.336 | 2.087 |
+| BGE dense | 300 | 60 | 1 | 275 | 73.33% | 73.33% | 30.241 | 60.326 |
+| character n-gram | 300 | 60 | 1 | 275 | 33.33% | 33.33% | 1.525 | 2.841 |
+| BGE dense | 300 | 60 | 3 | 275 | 86.67% | 78.89% | 30.241 | 60.326 |
+| character n-gram | 300 | 60 | 3 | 275 | 66.67% | 50.00% | 1.525 | 2.841 |
+| BGE dense | 300 | 60 | 4 | 275 | 86.67% | 78.89% | 30.241 | 60.326 |
+| character n-gram | 300 | 60 | 4 | 275 | 86.67% | 55.00% | 1.525 | 2.841 |
+| BGE dense | 300 | 60 | 5 | 275 | 93.33% | 80.22% | 30.241 | 60.326 |
+| character n-gram | 300 | 60 | 5 | 275 | 93.33% | 56.33% | 1.525 | 2.841 |
+| BGE dense | 300 | 60 | 6 | 275 | 100.00% | 81.33% | 30.241 | 60.326 |
+| character n-gram | 300 | 60 | 6 | 275 | 93.33% | 56.33% | 1.525 | 2.841 |
+| BGE dense | 600 | 100 | 1 | 236 | 73.33% | 73.33% | 29.831 | 59.985 |
+| character n-gram | 600 | 100 | 1 | 236 | 26.67% | 26.67% | 1.438 | 2.712 |
+| BGE dense | 600 | 100 | 3 | 236 | 86.67% | 80.00% | 29.831 | 59.985 |
+| character n-gram | 600 | 100 | 3 | 236 | 66.67% | 44.44% | 1.438 | 2.712 |
+| BGE dense | 600 | 100 | 4 | 236 | 86.67% | 80.00% | 29.831 | 59.985 |
+| character n-gram | 600 | 100 | 4 | 236 | 73.33% | 46.11% | 1.438 | 2.712 |
+| BGE dense | 600 | 100 | 5 | 236 | 86.67% | 80.00% | 29.831 | 59.985 |
+| character n-gram | 600 | 100 | 5 | 236 | 80.00% | 47.44% | 1.438 | 2.712 |
+| BGE dense | 600 | 100 | 6 | 236 | 93.33% | 81.11% | 29.831 | 59.985 |
+| character n-gram | 600 | 100 | 6 | 236 | 86.67% | 48.56% | 1.438 | 2.712 |
+| BGE dense | 1000 | 150 | 1 | 233 | 73.33% | 73.33% | 29.816 | 60.011 |
+| character n-gram | 1000 | 150 | 1 | 233 | 26.67% | 26.67% | 1.328 | 2.013 |
+| BGE dense | 1000 | 150 | 3 | 233 | 86.67% | 80.00% | 29.816 | 60.011 |
+| character n-gram | 1000 | 150 | 3 | 233 | 66.67% | 44.44% | 1.328 | 2.013 |
+| BGE dense | 1000 | 150 | 4 | 233 | 86.67% | 80.00% | 29.816 | 60.011 |
+| character n-gram | 1000 | 150 | 4 | 233 | 73.33% | 46.11% | 1.328 | 2.013 |
+| BGE dense | 1000 | 150 | 5 | 233 | 86.67% | 80.00% | 29.816 | 60.011 |
+| character n-gram | 1000 | 150 | 5 | 233 | 80.00% | 47.44% | 1.328 | 2.013 |
+| BGE dense | 1000 | 150 | 6 | 233 | 93.33% | 81.11% | 29.816 | 60.011 |
+| character n-gram | 1000 | 150 | 6 | 233 | 86.67% | 48.56% | 1.328 | 2.013 |
 
 ## Reproduce locally
 

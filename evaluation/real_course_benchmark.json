@@ -1,6 +1,6 @@
 {
   "name": "StudyMate RAG Anonymous Real Course Benchmark",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "An anonymized Chinese QA benchmark derived from three real university course PDFs.",
   "privacy": {
     "source_files_committed": false,
@@ -75,6 +75,8 @@
       "question": "信息熵描述的是单个事件还是信源整体的什么性质？",
       "gold_document": "course-b.pdf",
       "gold_page": 14,
+      "accepted_pages": [14, 15],
+      "annotation_note": "Reviewed 2026-09-05: page 14 defines source-average uncertainty; page 15 restates entropy as average information and uncertainty. Both support the paraphrased definition question.",
       "answer_keywords": ["不确定性", "平均"]
     },
     {

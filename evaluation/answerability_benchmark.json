@@ -1,0 +1,24 @@
+{
+  "version": "1.0.0",
+  "description": "Public fictional PDFs only. Questions are not embedded into source PDFs. Calibration and held-out splits are fixed before evaluation.",
+  "questions": [
+    {"id":"ANS-01","split":"held_out","kind":"answerable","question":"主镜冷启动以后要等多少分钟才能正式观测？","gold_document":"studymate-eval-observatory.pdf","gold_page":2,"answer_keywords":["11","分钟"]},
+    {"id":"ANS-02","split":"held_out","kind":"answerable","question":"备用通信只允许发送哪些内容？","gold_document":"studymate-eval-observatory.pdf","gold_page":4,"answer_keywords":["状态摘要","告警"]},
+    {"id":"ANS-03","split":"held_out","kind":"answerable","question":"休眠种子开始唤醒之前，冷藏温度和时间是多少？","gold_document":"studymate-eval-ecology.pdf","gold_page":2,"answer_keywords":["-6","14"]},
+    {"id":"ANS-04","split":"held_out","kind":"answerable","question":"清洗过的绿色瓶盖还能重新从零计算使用次数吗，最多能用几次？","gold_document":"studymate-eval-ecology.pdf","gold_page":3,"answer_keywords":["8","不能"]},
+    {"id":"ANS-05","split":"held_out","kind":"answerable","question":"第十三个作业进入蓝色沙箱时会发生什么？","gold_document":"studymate-eval-computing.pdf","gold_page":4,"answer_keywords":["等待队列","12"]},
+    {"id":"ANS-06","split":"held_out","kind":"answerable","question":"调度器给高优先级与普通队列的执行机会比例是多少？","gold_document":"studymate-eval-computing.pdf","gold_page":2,"answer_keywords":["3:1"]},
+    {"id":"NO-01","split":"calibration","kind":"out_of_domain","question":"明年的欧洲杯冠军是哪支球队？","reason":"No sports results in the corpus."},
+    {"id":"NO-02","split":"calibration","kind":"out_of_domain","question":"莫扎特出生在哪座城市？","reason":"No biographical facts in the corpus."},
+    {"id":"NO-03","split":"calibration","kind":"out_of_domain","question":"这周末巴黎有哪些酒店空房？","reason":"No travel availability in the corpus."},
+    {"id":"NO-04","split":"calibration","kind":"missing_fact","question":"紫晶校准牌的采购单价是多少？","reason":"Activation duration and use are present, purchase price is absent."},
+    {"id":"NO-05","split":"calibration","kind":"missing_fact","question":"银翅雀声学信标使用哪家公司的电池？","reason":"Frequency and range are present, battery vendor is absent."},
+    {"id":"NO-06","split":"calibration","kind":"missing_fact","question":"棱镜平台管理员的联系电话是什么？","reason":"Recovery policy is present, contact details are absent."},
+    {"id":"NO-07","split":"held_out","kind":"out_of_domain","question":"莎士比亚的出生日期是哪一天？","reason":"No literary biography in the corpus."},
+    {"id":"NO-08","split":"held_out","kind":"out_of_domain","question":"昨天的网球决赛比分是多少？","reason":"No live sports results in the corpus."},
+    {"id":"NO-09","split":"held_out","kind":"out_of_domain","question":"红烧肉应该用多少克白糖？","reason":"No recipes in the corpus."},
+    {"id":"NO-10","split":"held_out","kind":"missing_fact","question":"绿色样本瓶盖的直径是多少毫米？","reason":"Reuse count is present, physical diameter is absent."},
+    {"id":"NO-11","split":"held_out","kind":"missing_fact","question":"珍珠缓存最多可以保存多少个条目？","reason":"Entry lifetime is present, capacity is absent."},
+    {"id":"NO-12","split":"held_out","kind":"missing_fact","question":"东塔完整同步一次需要消耗多少千瓦时电量？","reason":"Synchronization time is present, energy use is absent."}
+  ]
+}

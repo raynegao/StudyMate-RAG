@@ -1,0 +1,1154 @@
+{
+  "benchmark": {
+    "name": "StudyMate RAG Public Chinese Benchmark",
+    "version": "1.1.0",
+    "dataset_sha256": "42c846e47f4cbbb82bac54f3861da4391b74121fbe93594d213bc9b05fa648a4",
+    "document_count": 3,
+    "question_count": 30,
+    "all_content_fictional": true
+  },
+  "run": {
+    "generated_at": "2026-09-05T10:20:59.659340+00:00",
+    "git_revision": "12f8f9f",
+    "python": "3.12.13",
+    "platform": "macOS-26.5.1-arm64-arm-64bit",
+    "embedding_model": "BAAI/bge-small-zh-v1.5",
+    "sentence_transformers": "3.3.1",
+    "torch": "2.5.1",
+    "chromadb": "0.5.23",
+    "chunk_max_tokens": 384,
+    "default_top_k": 6,
+    "min_retrieval_similarity": 0.35
+  },
+  "retrieval": [
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 300,
+      "chunk_overlap": 60,
+      "top_k": 1,
+      "chunk_count": 13,
+      "indexing_latency_ms": 187.16404121369123,
+      "recall_at_k": 0.9666666666666667,
+      "strict_original_page_recall_at_k": 0.9666666666666667,
+      "mrr_at_k": 0.9666666666666667,
+      "retrieval_latency_mean_ms": 26.926219277083874,
+      "retrieval_latency_p95_ms": 66.86679180711508
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 300,
+      "chunk_overlap": 60,
+      "top_k": 1,
+      "chunk_count": 13,
+      "indexing_latency_ms": 0.8568749763071537,
+      "recall_at_k": 0.9666666666666667,
+      "strict_original_page_recall_at_k": 0.9666666666666667,
+      "mrr_at_k": 0.9666666666666667,
+      "retrieval_latency_mean_ms": 0.08497366992135842,
+      "retrieval_latency_p95_ms": 0.1116669736802578
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 300,
+      "chunk_overlap": 60,
+      "top_k": 3,
+      "chunk_count": 13,
+      "indexing_latency_ms": 187.16404121369123,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 0.9833333333333333,
+      "retrieval_latency_mean_ms": 26.926219277083874,
+      "retrieval_latency_p95_ms": 66.86679180711508
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 300,
+      "chunk_overlap": 60,
+      "top_k": 3,
+      "chunk_count": 13,
+      "indexing_latency_ms": 0.8568749763071537,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 0.9833333333333333,
+      "retrieval_latency_mean_ms": 0.08497366992135842,
+      "retrieval_latency_p95_ms": 0.1116669736802578
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 300,
+      "chunk_overlap": 60,
+      "top_k": 4,
+      "chunk_count": 13,
+      "indexing_latency_ms": 187.16404121369123,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 0.9833333333333333,
+      "retrieval_latency_mean_ms": 26.926219277083874,
+      "retrieval_latency_p95_ms": 66.86679180711508
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 300,
+      "chunk_overlap": 60,
+      "top_k": 4,
+      "chunk_count": 13,
+      "indexing_latency_ms": 0.8568749763071537,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 0.9833333333333333,
+      "retrieval_latency_mean_ms": 0.08497366992135842,
+      "retrieval_latency_p95_ms": 0.1116669736802578
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 300,
+      "chunk_overlap": 60,
+      "top_k": 5,
+      "chunk_count": 13,
+      "indexing_latency_ms": 187.16404121369123,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 0.9833333333333333,
+      "retrieval_latency_mean_ms": 26.926219277083874,
+      "retrieval_latency_p95_ms": 66.86679180711508
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 300,
+      "chunk_overlap": 60,
+      "top_k": 5,
+      "chunk_count": 13,
+      "indexing_latency_ms": 0.8568749763071537,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 0.9833333333333333,
+      "retrieval_latency_mean_ms": 0.08497366992135842,
+      "retrieval_latency_p95_ms": 0.1116669736802578
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 300,
+      "chunk_overlap": 60,
+      "top_k": 6,
+      "chunk_count": 13,
+      "indexing_latency_ms": 187.16404121369123,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 0.9833333333333333,
+      "retrieval_latency_mean_ms": 26.926219277083874,
+      "retrieval_latency_p95_ms": 66.86679180711508
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 300,
+      "chunk_overlap": 60,
+      "top_k": 6,
+      "chunk_count": 13,
+      "indexing_latency_ms": 0.8568749763071537,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 0.9833333333333333,
+      "retrieval_latency_mean_ms": 0.08497366992135842,
+      "retrieval_latency_p95_ms": 0.1116669736802578
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 600,
+      "chunk_overlap": 100,
+      "top_k": 1,
+      "chunk_count": 12,
+      "indexing_latency_ms": 173.64825028926134,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 26.93057636109491,
+      "retrieval_latency_p95_ms": 66.86074892058969
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 600,
+      "chunk_overlap": 100,
+      "top_k": 1,
+      "chunk_count": 12,
+      "indexing_latency_ms": 0.8118748664855957,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 0.08374426203469436,
+      "retrieval_latency_p95_ms": 0.10595796629786491
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 600,
+      "chunk_overlap": 100,
+      "top_k": 3,
+      "chunk_count": 12,
+      "indexing_latency_ms": 173.64825028926134,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 26.93057636109491,
+      "retrieval_latency_p95_ms": 66.86074892058969
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 600,
+      "chunk_overlap": 100,
+      "top_k": 3,
+      "chunk_count": 12,
+      "indexing_latency_ms": 0.8118748664855957,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 0.08374426203469436,
+      "retrieval_latency_p95_ms": 0.10595796629786491
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 600,
+      "chunk_overlap": 100,
+      "top_k": 4,
+      "chunk_count": 12,
+      "indexing_latency_ms": 173.64825028926134,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 26.93057636109491,
+      "retrieval_latency_p95_ms": 66.86074892058969
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 600,
+      "chunk_overlap": 100,
+      "top_k": 4,
+      "chunk_count": 12,
+      "indexing_latency_ms": 0.8118748664855957,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 0.08374426203469436,
+      "retrieval_latency_p95_ms": 0.10595796629786491
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 600,
+      "chunk_overlap": 100,
+      "top_k": 5,
+      "chunk_count": 12,
+      "indexing_latency_ms": 173.64825028926134,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 26.93057636109491,
+      "retrieval_latency_p95_ms": 66.86074892058969
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 600,
+      "chunk_overlap": 100,
+      "top_k": 5,
+      "chunk_count": 12,
+      "indexing_latency_ms": 0.8118748664855957,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 0.08374426203469436,
+      "retrieval_latency_p95_ms": 0.10595796629786491
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 600,
+      "chunk_overlap": 100,
+      "top_k": 6,
+      "chunk_count": 12,
+      "indexing_latency_ms": 173.64825028926134,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 26.93057636109491,
+      "retrieval_latency_p95_ms": 66.86074892058969
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 600,
+      "chunk_overlap": 100,
+      "top_k": 6,
+      "chunk_count": 12,
+      "indexing_latency_ms": 0.8118748664855957,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 0.08374426203469436,
+      "retrieval_latency_p95_ms": 0.10595796629786491
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 1000,
+      "chunk_overlap": 150,
+      "top_k": 1,
+      "chunk_count": 12,
+      "indexing_latency_ms": 135.6488331221044,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 26.896513827765983,
+      "retrieval_latency_p95_ms": 66.82145781815052
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 1000,
+      "chunk_overlap": 150,
+      "top_k": 1,
+      "chunk_count": 12,
+      "indexing_latency_ms": 0.599999912083149,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 0.07055415771901608,
+      "retrieval_latency_p95_ms": 0.0916249118745327
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 1000,
+      "chunk_overlap": 150,
+      "top_k": 3,
+      "chunk_count": 12,
+      "indexing_latency_ms": 135.6488331221044,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 26.896513827765983,
+      "retrieval_latency_p95_ms": 66.82145781815052
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 1000,
+      "chunk_overlap": 150,
+      "top_k": 3,
+      "chunk_count": 12,
+      "indexing_latency_ms": 0.599999912083149,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 0.07055415771901608,
+      "retrieval_latency_p95_ms": 0.0916249118745327
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 1000,
+      "chunk_overlap": 150,
+      "top_k": 4,
+      "chunk_count": 12,
+      "indexing_latency_ms": 135.6488331221044,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 26.896513827765983,
+      "retrieval_latency_p95_ms": 66.82145781815052
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 1000,
+      "chunk_overlap": 150,
+      "top_k": 4,
+      "chunk_count": 12,
+      "indexing_latency_ms": 0.599999912083149,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 0.07055415771901608,
+      "retrieval_latency_p95_ms": 0.0916249118745327
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 1000,
+      "chunk_overlap": 150,
+      "top_k": 5,
+      "chunk_count": 12,
+      "indexing_latency_ms": 135.6488331221044,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 26.896513827765983,
+      "retrieval_latency_p95_ms": 66.82145781815052
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 1000,
+      "chunk_overlap": 150,
+      "top_k": 5,
+      "chunk_count": 12,
+      "indexing_latency_ms": 0.599999912083149,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 0.07055415771901608,
+      "retrieval_latency_p95_ms": 0.0916249118745327
+    },
+    {
+      "retriever": "BGE dense",
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "chunk_size": 1000,
+      "chunk_overlap": 150,
+      "top_k": 6,
+      "chunk_count": 12,
+      "indexing_latency_ms": 135.6488331221044,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 26.896513827765983,
+      "retrieval_latency_p95_ms": 66.82145781815052
+    },
+    {
+      "retriever": "character n-gram",
+      "embedding_model": null,
+      "chunk_size": 1000,
+      "chunk_overlap": 150,
+      "top_k": 6,
+      "chunk_count": 12,
+      "indexing_latency_ms": 0.599999912083149,
+      "recall_at_k": 1.0,
+      "strict_original_page_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "retrieval_latency_mean_ms": 0.07055415771901608,
+      "retrieval_latency_p95_ms": 0.0916249118745327
+    }
+  ],
+  "answer_evaluation": {
+    "configuration": {
+      "chunk_size": 300,
+      "chunk_overlap": 60,
+      "top_k": 6,
+      "llm_model": "deepseek-v4-flash",
+      "evaluation_method": "keyword correctness, retrieved evidence, and citation evidence are separate; not semantic entailment grading"
+    },
+    "answer_accuracy": 1.0,
+    "original_keyword_accuracy": 1.0,
+    "citation_accuracy": 1.0,
+    "grounded_answer_rate": 1.0,
+    "retrieval_evidence_rate": 1.0,
+    "generation_latency_mean_ms": 923.2729014630119,
+    "generation_latency_p95_ms": 1317.1105422079563,
+    "questions": [
+      {
+        "id": "OBS-01",
+        "question": "传感器通过零点校准后用什么标记？",
+        "answer": "根据资料，传感器通过零点校准后使用紫晶校准牌进行标记。[S1]",
+        "answer_keywords": [
+          "紫晶校准牌",
+          "零点校准"
+        ],
+        "answer_required_keywords": [
+          "紫晶校准牌",
+          "零点校准"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 711.0999999567866
+      },
+      {
+        "id": "OBS-02",
+        "question": "校准标记激活以后多长时间失效？",
+        "answer": "紫晶校准牌的激活窗口为 18 分钟，超过窗口后必须重新执行零点校准。[S1]",
+        "answer_keywords": [
+          "18",
+          "分钟"
+        ],
+        "answer_required_keywords": [
+          "18",
+          "分钟"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 983.4047500044107
+      },
+      {
+        "id": "OBS-03",
+        "question": "怎样才算一组有效的天顶脉冲采样？",
+        "answer": "一组有效的天顶脉冲采样必须包含连续 7 次测量，且相邻两次测量的间隔不得超过 4 秒；缺少任何一次测量，整组采样就需重新开始。[S1]",
+        "answer_keywords": [
+          "7",
+          "4 秒"
+        ],
+        "answer_required_keywords": [
+          "7",
+          "4 秒"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 1373.5435418784618
+      },
+      {
+        "id": "OBS-04",
+        "question": "漂移评分达到多少可以自动归档？",
+        "answer": "漂移评分大于或等于 0.63 的记录进入自动归档队列。[S1]",
+        "answer_keywords": [
+          "0.63",
+          "自动归档"
+        ],
+        "answer_required_keywords": [
+          "0.63",
+          "自动归档"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 774.6425420045853
+      },
+      {
+        "id": "OBS-05",
+        "question": "处理偏振噪声时中值滤波器的窗口宽度是多少？",
+        "answer": "处理偏振噪声时，中值滤波器的窗口宽度为 5。[S1]",
+        "answer_keywords": [
+          "5",
+          "中值滤波"
+        ],
+        "answer_required_keywords": [
+          "5",
+          "中值滤波"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 913.4729159995914
+      },
+      {
+        "id": "OBS-06",
+        "question": "东塔每天几点同步，审计记录保存多久？",
+        "answer": "东塔每天在协调世界时 02:30 执行一次完整同步，同步生成的审计记录保留 45 天。[S1]",
+        "answer_keywords": [
+          "02:30",
+          "45 天"
+        ],
+        "answer_required_keywords": [
+          "02:30",
+          "45 天"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 1183.6327081546187
+      },
+      {
+        "id": "OBS-07",
+        "question": "原始观测包通过检查后采用哪种压缩算法？",
+        "answer": "原始观测包通过校验和检查后，使用 Lumen-3 算法压缩。[S1]",
+        "answer_keywords": [
+          "Lumen-3",
+          "校验和"
+        ],
+        "answer_required_keywords": [
+          "Lumen-3",
+          "校验和"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 791.6182079352438
+      },
+      {
+        "id": "OBS-08",
+        "question": "什么温度条件会触发 A17 告警？",
+        "answer": "当镜头温度高于 -12 摄氏度时，控制器触发 A17 告警。[S1]",
+        "answer_keywords": [
+          "-12",
+          "高于"
+        ],
+        "answer_required_keywords": [
+          "-12",
+          "高于"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 1104.904708918184
+      },
+      {
+        "id": "OBS-09",
+        "question": "红色隔离标签会持续几个观测轮次？",
+        "answer": "红色隔离标签持续 2 个观测轮次。[S1]",
+        "answer_keywords": [
+          "2",
+          "观测轮次"
+        ],
+        "answer_required_keywords": [
+          "2",
+          "观测轮次"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 689.7979583591223
+      },
+      {
+        "id": "OBS-10",
+        "question": "主链路中断后状态摘要走哪个备用频段？",
+        "answer": "主链路不可用时，状态摘要通过 8.4 GHz 备用频段传输。[S1]",
+        "answer_keywords": [
+          "8.4 GHz",
+          "状态摘要"
+        ],
+        "answer_required_keywords": [
+          "8.4 GHz"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 1026.445833966136
+      },
+      {
+        "id": "ECO-01",
+        "question": "琥珀苔多久补水一次？",
+        "answer": "根据 [S1]，琥珀苔每 6 天灌溉一次，每平方米使用 1.8 升循环水 [S1]。",
+        "answer_keywords": [
+          "6 天",
+          "灌溉"
+        ],
+        "answer_required_keywords": [
+          "6 天",
+          "灌溉"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 817.9541667923331
+      },
+      {
+        "id": "ECO-02",
+        "question": "每平方米琥珀苔需要多少循环水？",
+        "answer": "每平方米琥珀苔每次灌溉使用 1.8 升循环水。[S1]",
+        "answer_keywords": [
+          "1.8 升",
+          "每平方米"
+        ],
+        "answer_required_keywords": [
+          "1.8 升",
+          "每平方米"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 1286.0844577662647
+      },
+      {
+        "id": "ECO-03",
+        "question": "雾培温室应维持什么湿度和温度？",
+        "answer": "雾培温室的相对湿度应保持在 68% 到 74%，标准温度为 21 摄氏度。[S1]",
+        "answer_keywords": [
+          "68%",
+          "74%",
+          "21"
+        ],
+        "answer_required_keywords": [
+          "68%",
+          "74%",
+          "21"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 701.416667085141
+      },
+      {
+        "id": "ECO-04",
+        "question": "休眠种子进入唤醒前如何冷藏？",
+        "answer": "休眠种子需在 -6 摄氏度冷藏 14 天后进入唤醒流程。[S1]",
+        "answer_keywords": [
+          "-6",
+          "14 天"
+        ],
+        "answer_required_keywords": [
+          "-6",
+          "14 天"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 905.197334010154
+      },
+      {
+        "id": "ECO-05",
+        "question": "银翅雀的信标频率和无遮挡检测半径分别是多少？",
+        "answer": "银翅雀声学信标工作频率为 42 kHz，在无遮挡环境中的标称检测半径为 120 米。[S1]",
+        "answer_keywords": [
+          "42 kHz",
+          "120 米"
+        ],
+        "answer_required_keywords": [
+          "42 kHz",
+          "120 米"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 996.3053329847753
+      },
+      {
+        "id": "ECO-06",
+        "question": "授粉昆虫通道至少需要多宽？",
+        "answer": "授粉走廊的最小净宽度是 3.5 米。[S1]",
+        "answer_keywords": [
+          "3.5 米",
+          "最小"
+        ],
+        "answer_required_keywords": [
+          "3.5 米",
+          "最小"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 1024.523416068405
+      },
+      {
+        "id": "ECO-07",
+        "question": "绿色样本瓶盖何时必须更换？",
+        "answer": "绿色样本瓶盖最多使用 8 次，达到次数后必须更换。[S1]",
+        "answer_keywords": [
+          "8 次",
+          "更换"
+        ],
+        "answer_required_keywords": [
+          "8 次",
+          "更换"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 1119.345458690077
+      },
+      {
+        "id": "ECO-08",
+        "question": "育苗区土壤合格的 pH 区间是什么？",
+        "answer": "育苗区土壤的目标 pH 范围是 6.2 到 6.8 [S1]。",
+        "answer_keywords": [
+          "6.2",
+          "6.8"
+        ],
+        "answer_required_keywords": [
+          "6.2",
+          "6.8"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 953.88154219836
+      },
+      {
+        "id": "ECO-09",
+        "question": "标准营养液里的氮磷钾质量比是多少？",
+        "answer": "标准营养液中氮、磷、钾的质量比例为 4:2:3。[S1]",
+        "answer_keywords": [
+          "4:2:3",
+          "氮"
+        ],
+        "answer_required_keywords": [
+          "4:2:3",
+          "氮"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 934.9062908440828
+      },
+      {
+        "id": "ECO-10",
+        "question": "二氧化碳达到什么条件会自动开应急阀？",
+        "answer": "当二氧化碳浓度高于 950 ppm 时，应急通风阀自动开启。[S1]",
+        "answer_keywords": [
+          "950 ppm",
+          "高于"
+        ],
+        "answer_required_keywords": [
+          "950 ppm",
+          "高于"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 794.260666705668
+      },
+      {
+        "id": "CMP-01",
+        "question": "灯塔调度器一个默认时间片有多长？",
+        "answer": "灯塔调度器的默认时间片是 24 毫秒。[S1]",
+        "answer_keywords": [
+          "24 毫秒",
+          "时间片"
+        ],
+        "answer_required_keywords": [
+          "24 毫秒",
+          "时间片"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 765.5200832523406
+      },
+      {
+        "id": "CMP-02",
+        "question": "高优先级队列和普通队列按什么比例获得执行机会？",
+        "answer": "高优先级队列与普通队列按照 3:1 的次数比例获得执行机会。[S1]",
+        "answer_keywords": [
+          "3:1",
+          "高优先级"
+        ],
+        "answer_required_keywords": [
+          "3:1",
+          "高优先级"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 806.6122499294579
+      },
+      {
+        "id": "CMP-03",
+        "question": "珍珠缓存条目默认多久过期，读取命中会续期吗？",
+        "answer": "珍珠缓存条目的默认生存时间是 96 秒；读取命中不会延长生存时间，只有重新写入才会刷新计时。[S1]",
+        "answer_keywords": [
+          "96 秒",
+          "不会"
+        ],
+        "answer_required_keywords": [
+          "96 秒",
+          "不会"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 776.4228340238333
+      },
+      {
+        "id": "CMP-04",
+        "question": "节点启动时给诊断代理留出多少内存？",
+        "answer": "计算节点冷启动时必须预留 256 MB 内存给诊断代理。[S1]",
+        "answer_keywords": [
+          "256 MB",
+          "诊断代理"
+        ],
+        "answer_required_keywords": [
+          "256 MB",
+          "诊断代理"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 1282.9159158281982
+      },
+      {
+        "id": "CMP-05",
+        "question": "棱镜校验和采用哪个十六进制多项式？",
+        "answer": "棱镜校验和使用十六进制多项式 0x1D。[S1]",
+        "answer_keywords": [
+          "0x1D",
+          "多项式"
+        ],
+        "answer_required_keywords": [
+          "0x1D",
+          "多项式"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 530.43920872733
+      },
+      {
+        "id": "CMP-06",
+        "question": "请求失败时最多重发几次，每次等待多久？",
+        "answer": "根据资料，网络请求最多重试 4 次，相邻重试之间固定等待 250 毫秒。[S1]",
+        "answer_keywords": [
+          "4 次",
+          "250 毫秒"
+        ],
+        "answer_required_keywords": [
+          "4 次",
+          "250 毫秒"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 1317.1105422079563
+      },
+      {
+        "id": "CMP-07",
+        "question": "平台审计日志在线保存多少天？",
+        "answer": "平台审计日志在线保留 21 天，随后转入只读归档。[S1]",
+        "answer_keywords": [
+          "21 天",
+          "只读归档"
+        ],
+        "answer_required_keywords": [
+          "21 天",
+          "只读归档"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 779.7052920795977
+      },
+      {
+        "id": "CMP-08",
+        "question": "一个蓝色沙箱能同时执行多少作业？",
+        "answer": "单个蓝色沙箱最多同时运行 12 个作业。[S1]",
+        "answer_keywords": [
+          "12",
+          "作业"
+        ],
+        "answer_required_keywords": [
+          "12",
+          "作业"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 801.8129579722881
+      },
+      {
+        "id": "CMP-09",
+        "question": "运行状态快照的生成周期是多少？",
+        "answer": "运行状态快照每 15 分钟生成一次。[S1]",
+        "answer_keywords": [
+          "15 分钟",
+          "快照"
+        ],
+        "answer_required_keywords": [
+          "15 分钟",
+          "快照"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S1"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 749.1258340887725
+      },
+      {
+        "id": "CMP-10",
+        "question": "自动故障恢复最多允许损失多少笔事务？",
+        "answer": "自动故障恢复流程允许最多丢失 2 笔事务；若预计丢失超过 2 笔，系统必须停止自动恢复并等待管理员确认。[S2]",
+        "answer_keywords": [
+          "2 笔",
+          "事务"
+        ],
+        "answer_required_keywords": [
+          "2 笔",
+          "事务"
+        ],
+        "original_keyword_check": true,
+        "answer_correct": true,
+        "response_status": "answered",
+        "retrieval_has_evidence": true,
+        "citation_ids": [
+          "S2"
+        ],
+        "citation_precision": 1.0,
+        "has_relevant_citation": true,
+        "latency_ms": 802.0836254581809
+      }
+    ]
+  }
+}

@@ -25,11 +25,10 @@ if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
 from app.core.config import settings  # noqa: E402
-from app.services.chunking import DocumentChunk, split_pages_into_chunks  # noqa: E402
-from app.services.embedding_service import embed_texts  # noqa: E402
-from app.services.llm_service import complete_answer  # noqa: E402
+from app.services.chunking import DocumentChunk  # noqa: E402
+from app.services.embedding_service import chunk_pages_for_embedding, embed_texts  # noqa: E402
 from app.services.pdf_parser import extract_pdf_pages  # noqa: E402
-from app.services.rag_service import build_prompt, extract_citation_ids  # noqa: E402
+from app.services.rag_service import answer_from_chunks, extract_citation_ids  # noqa: E402
 from app.services.vector_store import RetrievedChunk  # noqa: E402
 
 BENCHMARK_PATH = ROOT_DIR / "evaluation" / "benchmark.json"
@@ -37,10 +36,10 @@ PDF_DIR = ROOT_DIR / "output" / "pdf" / "evaluation"
 RESULT_PATH = ROOT_DIR / "output" / "evaluation" / "evaluation-results.json"
 REPORT_PATH = ROOT_DIR / "docs" / "evaluation.md"
 EXPERIMENTS = ((300, 60), (600, 100), (1000, 150))
-TOP_K_VALUES = (1, 3, 5)
-ANSWER_CHUNK_SIZE = 1000
-ANSWER_OVERLAP = 150
-ANSWER_TOP_K = 4
+TOP_K_VALUES = (1, 3, 4, 5, 6)
+ANSWER_CHUNK_SIZE = settings.chunk_size
+ANSWER_OVERLAP = settings.chunk_overlap
+ANSWER_TOP_K = settings.default_top_k
 
 
 def load_benchmark(path: Path = BENCHMARK_PATH) -> dict[str, Any]:
@@ -81,7 +80,7 @@ def build_chunks(
             )
         pages = extract_pdf_pages(pdf_path)
         chunks.extend(
-            split_pages_into_chunks(
+            chunk_pages_for_embedding(
                 pages,
                 document_id=document_id(document["filename"]),
                 filename=document["filename"],
@@ -135,7 +134,7 @@ def is_relevant(chunk: DocumentChunk | RetrievedChunk, question: dict[str, Any])
     page_number = getattr(chunk, "page_number")
     return (
         chunk.filename == question["gold_document"]
-        and page_number == question["gold_page"]
+        and page_number in question.get("accepted_pages", [question["gold_page"]])
     )
 
 
@@ -156,6 +155,7 @@ def evaluate_retrieval(
 ) -> dict[str, float]:
     recalls: list[float] = []
     reciprocal_ranks: list[float] = []
+    strict_recalls: list[float] = []
     for question in questions:
         ranked = rankings[question["id"]][:top_k]
         relevant_ranks = [
@@ -164,10 +164,15 @@ def evaluate_retrieval(
             if is_relevant(chunk, question)
         ]
         recalls.append(1.0 if relevant_ranks else 0.0)
+        strict_recalls.append(float(any(
+            chunk.filename == question["gold_document"]
+            and chunk.page_number == question["gold_page"] for chunk, _ in ranked
+        )))
         reciprocal_ranks.append(1.0 / relevant_ranks[0] if relevant_ranks else 0.0)
 
     return {
         "recall_at_k": statistics.fmean(recalls),
+        "strict_original_page_recall_at_k": statistics.fmean(strict_recalls),
         "mrr_at_k": statistics.fmean(reciprocal_ranks),
         "retrieval_latency_mean_ms": statistics.fmean(retrieval_latencies_ms),
         "retrieval_latency_p95_ms": percentile_95(retrieval_latencies_ms),
@@ -192,7 +197,7 @@ def as_retrieved_chunk(chunk: DocumentChunk, score: float) -> RetrievedChunk:
         page_number=chunk.page_number,
         chunk_index=chunk.chunk_index,
         text=chunk.text,
-        distance=1.0 - score,
+        distance=max(0.0, 2.0 - 2.0 * score),
     )
 
 
@@ -212,9 +217,12 @@ def evaluate_answers(
             as_retrieved_chunk(chunk, score)
             for chunk, score in rankings[question["id"]][:ANSWER_TOP_K]
         ]
-        prompt = build_prompt(question["question"], retrieved)
         started = time.perf_counter()
-        answer = complete_answer(prompt)
+        response = answer_from_chunks(question["question"], retrieved)
+        answer = response["answer"]
+        # Sources may be filtered by the same relevance gate used by the API.
+        kept_ids = {source["chunk_id"] for source in response["sources"]}
+        retrieved = [chunk for chunk in retrieved if chunk.chunk_id in kept_ids]
         latency_ms = (time.perf_counter() - started) * 1000
         answer_latencies_ms.append(latency_ms)
 
@@ -229,7 +237,8 @@ def evaluate_answers(
         citation_precision = (
             relevant_citations / len(cited_chunks) if cited_chunks else 0.0
         )
-        answer_correct = keywords_present(answer, question["answer_keywords"])
+        required_keywords = question.get("answer_required_keywords", question["answer_keywords"])
+        answer_correct = keywords_present(answer, required_keywords)
         grounded = relevant_citations > 0
         records.append(
             {
@@ -237,7 +246,11 @@ def evaluate_answers(
                 "question": question["question"],
                 "answer": answer,
                 "answer_keywords": question["answer_keywords"],
+                "answer_required_keywords": required_keywords,
+                "original_keyword_check": keywords_present(answer, question["answer_keywords"]),
                 "answer_correct": answer_correct,
+                "response_status": response["status"],
+                "retrieval_has_evidence": any(is_relevant(c, question) for c in retrieved),
                 "citation_ids": citation_ids,
                 "citation_precision": citation_precision,
                 "has_relevant_citation": grounded,
@@ -256,17 +269,19 @@ def evaluate_answers(
             "chunk_overlap": ANSWER_OVERLAP,
             "top_k": ANSWER_TOP_K,
             "llm_model": settings.llm_model,
-            "evaluation_method": "all gold keywords present; cited source matches gold document and page",
+            "evaluation_method": "keyword correctness, retrieved evidence, and citation evidence are separate; not semantic entailment grading",
         },
         "answer_accuracy": statistics.fmean(
             float(record["answer_correct"]) for record in records
         ),
+        "original_keyword_accuracy": statistics.fmean(float(r["original_keyword_check"]) for r in records),
         "citation_accuracy": statistics.fmean(
             record["citation_precision"] for record in records
         ),
         "grounded_answer_rate": statistics.fmean(
-            float(record["has_relevant_citation"]) for record in records
+            float(record["has_relevant_citation"] and record["answer_correct"]) for record in records
         ),
+        "retrieval_evidence_rate": statistics.fmean(float(r["retrieval_has_evidence"]) for r in records),
         "generation_latency_mean_ms": statistics.fmean(answer_latencies_ms),
         "generation_latency_p95_ms": percentile_95(answer_latencies_ms),
         "questions": records,
@@ -409,6 +424,9 @@ def run_benchmark(*, with_llm: bool) -> dict[str, Any]:
             "sentence_transformers": package_version("sentence-transformers"),
             "torch": package_version("torch"),
             "chromadb": package_version("chromadb"),
+            "chunk_max_tokens": settings.chunk_max_tokens,
+            "default_top_k": settings.default_top_k,
+            "min_retrieval_similarity": settings.min_retrieval_similarity,
         },
         "retrieval": retrieval_results,
         "answer_evaluation": None,
@@ -424,7 +442,7 @@ def percent(value: float) -> str:
     return f"{value * 100:.2f}%"
 
 
-def render_report(results: dict[str, Any]) -> str:
+def render_report(results: dict[str, Any], *, result_link: str = "../output/evaluation/evaluation-results.json") -> str:
     benchmark = results["benchmark"]
     run = results["run"]
     rows = []
@@ -449,11 +467,13 @@ def render_report(results: dict[str, Any]) -> str:
         answer_section = f"""
 ## Grounded-answer results
 
-The default project configuration (`chunk_size=1000`, `overlap=150`, `top_k=4`) was evaluated with `{answer['configuration']['llm_model']}`. Answer correctness is a transparent exact check that all annotated gold keywords appear after Unicode and whitespace normalization. Citation accuracy is macro-averaged citation precision: a citation is correct only when it points to the annotated gold document and page.
+The project configuration (`chunk_size={ANSWER_CHUNK_SIZE}`, `overlap={ANSWER_OVERLAP}`, `top_k={ANSWER_TOP_K}`) was evaluated with `{answer['configuration']['llm_model']}` through the serving answer path (including relevance filtering and refusal). Answer correctness checks gold keywords, retrieval evidence checks accepted pages, and citation precision checks cited pages separately. These automatic checks do not establish semantic entailment of every claim.
 
 | Metric | Result |
 | --- | ---: |
 | Answer accuracy | {percent(answer['answer_accuracy'])} |
+| Original full-keyword check | {percent(answer['original_keyword_accuracy'])} |
+| Retrieval evidence rate | {percent(answer['retrieval_evidence_rate'])} |
 | Citation accuracy | {percent(answer['citation_accuracy'])} |
 | Grounded-answer rate | {percent(answer['grounded_answer_rate'])} |
 | Mean DeepSeek generation latency | {answer['generation_latency_mean_ms']:.1f} ms |
@@ -473,9 +493,9 @@ This report is generated by `scripts/evaluate_rag.py` from a fully fictional, pu
 ## Retrieval methodology
 
 - Embedding model: `{run['embedding_model']}` with normalized vectors
-- Relevance rule: a retrieved chunk is relevant only if both its document and page match the gold annotation
+- Relevance rule: document and a manually accepted page must match; original-page-only recall is also retained in JSON
 - Metrics: Recall@K, MRR@K, mean retrieval latency and P95 retrieval latency; BGE latency includes query embedding after a warm-up inference
-- Comparison: BGE dense retrieval versus a transparent character 2/3-gram Jaccard baseline, across three character chunk sizes and three `top_k` values
+- Comparison: BGE versus character 2/3-gram Jaccard, across three character limits and five `top_k` values; all splits also respect sentence boundaries and the {settings.chunk_max_tokens}-token budget including special tokens
 - Environment: Python {run['python']}, sentence-transformers {run['sentence_transformers']}, torch {run['torch']}
 - Measured at: `{run['generated_at']}` on `{run['platform']}`
 
@@ -496,13 +516,15 @@ set -a && source .env.local && set +a
 .venv/bin/python scripts/evaluate_rag.py --with-llm
 ```
 
-The machine-readable result, including per-question grounded-answer evidence, is stored in [`output/evaluation/evaluation-results.json`](../output/evaluation/evaluation-results.json).
+The machine-readable result, including per-question grounded-answer evidence, is stored in [evaluation result JSON]({result_link}).
 
 ## Limitations
 
 - The benchmark is deliberately small and synthetic, so it measures reproducibility rather than production-domain generalization.
 - Keyword correctness is deterministic and auditable, but it does not replace expert grading of nuanced free-form answers.
 - DeepSeek output and latency can change across provider versions and network conditions; retrieval results are locally reproducible without an API key.
+
+See [real-course evaluation](real-course-evaluation.md) and [answerability evaluation](answerability-evaluation.md) for real-domain retrieval and unsupported-question tests.
 """
 
 
@@ -527,7 +549,7 @@ def main() -> None:
         json.dumps(results, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
-    args.report.write_text(render_report(results), encoding="utf-8")
+    args.report.write_text(render_report(results, result_link=os.path.relpath(args.output, args.report.parent)), encoding="utf-8")
     print(args.output)
     print(args.report)
 
