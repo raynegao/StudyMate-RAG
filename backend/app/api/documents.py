@@ -29,46 +29,30 @@ async def _call_service(function, *args):
     return result
 
 
-def _document_from_raw(raw: Any) -> DocumentSummary:
-    if isinstance(raw, DocumentSummary):
-        return raw
-    if isinstance(raw, dict):
-        document_id = raw.get("document_id") or raw.get("id")
-        if not document_id:
-            raise ValueError("Document item is missing document_id")
-        known_keys = {"document_id", "id", "filename", "chunk_count", "created_at"}
-        metadata = raw.get("metadata") or {
-            key: value for key, value in raw.items() if key not in known_keys
-        }
-        return DocumentSummary(
-            document_id=str(document_id),
-            filename=raw.get("filename") or raw.get("name"),
-            chunk_count=raw.get("chunk_count"),
-            created_at=raw.get("created_at"),
-            metadata=metadata,
-        )
-    return DocumentSummary(document_id=str(raw))
+def _document_from_raw(raw: dict[str, Any]) -> DocumentSummary:
+    if not raw.get("document_id"):
+        raise ValueError("Document item is missing document_id")
+    known_keys = {"document_id", "filename", "chunk_count", "created_at"}
+    return DocumentSummary(
+        document_id=str(raw["document_id"]),
+        filename=raw.get("filename"),
+        chunk_count=raw.get("chunk_count"),
+        created_at=raw.get("created_at"),
+        metadata={key: value for key, value in raw.items() if key not in known_keys},
+    )
 
 
-def _upload_response_from_raw(raw: Any, filename: str | None) -> UploadResponse:
-    if isinstance(raw, UploadResponse):
-        return raw
-    if isinstance(raw, dict):
-        document_id = raw.get("document_id") or raw.get("id")
-        if not document_id:
-            raise ValueError("Upload result is missing document_id")
-        known_keys = {"document_id", "id", "filename", "status", "chunk_count"}
-        metadata = raw.get("metadata") or {
-            key: value for key, value in raw.items() if key not in known_keys
-        }
-        return UploadResponse(
-            document_id=str(document_id),
-            filename=raw.get("filename") or filename,
-            status=raw.get("status") or "indexed",
-            chunk_count=raw.get("chunk_count"),
-            metadata=metadata,
-        )
-    return UploadResponse(document_id=str(raw), filename=filename)
+def _upload_response_from_raw(raw: dict[str, Any]) -> UploadResponse:
+    if not raw.get("document_id"):
+        raise ValueError("Upload result is missing document_id")
+    known_keys = {"document_id", "filename", "status", "chunk_count"}
+    return UploadResponse(
+        document_id=str(raw["document_id"]),
+        filename=raw.get("filename"),
+        status=raw.get("status") or "indexed",
+        chunk_count=raw.get("chunk_count"),
+        metadata={key: value for key, value in raw.items() if key not in known_keys},
+    )
 
 
 @router.post("/upload", response_model=UploadResponse, status_code=status.HTTP_201_CREATED)
@@ -88,7 +72,7 @@ async def upload_document(file: UploadFile = File(...)) -> UploadResponse:
 
         logger.info("upload_started", extra={"file_name": filename})
         result = await _call_service(index_uploaded_pdf, file)
-        response = _upload_response_from_raw(result, file.filename)
+        response = _upload_response_from_raw(result)
         logger.info(
             "upload_indexed",
             extra={
@@ -114,11 +98,8 @@ async def list_documents() -> DocumentsResponse:
         from app.services.document_service import list_indexed_documents
 
         documents = await _call_service(list_indexed_documents)
-        if isinstance(documents, dict):
-            documents = documents.get("documents", [])
-        documents = documents or []
         return DocumentsResponse(
-            documents=[_document_from_raw(document) for document in documents]
+            documents=[_document_from_raw(document) for document in documents or []]
         )
     except ImportError as exc:
         raise AppError(
@@ -141,20 +122,16 @@ async def delete_document(document_id: str) -> DeleteDocumentResponse:
             extra={"document_id": safe_document_id},
         )
         result = await _call_service(delete_indexed_document, safe_document_id)
-        if isinstance(result, DeleteDocumentResponse):
-            return result
-        if isinstance(result, dict):
-            deleted = bool(result.get("deleted"))
-            logger.info(
-                "delete_document_finished",
-                extra={"document_id": document_id, "deleted": deleted},
-            )
-            return DeleteDocumentResponse(
-                document_id=str(result.get("document_id") or safe_document_id),
-                status=result.get("status") or ("deleted" if deleted else "not_found"),
-                message=result.get("message"),
-            )
-        return DeleteDocumentResponse(document_id=safe_document_id)
+        deleted = bool(result.get("deleted"))
+        logger.info(
+            "delete_document_finished",
+            extra={"document_id": safe_document_id, "deleted": deleted},
+        )
+        return DeleteDocumentResponse(
+            document_id=safe_document_id,
+            status="deleted" if deleted else "not_found",
+            message=result.get("message"),
+        )
     except ImportError as exc:
         raise AppError(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,

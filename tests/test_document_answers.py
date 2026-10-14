@@ -11,7 +11,7 @@ import pytest
 from streamlit.testing.v1 import AppTest
 
 from app.core.config import settings
-from app.core.errors import DocumentNotFoundError, LLMOutputLimitError, LLMServiceError, SummaryTooLargeError
+from app.core.errors import DocumentNotFoundError, LLMOutputLimitError, SummaryCitationError, SummaryTooLargeError
 from app.services import llm_service, rag_service, summary_service, vector_store
 from app.services.vector_store import RetrievedChunk
 from frontend import streamlit_app
@@ -23,11 +23,23 @@ def source(index=0, text="这是公开虚构资料。", document_id=DOC_A):
     return RetrievedChunk(f"{document_id}:p{index+1}:c0", document_id, "public.pdf", index+1, 0, text)
 
 
-@pytest.mark.parametrize("question", ["这份资料的核心概念是什么？", "总结主要内容", "文档概览", "Summarize this document"])
+@pytest.mark.parametrize("question", ["这份资料的核心概念是什么？", "总结主要内容", "文档概览", "Summarize this document",
+                                      "请概括这份资料的主要内容。", "概括"])
 def test_auto_overview_routing(question, monkeypatch):
     monkeypatch.setattr(summary_service, "summarize_document", lambda doc, q: {"doc": doc, "question": q})
     monkeypatch.setattr(rag_service, "embed_texts", lambda texts: pytest.fail("overview must not use similarity retrieval"))
     assert rag_service.answer_question(question, document_id=DOC_A)["doc"] == DOC_A
+
+
+@pytest.mark.parametrize("question", ["总结第三章的公式", "概括一下能量守恒定律", "主要内容里提到的三种学习方法是什么",
+                                      "Summarize the chapter on recursion", "这份资料的核心概念和第二章有什么关系"])
+def test_targeted_questions_keep_similarity_retrieval(question, monkeypatch):
+    monkeypatch.setattr(summary_service, "summarize_document", lambda doc, q: pytest.fail("targeted question must not summarize"))
+    monkeypatch.setattr(rag_service, "has_documents", lambda: True)
+    monkeypatch.setattr(rag_service, "embed_texts", lambda texts: [[1.0, 0.0]])
+    monkeypatch.setattr(rag_service, "query_chunks", lambda vector, k, doc: [source()])
+    monkeypatch.setattr(rag_service, "answer_from_chunks", lambda q, chunks: {"routed": "question"})
+    assert rag_service.answer_question(question, document_id=DOC_A) == {"routed": "question"}
 
 
 def test_overview_requires_document_and_validates_api_id(client):
@@ -106,11 +118,15 @@ def test_large_summary_maps_all_sections_then_synthesizes(monkeypatch):
 
 
 @pytest.mark.parametrize("answer", ["无引用摘要", "摘要 [S99]"])
-def test_summary_rejects_invalid_or_missing_citations(monkeypatch, answer):
+def test_summary_rejects_invalid_or_missing_citations(monkeypatch, answer, client):
     monkeypatch.setattr(summary_service, "get_document_chunks", lambda doc: [source()])
     monkeypatch.setattr(summary_service, "complete_answer", lambda prompt: answer)
-    with pytest.raises(LLMServiceError):
+    with pytest.raises(SummaryCitationError):
         summary_service.summarize_document(DOC_A, "概括")
+    response = client.post("/api/chat", json={"question": "概括", "document_id": DOC_A, "mode": "summary"})
+    assert response.status_code == 502
+    assert response.json()["error"]["code"] == "summary_citations_invalid"
+    assert "summary_citations_invalid" in streamlit_app.ERROR_MESSAGES
 
 
 def test_summary_over_budget_fails_before_external_calls(monkeypatch):

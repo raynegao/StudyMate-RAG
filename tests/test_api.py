@@ -98,7 +98,7 @@ def test_chat_contract_with_mocked_service(client, monkeypatch):
                     "document_id": "doc-1",
                     "filename": "course.pdf",
                     "page_number": 3,
-                    "chunk_index": 0,
+                    "chunk_id": "doc-1:p3:c0",
                     "distance": 0.12,
                     "cited": True,
                     "text": "source text",
@@ -114,7 +114,8 @@ def test_chat_contract_with_mocked_service(client, monkeypatch):
     payload = response.json()
     assert payload["answer"] == "answer: 讲讲重点"
     assert payload["sources"][0]["page"] == 3
-    assert payload["sources"][0]["chunk_id"] == "0"
+    assert payload["sources"][0]["chunk_id"] == "doc-1:p3:c0"
+    assert payload["sources"][0]["metadata"] == {}
     assert payload["sources"][0]["citation_id"] == "S1"
     assert payload["sources"][0]["distance"] == 0.12
     assert payload["sources"][0]["cited"] is True

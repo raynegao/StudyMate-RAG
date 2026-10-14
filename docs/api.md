@@ -74,7 +74,7 @@ curl -X POST http://127.0.0.1:8000/api/upload \
 - `question`：必填，最多 2000 字符，去除首尾空白后不能为空；超过 embedding 的实际 token 上限返回 `422 embedding_input_too_long`，不会静默截断
 - `top_k`：可选，范围 1 到 10；省略时使用 `STUDYMATE_TOP_K`，默认 6
 - `document_id`：可选，32 位十六进制 ID。新版页面始终传所选 PDF 的 ID；具体问题无命中时不会回退到全库。
-- `mode`：`auto`（默认）、`question` 或 `summary`。自动模式将“核心概念 / 主要内容 / 总结 / 概括”等问题转为整篇概括；`question` 强制具体检索，`summary` 强制概览。
+- `mode`：`auto`（默认）、`question` 或 `summary`。自动模式只把针对整份资料的概览请求（如“这份资料的核心概念是什么？”“总结主要内容”）转为整篇概括；带有具体对象的问题（如“总结第三章的公式”）仍走相似度检索。`question` 强制具体检索，`summary` 强制概览。
 
 整篇概括必须提供 `document_id`，否则返回 `400 document_selection_required`。它按页读取该 PDF 的全部已索引文字，不经过相似度过滤或 top-k 抽样。每批最多 12000 字符、最多 8 批，多批归纳后综合，超限在外发前返回 `422 summary_too_large`。
 
@@ -128,6 +128,7 @@ DeepSeek 读取超时默认为 30 秒，连接超时最多 5 秒，SDK 自动重
 - `502 embedding_failed`：问题向量生成失败
 - `502 llm_request_failed`：DeepSeek 请求失败
 - `502 llm_output_incomplete`：模型达到输出上限，答案未完整生成，不返回截断内容作为成功答案
+- `502 summary_citations_invalid`：概括已生成但缺少引用或引用越界，结果被丢弃；这是输出质量问题而非服务故障，可直接重试
 - `503 llm_not_configured`：未设置 `DEEPSEEK_API_KEY`
 - `503 vector_store_unavailable`：ChromaDB 不可用
 - `504 llm_timeout`：生成请求超时，本次未自动重试

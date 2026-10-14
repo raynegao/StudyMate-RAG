@@ -1,6 +1,6 @@
 """Isolated, fictional UI fixture. No storage, model, or network calls.
 
-Run: PYTHONPATH=. .venv/bin/python -m streamlit run tests/ui_preview.py --server.port 8513
+Run: PYTHONPATH=. .venv/bin/python -m streamlit run scripts/ui_preview.py --server.port 8513
 Use ?scenario=empty, local, or error to review additional states.
 """
 import streamlit as st

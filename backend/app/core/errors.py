@@ -140,6 +140,14 @@ class LLMOutputLimitError(ServiceError):
     public_message = "模型回答达到输出长度上限，未生成完整答案。请缩小概括范围或减少要求后重试。"
 
 
+class SummaryCitationError(LLMServiceError):
+    """The model answered, but without valid page references; the output is discarded."""
+
+    status_code = status.HTTP_502_BAD_GATEWAY
+    code = "summary_citations_invalid"
+    public_message = "概括已生成，但未能对应到原文页码，本次结果未采用。请重试或缩小概括要求。"
+
+
 def error_payload(
     *,
     code: str,
