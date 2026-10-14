@@ -73,13 +73,13 @@ def test_connection_error_does_not_expose_internal_address(monkeypatch):
     payload, error = streamlit_app.api_get("/health")
 
     assert payload is None
-    assert error == "无法连接后端，请确认服务已启动后重试。"
+    assert error == "暂时无法连接阅读服务，请稍后重试。"
     assert "backend:8000" not in error
 
 
-def test_build_source_view_marks_cited_source_and_formats_distance():
-    view = streamlit_app.build_source_view(
-        {
+def test_reading_view_replaces_internal_reference_with_page_link():
+    answer, groups = streamlit_app.build_reading_view(
+        "课程内容 [S2]", [{
             "citation_id": "S2",
             "filename": "课程资料.pdf",
             "page": 3,
@@ -87,27 +87,21 @@ def test_build_source_view_marks_cited_source_and_formats_distance():
             "distance": 0.123456,
             "cited": True,
             "text": "课程内容",
-        },
-        2,
+        }],
     )
+    assert "[第 3 页](#reading-source-1)" in answer
+    assert "[S2]" not in answer
+    assert groups == [{"title": "第 3 页", "anchor": "reading-source-1",
+                       "filename": "课程资料.pdf", "texts": ["课程内容"]}]
 
-    assert view["title"] == "[S2] 课程资料.pdf p.3"
-    assert view["status"] == "回答已引用"
-    assert view["cited"] is True
-    assert view["distance_label"] == "0.1235"
 
-
-def test_build_source_view_marks_uncited_result_as_retrieval_candidate():
-    view = streamlit_app.build_source_view(
-        {
+def test_reading_view_hides_unused_candidates_but_keeps_local_excerpts():
+    sources = [{
             "filename": "notes.pdf",
             "distance": "not-a-number",
             "cited": False,
-        },
-        1,
-    )
-
-    assert view["citation_id"] == "S1"
-    assert view["status"] == "仅检索候选"
-    assert view["cited"] is False
-    assert view["distance_label"] is None
+            "text": "公开原文",
+        }]
+    assert streamlit_app.build_reading_view("没有引用", sources)[1] == []
+    _, groups = streamlit_app.build_reading_view("", sources, include_uncited=True)
+    assert groups[0]["texts"] == ["公开原文"]
