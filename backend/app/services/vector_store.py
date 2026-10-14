@@ -11,6 +11,7 @@ from chromadb.config import Settings as ChromaSettings
 from app.core.config import settings
 from app.core.errors import VectorStoreError
 from app.services.chunking import DocumentChunk
+from app.utils.file_utils import validate_document_id
 
 logger = logging.getLogger(__name__)
 
@@ -86,10 +87,11 @@ def has_documents() -> bool:
         raise VectorStoreError() from exc
 
 
-def query_chunks(query_embedding: list[float], top_k: int) -> list[RetrievedChunk]:
+def query_chunks(query_embedding: list[float], top_k: int, document_id: str | None = None) -> list[RetrievedChunk]:
     if top_k <= 0:
         raise ValueError("top_k 必须大于 0。")
 
+    where = {"document_id": validate_document_id(document_id)} if document_id else None
     try:
         collection = _collection()
         if collection.count() == 0:
@@ -100,6 +102,7 @@ def query_chunks(query_embedding: list[float], top_k: int) -> list[RetrievedChun
             query_embeddings=[query_embedding],
             n_results=top_k,
             include=["documents", "metadatas", "distances"],
+            **({"where": where} if where else {}),
         )
         chunks = _parse_query_result(result)
         logger.info("chroma_query_finished", extra={"result_count": len(chunks)})
@@ -108,6 +111,24 @@ def query_chunks(query_embedding: list[float], top_k: int) -> list[RetrievedChun
         raise
     except Exception as exc:
         logger.exception("chroma_query_failed")
+        raise VectorStoreError() from exc
+
+
+def get_document_chunks(document_id: str) -> list[RetrievedChunk]:
+    """Read only the explicitly selected document, in original page/chunk order."""
+    document_id = validate_document_id(document_id)
+    try:
+        result = _collection().get(where={"document_id": document_id}, include=["documents", "metadatas"])
+        chunks = [
+            RetrievedChunk(chunk_id, document_id, str(meta["filename"]), int(meta["page_number"]),
+                           int(meta["chunk_index"]), text)
+            for chunk_id, text, meta in zip(result["ids"], result["documents"], result["metadatas"])
+        ]
+        return sorted(chunks, key=lambda c: (c.page_number, c.chunk_index))
+    except VectorStoreError:
+        raise
+    except Exception as exc:
+        logger.exception("chroma_document_read_failed")
         raise VectorStoreError() from exc
 
 

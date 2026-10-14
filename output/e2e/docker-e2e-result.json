@@ -1,5 +1,5 @@
 {
-  "verified_at": "2026-08-17T03:53:16.379251+00:00",
+  "verified_at": "2026-09-05T17:30:33.349697+00:00",
   "environment": "isolated Docker Compose project with real BGE, ChromaDB and DeepSeek",
   "public_fixture": "output/pdf/studymate-demo-course.pdf",
   "backend_health": {
@@ -9,9 +9,21 @@
   "frontend_health": {
     "status": "ok"
   },
+  "runtime_config": {
+    "knowledge_base_name": "默认资料库",
+    "chat_mode": "generation",
+    "max_upload_size_mb": 70,
+    "default_top_k": 6,
+    "chat_request_timeout_seconds": 60.0,
+    "summary_request_timeout_seconds": 330.0
+  },
+  "frontend_upload_override_verified": true,
+  "unanswerable_question_refused": true,
+  "selected_pdf_overview_verified": true,
+  "overview_chunks_covered": 5,
   "upload": {
     "filename": "星际导航课程讲义.pdf",
-    "chunk_count": 3
+    "chunk_count": 5
   },
   "deepseek_answer_correct": true,
   "cited_source_count": 1,
@@ -19,5 +31,5 @@
   "persistence_after_backend_restart": true,
   "delete_status": "deleted",
   "isolated_cleanup_verified": true,
-  "duration_seconds": 28.542167250066996
+  "duration_seconds": 28.73642500024289
 }

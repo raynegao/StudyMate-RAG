@@ -67,6 +67,8 @@ def _chat_response_from_raw(raw: Any) -> ChatResponse:
         return ChatResponse(
             answer=str(answer),
             sources=[_source_from_raw(source) for source in sources],
+            status=raw.get("status", "answered"),
+            metadata=raw.get("metadata", {}),
         )
     if isinstance(raw, tuple) and len(raw) == 2:
         answer, sources = raw
@@ -92,11 +94,11 @@ async def chat(request: ChatRequest) -> ChatResponse:
         from app.services.rag_service import answer_question
 
         logger.info("chat_started", extra={"top_k": request.top_k})
-        result = await _call_service(
-            answer_question,
-            request.question,
-            request.top_k,
-        )
+        args = (request.question, request.top_k)
+        # Preserve the existing unscoped contract and service adapters.
+        if request.document_id is not None or request.mode != "auto":
+            args += (request.document_id, request.mode)
+        result = await _call_service(answer_question, *args)
         response = _chat_response_from_raw(result)
         logger.info("chat_finished", extra={"source_count": len(response.sources)})
         return response

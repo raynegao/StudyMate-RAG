@@ -122,6 +122,14 @@ def run_e2e(*, env_file: Path | None, output_path: Path) -> dict[str, Any]:
                 "STUDYMATE_HOST_UPLOAD_DIR": str(upload_dir),
                 "STUDYMATE_HOST_CHROMA_DIR": str(chroma_dir),
                 "STUDYMATE_HF_CACHE_VOLUME": "studymate_hf_cache",
+                "STUDYMATE_MAX_UPLOAD_SIZE_MB": "70",
+                "STUDYMATE_CHUNK_SIZE": "300",
+                "STUDYMATE_CHUNK_OVERLAP": "60",
+                "STUDYMATE_CHUNK_MAX_TOKENS": "384",
+                "STUDYMATE_TOP_K": "6",
+                "STUDYMATE_MIN_RETRIEVAL_SIMILARITY": "0.35",
+                "STUDYMATE_LLM_TIMEOUT": "30",
+                "STUDYMATE_CHAT_MODE": "generation",
             }
         )
         compose = compose_command(env_file, project_name)
@@ -137,6 +145,16 @@ def run_e2e(*, env_file: Path | None, output_path: Path) -> dict[str, Any]:
             )
             backend_health = wait_for_health(f"{backend_url}/health")
             frontend_health = wait_for_health(f"{frontend_url}/_stcore/health")
+            runtime = request_json("GET", f"{backend_url}/api/config")
+            if runtime["max_upload_size_mb"] != 70 or runtime["default_top_k"] != 6:
+                raise AssertionError("Backend runtime configuration drifted.")
+            frontend_process = subprocess.check_output(
+                [*compose, "exec", "-T", "frontend", "python", "-c",
+                 "from pathlib import Path; print(Path('/proc/1/cmdline').read_bytes().replace(bytes([0]), b' ').decode())"],
+                cwd=ROOT_DIR, env=compose_env, text=True,
+            )
+            if "--server.maxUploadSize 70" not in frontend_process:
+                raise AssertionError("Streamlit server upload cap did not receive the override.")
 
             with DEMO_PDF.open("rb") as file:
                 upload = request_json(
@@ -151,7 +169,7 @@ def run_e2e(*, env_file: Path | None, output_path: Path) -> dict[str, Any]:
                 f"{backend_url}/api/chat",
                 json={
                     "question": "蓝色令牌的有效期是多少？它有什么用途？",
-                    "top_k": 4,
+                    "top_k": 6,
                 },
             )
             if "三个星港周期" not in chat["answer"] or "双重校验" not in chat["answer"]:
@@ -159,6 +177,17 @@ def run_e2e(*, env_file: Path | None, output_path: Path) -> dict[str, Any]:
             cited_sources = [source for source in chat["sources"] if source["cited"]]
             if not cited_sources:
                 raise AssertionError("DeepSeek answer did not include a valid citation.")
+            overview = request_json(
+                "POST", f"{backend_url}/api/chat",
+                json={"question": "这份资料的核心概念是什么？", "document_id": document_id},
+            )
+            if overview["status"] != "answered" or overview["metadata"].get("chunks_covered") != upload["chunk_count"]:
+                raise AssertionError("Selected-PDF overview did not cover all indexed text.")
+            if not all(s["document_id"] == document_id for s in overview["sources"]) or not any(s["cited"] for s in overview["sources"]):
+                raise AssertionError("Overview scope or citations are invalid.")
+            refusal = request_json("POST", f"{backend_url}/api/chat", json={"question": "莎士比亚的出生日期是哪一天？"})
+            if refusal["status"] != "insufficient_evidence":
+                raise AssertionError("An unrelated question was not refused.")
 
             subprocess.run(
                 [*compose, "restart", "backend"],
@@ -191,6 +220,11 @@ def run_e2e(*, env_file: Path | None, output_path: Path) -> dict[str, Any]:
                 "public_fixture": str(DEMO_PDF.relative_to(ROOT_DIR)),
                 "backend_health": backend_health,
                 "frontend_health": frontend_health,
+                "runtime_config": runtime,
+                "frontend_upload_override_verified": True,
+                "unanswerable_question_refused": True,
+                "selected_pdf_overview_verified": True,
+                "overview_chunks_covered": overview["metadata"]["chunks_covered"],
                 "upload": {
                     "filename": upload["filename"],
                     "chunk_count": upload["chunk_count"],

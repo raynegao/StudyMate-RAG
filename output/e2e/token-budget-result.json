@@ -1,0 +1,20 @@
+{
+  "verified_at": "2026-09-05T09:40:07.902010+00:00",
+  "model": "BAAI/bge-small-zh-v1.5",
+  "all_content_fictional": true,
+  "external_llm_called": false,
+  "storage_index_read": false,
+  "fixture_characters": [
+    652,
+    651
+  ],
+  "oversized_unsplit_input_rejected": true,
+  "chunk_counts": [
+    3,
+    3
+  ],
+  "max_actual_tokens": 322,
+  "token_budget": 384,
+  "tail_preserved": true,
+  "tail_embedding_max_abs_difference": 0.00925673358142376
+}

@@ -86,10 +86,34 @@ class EmbeddingServiceError(ServiceError):
     public_message = "Embedding 服务暂时不可用。"
 
 
+class EmbeddingInputTooLongError(EmbeddingServiceError):
+    status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+    code = "embedding_input_too_long"
+    public_message = "文本超过模型输入长度限制，请缩短问题或重新分块资料。"
+
+
 class VectorStoreError(ServiceError):
     status_code = status.HTTP_503_SERVICE_UNAVAILABLE
     code = "vector_store_unavailable"
     public_message = "向量库暂时不可用。"
+
+
+class DocumentNotFoundError(ServiceError):
+    status_code = status.HTTP_404_NOT_FOUND
+    code = "document_not_found"
+    public_message = "所选文档不存在或已删除，请刷新文档列表后重新选择。"
+
+
+class DocumentSelectionRequiredError(ServiceError):
+    status_code = status.HTTP_400_BAD_REQUEST
+    code = "document_selection_required"
+    public_message = "概括资料前请先选择一份 PDF，不能用全库片段代替整篇资料。"
+
+
+class SummaryTooLargeError(ServiceError):
+    status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+    code = "summary_too_large"
+    public_message = "文档超过当前整篇概括预算（最多 8 批，每批 12000 字符），请拆分 PDF 后再概括；不会只读开头冒充整篇总结。"
 
 
 class LLMNotConfiguredError(ServiceError):
@@ -102,6 +126,18 @@ class LLMServiceError(ServiceError):
     status_code = status.HTTP_502_BAD_GATEWAY
     code = "llm_request_failed"
     public_message = "DeepSeek 服务调用失败，请稍后重试。"
+
+
+class LLMTimeoutError(ServiceError):
+    status_code = status.HTTP_504_GATEWAY_TIMEOUT
+    code = "llm_timeout"
+    public_message = "生成回答超时，本次请求未自动重试。请稍后再试。"
+
+
+class LLMOutputLimitError(ServiceError):
+    status_code = status.HTTP_502_BAD_GATEWAY
+    code = "llm_output_incomplete"
+    public_message = "模型回答达到输出长度上限，未生成完整答案。请缩小概括范围或减少要求后重试。"
 
 
 def error_payload(
