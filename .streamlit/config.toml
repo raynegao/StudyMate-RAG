@@ -3,3 +3,15 @@ maxUploadSize = 25
 
 [browser]
 gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"
+showErrorDetails = false
+
+[theme]
+base = "light"
+primaryColor = "#196B58"
+backgroundColor = "#F8F9F6"
+secondaryBackgroundColor = "#EEF2ED"
+textColor = "#243A32"
+font = "sans serif"

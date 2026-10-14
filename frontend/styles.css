@@ -1,0 +1,72 @@
+/* Local assets only: no external fonts, trackers, or scripts. */
+:root { --ink: #243a32; --muted: #65746c; --accent: #196b58; --line: #dce4dc; }
+.stApp { background: #f8f9f6; color: var(--ink); }
+[data-testid="stAppViewContainer"] > .main .block-container,
+[data-testid="stMainBlockContainer"] { max-width: 1040px; padding: 2.6rem 3.2rem 3rem; }
+[data-testid="stSidebar"] { background: #f0f3ed; border-right: 1px solid var(--line); }
+[data-testid="stSidebarUserContent"] { padding: 1.5rem 1.25rem; }
+[data-testid="stHeader"] { background: transparent; }
+[data-testid="stToolbar"], [data-testid="stAppDeployButton"],
+[data-testid="stStatusWidget"], [data-testid="stDecoration"], #MainMenu, footer { display: none !important; }
+.sm-brand { display: flex; align-items: center; gap: 12px; margin: 0 0 24px; }
+.sm-mark { background: var(--accent); color: #fff; width: 38px; height: 42px;
+  border-radius: 12px 12px 4px 12px; display: grid; place-items: center;
+  font: 24px Georgia, serif; }
+.sm-brand strong { font-size: 22px; letter-spacing: -.7px; }
+.sm-brand small { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+.sm-hero { padding: 8px 0 16px; }
+.sm-eyebrow { color: var(--accent); font-size: 13px; font-weight: 600;
+  letter-spacing: 2px; margin-bottom: 12px; }
+.sm-hero h1 { font-family: "Songti SC", "Noto Serif CJK SC", serif;
+  font-size: clamp(28px, 3.1vw, 38px); font-weight: 600; line-height: 1.4;
+  letter-spacing: -.8px; padding: 0; margin: 0 0 14px; color: var(--ink); }
+.sm-hero p { color: var(--muted); font-size: 15px; line-height: 1.9; margin: 0; }
+.sm-empty { padding: 38px 30px; background: #fff; border: 1px solid var(--line);
+  border-radius: 20px; margin-top: 8px; }
+.sm-empty h2 { font-size: 22px; margin: 0 0 12px; padding: 0; }
+.sm-empty p { color: var(--muted); line-height: 1.9; margin-bottom: 0; }
+.sm-step { color: var(--accent); font-weight: 600; font-size: 12px; letter-spacing: 1px; }
+.sm-reading-note { border-left: 3px solid #8eb6a2; padding: 10px 16px;
+  margin: 10px 0 8px; color: var(--muted); font-size: 14px; line-height: 1.8; }
+.sm-source-anchor { scroll-margin-top: 65px; }
+[data-testid="stVerticalBlockBorderWrapper"] > div { border-radius: 16px !important; }
+[data-testid="stMain"] [data-testid="stVerticalBlockBorderWrapper"] > div,
+.main [data-testid="stVerticalBlockBorderWrapper"] > div { border-color: var(--line) !important; background: #fff; }
+[data-testid="stTextArea"] textarea { background: #fff; border-radius: 12px;
+  font-size: 16px; line-height: 1.7; padding: 15px; }
+[data-testid="stTextArea"] > div { border-radius: 12px; }
+[data-testid="stTextArea"] textarea:focus { box-shadow: 0 0 0 2px #d4e5da; }
+[data-testid="stButton"] button { border-radius: 10px; min-height: 42px;
+  border-color: #d7e0d7; transition: background .15s, border-color .15s; }
+[data-testid="stButton"] button[kind="secondary"] { background: #fff; color: var(--ink); }
+[data-testid="stButton"] button[kind="secondary"]:hover { background: #eaf1e9; border-color: #9cbbab; }
+[data-testid="stButton"] button[kind="primary"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+[data-testid="stButton"] button:focus-visible, a:focus-visible { outline: 3px solid #84b5a1; outline-offset: 3px; }
+[data-testid="stRadio"] div[role="radiogroup"] { gap: 12px; }
+[data-testid="stRadio"] div[role="radiogroup"] label { padding: 9px 16px; border-radius: 10px; background: #edf1eb; }
+[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) { background: #dfece1; }
+[data-testid="stExpander"] { background: #fff; border-radius: 12px; border-color: var(--line); }
+[data-testid="stExpander"] summary { padding: 12px 14px; }
+[data-testid="stCaptionContainer"] { color: var(--muted); line-height: 1.7; }
+[data-testid="stMarkdownContainer"] p { line-height: 1.85; }
+[data-testid="stMarkdownContainer"] a { color: var(--accent); text-underline-offset: 3px; }
+[data-testid="stText"] { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.85;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
+[data-testid="stMarkdownContainer"] table { display: block; overflow-x: auto; max-width: 100%; }
+[data-testid="stFileUploaderDropzone"] { background: #fff; border: 1px dashed #a9c1af; border-radius: 12px; }
+[data-testid="stFileUploaderDropzoneInstructions"] { min-width: 0; }
+[data-testid="stFileUploaderDropzoneInstructions"] > div > span,
+[data-testid="stFileUploaderDropzoneInstructions"] small { display: none; }
+[data-testid="stFileUploaderDropzoneInstructions"] > div::after { content: "将 PDF 拖到这里"; font-size: 13px; color: var(--muted); }
+[data-testid="stFileUploaderDropzone"] button { font-size: 0; min-width: 88px; }
+[data-testid="stFileUploaderDropzone"] button::after { content: "选择文件"; font-size: 14px; }
+[data-testid="stFileUploaderFileName"] { overflow-wrap: anywhere; }
+@media (max-width: 768px) {
+  [data-testid="stAppViewContainer"] > .main .block-container,
+  [data-testid="stMainBlockContainer"] { padding: 3.5rem 1rem 2rem; }
+  .sm-hero { padding-bottom: 18px; }
+  .sm-hero h1 { font-size: 29px; }
+  .sm-empty { padding: 24px 20px; }
+  [data-testid="stRadio"] div[role="radiogroup"] label { padding: 8px 12px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
