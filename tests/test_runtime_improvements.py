@@ -59,9 +59,13 @@ def test_course_all_launcher_prints_url_and_cleans_up(tmp_path):
     run = subprocess.run(
         ["bash", "scripts/run_real_course.sh", "all"], cwd=ROOT,
         capture_output=True, text=True, timeout=15,
-        env={**os.environ, "PYTHON_BIN": str(fake_python), "STUDYMATE_COURSE_FRONTEND_PORT": "18502"},
+        # The placeholder key satisfies the launcher's preflight on machines without
+        # .env.local (such as CI); the fake interpreter exits before any request is made.
+        env={**os.environ, "PYTHON_BIN": str(fake_python), "STUDYMATE_COURSE_FRONTEND_PORT": "18502",
+             "DEEPSEEK_API_KEY": "placeholder"},
     )
     assert run.returncode == 1  # A stopped child causes the launcher to exit.
+    assert "placeholder" not in run.stdout
     assert "http://127.0.0.1:18502（Ctrl+C" in run.stdout
     assert "unbound variable" not in run.stderr
 
