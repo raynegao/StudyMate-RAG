@@ -37,6 +37,7 @@ ERROR_MESSAGES = {
     "llm_request_failed": "这次回答没有完成，请稍后再试。",
     "llm_timeout": "这次阅读花的时间有些长，请稍后重试。",
     "llm_output_incomplete": "回答未能完整生成，请减少本次要求后重试。",
+    "summary_citations_invalid": "这次概括没有对应到原文页码，结果未采用。请再试一次，或减少概括要求。",
     "validation_error": "请检查所选资料和问题后，再试一次。",
 }
 
@@ -320,7 +321,7 @@ def render_chat(runtime: dict[str, Any], documents: list[dict[str, Any]]) -> Non
         if summary:
             st.caption("将通读资料中可读取的文字，为你整理整体脉络与重点。")
         else:
-            st.caption("回答基于当前资料。询问核心概念或主要内容时，会为你概括全文。" if generation
+            st.caption("回答基于当前资料。只问“主要内容是什么”这类整体问题时会概括全文；指定章节或具体问题按原文检索。" if generation
                        else "输入一个具体问题，为你找出资料中的相关内容。")
         submitted = st.button(("生成概括" if summary else "开始提问") if generation else "查找原文",
                               key="submit-reading", type="primary", use_container_width=True,

@@ -19,9 +19,9 @@ StudyMate RAG 为课程 PDF 提供本地向量检索和带引用的问答能力�
 - `backend/app/services/`：PDF 解析、chunking、embedding、向量库和 RAG 流程
 - `backend/app/models/`：Pydantic schema
 - `frontend/streamlit_app.py`：页面状态、上传、问答和文档管理
-- `frontend/styles.css`、`.streamlit/config.toml`：消费端阅读界面的本地样式与主题；`tests/ui_preview.py` 是不调用模型或资料库的虚构 UI 预览
+- `frontend/styles.css`、`.streamlit/config.toml`：消费端阅读界面的本地样式与主题；`scripts/ui_preview.py` 是不调用模型或资料库的虚构 UI 预览
 - `tests/`：API contract、服务层和前端辅助逻辑测试
-- `scripts/`：启动、测试、smoke 和公开样例生成脚本
+- `scripts/`：启动、测试、smoke、公开样例生成和不依赖后端的 UI 预览脚本
 - `config/profiles/`：可公开的单实例运行配置；课程入口按用户授权默认 DeepSeek，`local` 保留仅检索模式
 - `evaluation/`：公开虚构基准、匿名真实课程清单，以及 Git 忽略的本机来源映射
 - `output/evaluation/`、`output/e2e/`：可公开、可机读的量化与真实栈验收证据

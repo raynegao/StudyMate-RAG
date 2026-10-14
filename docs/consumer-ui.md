@@ -33,7 +33,7 @@
 复现隔离预览：
 
 ```bash
-PYTHONPATH=. .venv/bin/python -m streamlit run tests/ui_preview.py --server.port 8513
+PYTHONPATH=. .venv/bin/python -m streamlit run scripts/ui_preview.py --server.port 8513
 ```
 
 默认预览可点击生成固定的虚构回答；`?scenario=empty`、`?scenario=local`、`?scenario=error` 分别展示空库、本地原文、离线状态。此入口不连接任何模型或资料库，不保存或删除文件，不能当作真实模型回答验收。

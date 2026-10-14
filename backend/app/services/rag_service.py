@@ -4,9 +4,12 @@ import logging
 import re
 
 from app.core.config import settings
+from app.core.errors import DocumentNotFoundError, DocumentSelectionRequiredError
+from app.services import summary_service
 from app.services.embedding_service import embed_texts
 from app.services.llm_service import complete_reasoned_answer as complete_answer
 from app.services.vector_store import RetrievedChunk, has_documents, query_chunks
+from app.utils.file_utils import validate_document_id
 
 logger = logging.getLogger(__name__)
 REFUSAL_ANSWER = "资料中没有足够信息，无法可靠回答这个问题。"
@@ -17,16 +20,13 @@ def answer_question(question: str, top_k: int | None = None, document_id: str | 
     if not cleaned_question:
         raise ValueError("question 不能为空。")
 
-    from app.services.summary_service import is_overview_question, summarize_document
-    from app.utils.file_utils import validate_document_id
     if document_id is not None:
         document_id = validate_document_id(document_id)
-    overview = mode == "summary" or (mode == "auto" and is_overview_question(cleaned_question))
+    overview = mode == "summary" or (mode == "auto" and summary_service.is_overview_question(cleaned_question))
     if overview:
         if not document_id:
-            from app.core.errors import DocumentSelectionRequiredError
             raise DocumentSelectionRequiredError()
-        return summarize_document(document_id, cleaned_question)
+        return summary_service.summarize_document(document_id, cleaned_question)
 
     effective_top_k = settings.default_top_k if top_k is None else top_k
     if effective_top_k <= 0:
@@ -34,7 +34,6 @@ def answer_question(question: str, top_k: int | None = None, document_id: str | 
 
     if not has_documents():
         if document_id:
-            from app.core.errors import DocumentNotFoundError
             raise DocumentNotFoundError()
         return {
             "question": cleaned_question,
@@ -46,7 +45,6 @@ def answer_question(question: str, top_k: int | None = None, document_id: str | 
     query_embedding = embed_texts([cleaned_question])[0]
     chunks = query_chunks(query_embedding, effective_top_k, document_id) if document_id else query_chunks(query_embedding, effective_top_k)
     if document_id and not chunks:
-        from app.core.errors import DocumentNotFoundError
         raise DocumentNotFoundError()
     logger.info(
         "retrieval_finished",
@@ -94,7 +92,6 @@ def answer_from_chunks(question: str, chunks: list[RetrievedChunk]) -> dict:
                 "filename": chunk.filename,
                 "page_number": chunk.page_number,
                 "chunk_id": chunk.chunk_id,
-                "source": chunk.source,
                 "distance": chunk.distance,
                 "cited": f"S{index}" in cited_ids,
                 "text": chunk.text,

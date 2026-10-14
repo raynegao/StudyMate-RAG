@@ -3,22 +3,45 @@ from __future__ import annotations
 import re
 
 from app.core.config import settings
-from app.core.errors import DocumentNotFoundError, LLMServiceError, SummaryTooLargeError
+from app.core.errors import DocumentNotFoundError, SummaryCitationError, SummaryTooLargeError
 from app.services.llm_service import complete_answer
 from app.services.vector_store import RetrievedChunk, get_document_chunks
 
 BATCH_CHARACTERS = 12_000
 MAX_BATCHES = 8
 
+OVERVIEW_TERMS = re.compile(
+    r"核心概念|主要内容|核心要点|概括|总结|概要|概览|概述|overview|summari[sz]e|key concepts|main ideas",
+    re.I,
+)
+# Words that refer to the document as a whole or carry no specific target. A question that
+# contains nothing else after removing them is asking for the whole document, not a part of it.
+WHOLE_DOCUMENT_TERMS = re.compile(
+    r"这份|这个|这篇|该|本|全文|整篇|整份|整个|全部|资料|文档|文件|材料|课件|讲义|教材|文章|内容"
+    r"|主要|核心|重点|要点|概念|结论|脉络|框架|是什么|什么|哪些|请|帮我|帮忙|给我|用|简单|简要"
+    r"|一下|吗|呢|的|和|与|及|以及|它们|之间|关系|有|讲了|说了|介绍"
+    r"|this|the|whole|entire|document|paper|file|text|content|main|key|ideas|points|concepts"
+    r"|please|of|me|what|are|is|for",
+    re.I,
+)
+
 
 def is_overview_question(question: str) -> bool:
-    return bool(re.search(r"核心概念|主要内容|概括|总结|概要|概览|概述|核心要点|overview|summari[sz]e|key concepts", question, re.I))
+    """True only for whole-document requests such as “这份资料的核心概念是什么？”.
+
+    Questions that name a part or topic, such as “总结第三章的公式”, keep using
+    similarity retrieval so the caller gets a targeted answer instead of a full summary.
+    """
+    if not OVERVIEW_TERMS.search(question):
+        return False
+    remainder = WHOLE_DOCUMENT_TERMS.sub("", OVERVIEW_TERMS.sub("", question))
+    return not re.sub(r"[\s\W_]+", "", remainder)
 
 
 def checked_citations(answer: str, allowed: set[str]) -> set[str]:
     cited = {f"S{int(n)}" for n in re.findall(r"\[S(\d+)\]", answer, re.I)}
     if not cited or not cited <= allowed:
-        raise LLMServiceError("Summary returned missing or invalid source references")
+        raise SummaryCitationError()
     return cited
 
 

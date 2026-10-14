@@ -221,3 +221,17 @@ def test_public_answerability_set_has_both_kinds_and_fixed_held_out_split():
     assert sum(q["kind"] == "answerable" for q in held_out) == 6
     assert sum(q["kind"] == "out_of_domain" for q in held_out) == 3
     assert sum(q["kind"] == "missing_fact" for q in held_out) == 3
+
+
+def test_settings_read_environment_at_construction(monkeypatch):
+    from app.core.config import Settings
+
+    monkeypatch.setenv("STUDYMATE_TOP_K", "3")
+    monkeypatch.setenv("STUDYMATE_CHAT_MODE", "retrieval_only")
+    monkeypatch.setenv("STUDYMATE_LOG_LEVEL", "debug")
+    fresh = Settings()
+    assert (fresh.default_top_k, fresh.chat_mode, fresh.log_level) == (3, "retrieval_only", "DEBUG")
+    assert settings.default_top_k == 6
+    monkeypatch.setenv("STUDYMATE_CHAT_MODE", "bogus")
+    with pytest.raises(ValueError):
+        Settings()
