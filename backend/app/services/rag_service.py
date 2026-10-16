@@ -6,6 +6,7 @@ import re
 from app.core.config import settings
 from app.core.errors import DocumentNotFoundError, DocumentSelectionRequiredError
 from app.services import summary_service
+from app.services.citations import normalize_citations
 from app.services.embedding_service import embed_texts
 from app.services.llm_service import complete_reasoned_answer as complete_answer
 from app.services.vector_store import RetrievedChunk, has_documents, query_chunks
@@ -73,7 +74,7 @@ def answer_from_chunks(question: str, chunks: list[RetrievedChunk]) -> dict:
         answer = "以下为本地检索到的课程片段，请结合原文核对；此模式不调用外部模型。"
         status = "retrieval_only"
     else:
-        answer = complete_answer(build_prompt(question, chunks))
+        answer = normalize_citations(complete_answer(build_prompt(question, chunks)))
         cited_ids = extract_citation_ids(answer, source_count=len(chunks))
         all_ids = {f"S{int(n)}" for n in re.findall(r"\[S(\d+)\]", answer, re.I)}
         if not cited_ids or all_ids != cited_ids or answer.startswith("资料中没有足够信息"):
