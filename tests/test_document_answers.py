@@ -294,3 +294,36 @@ def test_frontend_selects_document_sends_scope_and_hides_stale_answer(monkeypatc
     assert any("可提取文字的 20 页" in c.value for c in at.caption)
     at.selectbox[0].set_value(DOC_B).run()
     assert not any("摘要 A" in m.value for m in at.markdown)
+
+
+@pytest.mark.parametrize("raw,expected", [
+    ("结论 [S6, S16, S17]。", "结论 [S6][S16][S17]。"),
+    ("结论 [S1、S2] 和 [S3；S4]", "结论 [S1][S2] 和 [S3][S4]"),
+    ("单个 [S1] 保持不变 [S2][S3]", "单个 [S1] 保持不变 [S2][S3]"),
+    ("[s01 s2]", "[S1][S2]"),
+    ("无引用", "无引用"),
+])
+def test_grouped_citation_brackets_are_normalized(raw, expected):
+    from app.services.citations import normalize_citations
+
+    assert normalize_citations(raw) == expected
+
+
+def test_grouped_citations_support_answers_instead_of_forcing_refusal(monkeypatch):
+    chunks = [RetrievedChunk(f"{DOC_A}:p{i}:c0", DOC_A, "public.pdf", i, 0, f"公开事实 {i}", 0.2) for i in (1, 2, 3)]
+    monkeypatch.setattr(rag_service, "settings", replace(settings, chat_mode="generation"))
+    monkeypatch.setattr(rag_service, "complete_answer", lambda prompt: "两处来源支持这个结论 [S1, S3]。")
+    result = rag_service.answer_from_chunks("公开问题", chunks)
+    assert result["status"] == "answered"
+    assert result["answer"] == "两处来源支持这个结论 [S1][S3]。"
+    assert [s["cited"] for s in result["sources"]] == [True, False, True]
+
+
+def test_grouped_citations_in_summaries_mark_every_source(monkeypatch):
+    chunks = [source(i, f"公开段落 {i}") for i in range(3)]
+    monkeypatch.setattr(summary_service, "settings", replace(settings, chat_mode="generation"))
+    monkeypatch.setattr(summary_service, "get_document_chunks", lambda doc: chunks)
+    monkeypatch.setattr(summary_service, "complete_answer", lambda prompt: "要点一 [S1, S2]；要点二 [S2]。")
+    result = summary_service.summarize_document(DOC_A, "概括")
+    assert result["answer"] == "要点一 [S1][S2]；要点二 [S2]。"
+    assert [s["cited"] for s in result["sources"]] == [True, True, False]
