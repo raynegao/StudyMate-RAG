@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Generate the public fictional PDFs used by the evaluation benchmark."""
+"""Generate the public fictional PDFs used by the original and hard evaluation benchmarks."""
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
+from reportlab import rl_config
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.pagesizes import A4
@@ -17,6 +18,17 @@ from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 BENCHMARK_PATH = ROOT_DIR / "evaluation" / "benchmark.json"
+HARD_BENCHMARK_PATH = ROOT_DIR / "evaluation" / "hard_benchmark.json"
+DEFAULT_PURPOSE = (
+    "本资料与另外两份公开文档共同构成 30 题中文基准。每道题都标注标准文档、"
+    "标准页码和答案关键词，用于计算 Recall@K、MRR、回答正确率和引用准确率。"
+)
+HARD_PURPOSE = (
+    "本资料是加难评测版本：第 2 至 4 页与原评测资料完全相同，第 5 页加入名称相近、"
+    "数值不同的设备和规程，用于检验换说法提问、相近概念干扰、边界条件和跨页综合。"
+)
+# Fixed timestamps and IDs so regenerating the PDFs does not change their bytes.
+rl_config.invariant = 1
 OUTPUT_DIR = ROOT_DIR / "output" / "pdf" / "evaluation"
 FONT_NAME = "StudyMateEvaluationSans"
 FONT_CANDIDATES = (
@@ -49,6 +61,21 @@ def draw_footer(canvas, document) -> None:
     canvas.drawString(22 * mm, 14 * mm, "StudyMate RAG 公开虚构评测资料")
     canvas.drawRightString(188 * mm, 14 * mm, f"第 {document.page} 页")
     canvas.restoreState()
+
+
+def hard_documents(base: dict) -> list[dict]:
+    """Compose each hard PDF from the unchanged base pages plus its confusable extra page."""
+    with HARD_BENCHMARK_PATH.open(encoding="utf-8") as file:
+        hard = json.load(file)
+    by_name = {document["filename"]: document for document in base["documents"]}
+    return [
+        {
+            **document,
+            "pages": by_name[document["base_document"]]["pages"] + document["extra_pages"],
+            "purpose": HARD_PURPOSE,
+        }
+        for document in hard["documents"]
+    ]
 
 
 def build_document(document_data: dict) -> Path:
@@ -135,11 +162,7 @@ def build_document(document_data: dict) -> Path:
         ),
         Spacer(1, 10 * mm),
         Paragraph("评测用途", heading),
-        Paragraph(
-            "本资料与另外两份公开文档共同构成 30 题中文基准。每道题都标注标准文档、"
-            "标准页码和答案关键词，用于计算 Recall@K、MRR、回答正确率和引用准确率。",
-            body,
-        ),
+        Paragraph(document_data.get("purpose", DEFAULT_PURPOSE), body),
     ]
     for page in document_data["pages"]:
         story.append(PageBreak())
@@ -155,7 +178,8 @@ def build_document(document_data: dict) -> Path:
 def main() -> None:
     register_font()
     benchmark = load_benchmark()
-    outputs = [build_document(item) for item in benchmark["documents"]]
+    documents = benchmark["documents"] + hard_documents(benchmark)
+    outputs = [build_document(item) for item in documents]
     for output in outputs:
         print(output)
 

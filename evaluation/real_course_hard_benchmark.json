@@ -1,0 +1,296 @@
+{
+  "name": "StudyMate RAG Anonymous Real Course Hard Benchmark",
+  "version": "1.0.0",
+  "description": "Harder paraphrased retrieval questions over the same three anonymous course PDFs. Retrieval-only; no source text or answers are committed. Questions were fixed before the first evaluation run.",
+  "base_manifest": "real_course_benchmark.json",
+  "privacy": {
+    "source_files_committed": false,
+    "source_paths_committed": false,
+    "institution_names_committed": false,
+    "instructor_names_committed": false,
+    "student_data_committed": false,
+    "questions_paraphrased": true
+  },
+  "questions": [
+    {
+      "id": "REAL-A-H1",
+      "type": "paraphrase",
+      "question": "如果每次只拿一个训练样本来估计更新方向，这种优化做法叫什么？",
+      "gold_document": "course-a.pdf",
+      "evidence": [
+        {
+          "pages": [
+            36
+          ],
+          "keywords": [
+            "随机梯度下降法",
+            "one training example"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REAL-A-H2",
+      "type": "numeric",
+      "question": "小批量训练时，每批的样本数一般取什么样的数？",
+      "gold_document": "course-a.pdf",
+      "evidence": [
+        {
+          "pages": [
+            39
+          ],
+          "keywords": [
+            "2的幂次方"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REAL-A-H3",
+      "type": "distractor",
+      "question": "每一步都用全部数据算梯度的那种下降方法，有哪些缺点？",
+      "gold_document": "course-a.pdf",
+      "evidence": [
+        {
+          "pages": [
+            35
+          ],
+          "keywords": [
+            "计算成本高",
+            "对学习率敏感"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REAL-A-H4",
+      "type": "numeric",
+      "question": "从零实现时生成的人造数据集有多少个样本，加入的噪声标准差是多少？",
+      "gold_document": "course-a.pdf",
+      "evidence": [
+        {
+          "pages": [
+            60
+          ],
+          "keywords": [
+            "1000",
+            "0.01"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REAL-A-H5",
+      "type": "multi_page",
+      "question": "直接求最优权重依赖损失函数的什么性质？课件里那组例子算出来的斜率是多少？",
+      "gold_document": "course-a.pdf",
+      "evidence": [
+        {
+          "pages": [
+            10,
+            19
+          ],
+          "keywords": [
+            "凸函数",
+            "导数为0"
+          ]
+        },
+        {
+          "pages": [
+            11
+          ],
+          "keywords": [
+            "0.425"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REAL-B-H1",
+      "type": "paraphrase",
+      "question": "用一个近似分布代替真实分布时损失了多少信息，课件用哪个量来衡量？",
+      "gold_document": "course-b.pdf",
+      "evidence": [
+        {
+          "pages": [
+            17
+          ],
+          "keywords": [
+            "relative entropy",
+            "information we lose"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REAL-B-H2",
+      "type": "numeric",
+      "question": "掷一枚骰子的熵大约是多少，为什么比抛硬币高？",
+      "gold_document": "course-b.pdf",
+      "evidence": [
+        {
+          "pages": [
+            15
+          ],
+          "keywords": [
+            "2.585",
+            "lower probability"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REAL-B-H3",
+      "type": "distractor",
+      "question": "实现多分类输出层时，数值太大和太接近零分别会出什么问题？",
+      "gold_document": "course-b.pdf",
+      "evidence": [
+        {
+          "pages": [
+            43
+          ],
+          "keywords": [
+            "上溢",
+            "下溢"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REAL-B-H4",
+      "type": "condition",
+      "question": "如果损失函数选了 nn.CrossEntropyLoss，网络最后一层还需要单独加归一化指数层吗？",
+      "gold_document": "course-b.pdf",
+      "evidence": [
+        {
+          "pages": [
+            70
+          ],
+          "keywords": [
+            "不需要也不能加"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REAL-B-H5",
+      "type": "multi_page",
+      "question": "那个服装图片数据集里，每张图展平后是多长的向量？从零实现时批量大小设成多少？",
+      "gold_document": "course-b.pdf",
+      "evidence": [
+        {
+          "pages": [
+            56
+          ],
+          "keywords": [
+            "784"
+          ]
+        },
+        {
+          "pages": [
+            55,
+            68
+          ],
+          "keywords": [
+            "256"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REAL-C-H1",
+      "type": "distractor",
+      "question": "哪种激活函数改掉了神经元长期只输出零的毛病，负半轴的斜率一般取多少？",
+      "gold_document": "course-c.pdf",
+      "evidence": [
+        {
+          "pages": [
+            42
+          ],
+          "keywords": [
+            "Dead ReLU",
+            "0.01"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REAL-C-H2",
+      "type": "paraphrase",
+      "question": "哪本书让早期单层网络的研究停滞了将近二十年？",
+      "gold_document": "course-c.pdf",
+      "evidence": [
+        {
+          "pages": [
+            19,
+            54
+          ],
+          "keywords": [
+            "感知器",
+            "二十年"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REAL-C-H3",
+      "type": "numeric",
+      "question": "从零实现多层感知机时隐藏层用了多少个单元？层宽为什么常取那样的数？",
+      "gold_document": "course-c.pdf",
+      "evidence": [
+        {
+          "pages": [
+            67
+          ],
+          "keywords": [
+            "256",
+            "2的若干次幂"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REAL-C-H4",
+      "type": "multi_page",
+      "question": "最早的神经元数学模型是哪一年提出的？它和单层感知机最关键的区别是什么？",
+      "gold_document": "course-c.pdf",
+      "evidence": [
+        {
+          "pages": [
+            6,
+            51
+          ],
+          "keywords": [
+            "1943",
+            "M-P模型"
+          ]
+        },
+        {
+          "pages": [
+            33
+          ],
+          "keywords": [
+            "权重需要人工设定",
+            "自动学习"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REAL-C-H5",
+      "type": "condition",
+      "question": "输入大于等于零的时候，最常用的那个激活函数导数是什么情况？",
+      "gold_document": "course-c.pdf",
+      "evidence": [
+        {
+          "pages": [
+            41
+          ],
+          "keywords": [
+            "导数为常数"
+          ]
+        }
+      ]
+    }
+  ]
+}

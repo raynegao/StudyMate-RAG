@@ -18,6 +18,7 @@ Key evidence:
 - 29/30 deterministic keyword checks and 100% cited-page accuracy in the previous recorded DeepSeek benchmark (not a semantic entailment score)
 - 15/15 real-course questions retrieve gold-page evidence at top-6 in the local-only benchmark
 - 12/12 unsupported questions refused in a separate public regression set
+- A harder set exposes the limits the saturated benchmarks hide: document-scoped BGE top-6 retrieval finds all evidence for 100.0% of 24 public hard questions but only 53.3% of 15 real-course hard questions; 95.8% of public hard answers pass keyword and distractor-value checks
 - Isolated Docker verification of real BGE, ChromaDB persistence across backend restart, DeepSeek answers and cleanup
 - Machine-readable results and a reproducible 75-second demonstration video
 
@@ -206,6 +207,20 @@ set -a && source .env.local && set +a
 完整方法、对比表和局限性见 [docs/evaluation.md](docs/evaluation.md)，机器可读结果见 [evaluation-results.json](output/evaluation/evaluation-results.json)。这些结果来自小规模合成基准，证明可复现性，不代表真实课程域的泛化上限。
 
 拒答回归见 [answerability-evaluation.md](docs/answerability-evaluation.md)。检索命中、关键词检查和引用页支持分别统计，引用标记合法不等于每个断言都受到原文支持。最新两道关键词漏判及标注修订说明见 [优化验收记录](docs/optimization-verification.md)。
+
+### 加难评测
+
+原有评测已接近满分，分辨不出检索改动是变好还是变差。加难集补充了换说法提问、相近概念干扰、边界条件、数字细节和跨页综合五类题，并用与应用一致的“所选文档内检索”口径，把原题一起重算作对照。题目在首次运行前固定，不按结果调整。
+
+- 公开加难集 24 题：3 份虚构 PDF 保留原第 2 至 4 页，第 5 页加入名称相近、数值不同的干扰内容。BGE 前 1 条命中 50.0%，前 6 条 100.0%；DeepSeek 回答 95.8% 通过关键词与干扰值检查。
+- 真实课程加难集 15 题：只在本机检索，只公开题号、题型和排名。BGE 前 1 条命中 26.7%，前 6 条 53.3%，主要失分在中英文换说法和相近概念干扰。
+
+```bash
+.venv/bin/python scripts/evaluate_hard.py            # 公开集 + 本机真实课程检索
+.venv/bin/python scripts/evaluate_hard.py --with-llm # 需先加载 .env.local
+```
+
+方法、分题型结果和局限见 [加难评测](docs/hard-evaluation.md)。
 
 ### 匿名真实课程评测
 

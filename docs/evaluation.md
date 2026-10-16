@@ -79,4 +79,4 @@ The machine-readable result, including per-question grounded-answer evidence, is
 - Keyword correctness is deterministic and auditable, but it does not replace expert grading of nuanced free-form answers.
 - DeepSeek output and latency can change across provider versions and network conditions; retrieval results are locally reproducible without an API key.
 
-See [real-course evaluation](real-course-evaluation.md) and [answerability evaluation](answerability-evaluation.md) for real-domain retrieval and unsupported-question tests.
+See [real-course evaluation](real-course-evaluation.md), [answerability evaluation](answerability-evaluation.md) and [hard-question evaluation](hard-evaluation.md) for real-domain retrieval, unsupported-question tests and harder question types. This benchmark saturates, so use the hard-question set to judge retrieval changes.
