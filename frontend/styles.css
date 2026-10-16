@@ -6,8 +6,10 @@
 [data-testid="stSidebar"] { background: #f0f3ed; border-right: 1px solid var(--line); }
 [data-testid="stSidebarUserContent"] { padding: 1.5rem 1.25rem; }
 [data-testid="stHeader"] { background: transparent; }
-[data-testid="stToolbar"], [data-testid="stAppDeployButton"],
-[data-testid="stStatusWidget"], [data-testid="stDecoration"], #MainMenu, footer { display: none !important; }
+/* Hide deploy/menu chrome only. The toolbar itself stays: since Streamlit 1.65 it holds the
+   button that reopens a collapsed sidebar, and the sidebar is the only place to pick a document. */
+[data-testid="stAppDeployButton"], [data-testid="stMainMenu"], [data-testid="stStatusWidget"],
+[data-testid="stDecoration"], #MainMenu, footer { display: none !important; }
 .sm-brand { display: flex; align-items: center; gap: 12px; margin: 0 0 24px; }
 .sm-mark { background: var(--accent); color: #fff; width: 38px; height: 42px;
   border-radius: 12px 12px 4px 12px; display: grid; place-items: center;

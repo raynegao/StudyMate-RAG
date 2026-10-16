@@ -1,4 +1,5 @@
 from copy import deepcopy
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -25,6 +26,15 @@ def visible_copy(at):
 def source(label, page=3, text="公开原文", **kwargs):
     return {"citation_id": label, "document_id": DOC, "filename": "公开学习资料.pdf",
             "page_number": page, "text": text, "cited": True, **kwargs}
+
+
+def test_styles_keep_the_sidebar_expand_button_reachable():
+    # Streamlit 1.65 renders the expand-sidebar button inside the toolbar; hiding the whole
+    # toolbar left a collapsed sidebar impossible to reopen, and documents are chosen there.
+    css = Path(ui.__file__).with_name("styles.css").read_text(encoding="utf-8")
+    hidden_rules = [rule for rule in css.split("}") if "display: none" in rule]
+    assert not any('[data-testid="stToolbar"]' in rule for rule in hidden_rules)
+    assert any('[data-testid="stAppDeployButton"]' in rule for rule in hidden_rules)
 
 
 def test_page_references_deduplicate_without_losing_evidence_or_paragraphs():
