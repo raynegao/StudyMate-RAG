@@ -105,7 +105,7 @@ def summarize_sections(batches: list[list[tuple[str, RetrievedChunk]]], question
 def summarize_document(document_id: str, question: str) -> dict:
     if settings.chat_mode != "generation":
         return {
-            "answer": "当前是仅本地检索模式，不能生成整篇概括。请使用 DeepSeek 模式后重试。",
+            "answer": "当前是仅本地检索模式，不能生成整篇概括。请切换到智能回答模式后重试。",
             "status": "retrieval_only", "sources": [],
             "metadata": {"mode": "summary", "document_id": document_id},
         }

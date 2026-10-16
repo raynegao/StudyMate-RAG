@@ -225,7 +225,7 @@ def test_generation_disables_thinking_and_reserves_answer_budget(monkeypatch):
         captured.update(kwargs)
         return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content="完整回答 [S1]"), finish_reason="stop")])
     client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
-    monkeypatch.setattr(llm_service, "_get_deepseek_client", lambda: client)
+    monkeypatch.setattr(llm_service, "_get_llm_client", lambda: client)
     assert llm_service.complete_answer("公开虚构问题") == "完整回答 [S1]"
     assert captured["extra_body"] == {"thinking": {"type": "disabled"}}
     assert captured["max_tokens"] == 4096
@@ -237,17 +237,32 @@ def test_specific_qa_retains_reasoning_with_larger_output_budget(monkeypatch):
         captured.update(kwargs)
         return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content="精确回答 [S1]"), finish_reason="stop")])
     client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
-    monkeypatch.setattr(llm_service, "_get_deepseek_client", lambda: client)
+    monkeypatch.setattr(llm_service, "_get_llm_client", lambda: client)
     assert llm_service.complete_reasoned_answer("公开问题") == "精确回答 [S1]"
     assert captured["extra_body"]["thinking"]["type"] == "enabled"
     assert captured["max_tokens"] == 4096
+
+
+def test_gemini_requests_use_lowest_reasoning_levels(monkeypatch):
+    captured = []
+    def create(**kwargs):
+        captured.append(kwargs)
+        return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content="回答 [S1]"), finish_reason="stop")])
+    client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
+    monkeypatch.setattr(llm_service, "_get_llm_client", lambda: client)
+    monkeypatch.setattr(llm_service, "settings", replace(settings, llm_provider="gemini", gemini_api_key="placeholder"))
+    llm_service.complete_answer("公开虚构概括")
+    llm_service.complete_reasoned_answer("公开虚构问题")
+    assert [c["model"] for c in captured] == ["gemini-3.8-flash"] * 2
+    assert [c["extra_body"] for c in captured] == [{"reasoning_effort": "minimal"}, {"reasoning_effort": "low"}]
+    assert all(c["max_tokens"] == 4096 for c in captured)
 
 
 @pytest.mark.parametrize("content", ["", "未完整生成的回答 [S1]"])
 def test_truncated_provider_answer_is_not_reported_as_success(monkeypatch, content):
     client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=lambda **kwargs:
         SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content=content), finish_reason="length")]))))
-    monkeypatch.setattr(llm_service, "_get_deepseek_client", lambda: client)
+    monkeypatch.setattr(llm_service, "_get_llm_client", lambda: client)
     with pytest.raises(LLMOutputLimitError):
         llm_service.complete_answer("公开虚构问题")
 

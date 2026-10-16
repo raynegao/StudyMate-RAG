@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compare sequential and concurrent whole-document summaries with real DeepSeek calls.
+"""Compare sequential and concurrent whole-document summaries with real model calls.
 
 Uses a generated, fully fictional multi-batch document; no uploaded file, index or
 private text is read. Both runs go through the serving summary path, including the
@@ -82,8 +82,8 @@ def run_once(chunks: list[RetrievedChunk], concurrency: int, real_complete) -> d
 
 
 def main() -> None:
-    if not settings.deepseek_api_key or settings.chat_mode != "generation":
-        raise SystemExit("Load .env.local first: DEEPSEEK_API_KEY and generation mode are required.")
+    if not settings.llm_api_key or settings.chat_mode != "generation":
+        raise SystemExit(f"Load .env.local first: an API key for {settings.llm_provider} and generation mode are required.")
     chunks = fictional_chunks()
     real_complete = summary_service.complete_answer
     runs, aborted = [], None
@@ -106,7 +106,7 @@ def main() -> None:
     sequential, concurrent = median_success(1), median_success(4)
     result = {
         "verified_at": datetime.now(timezone.utc).isoformat(),
-        "llm_model": settings.llm_model, "all_content_fictional": True,
+        "llm_provider": settings.llm_provider, "llm_model": settings.llm_model, "all_content_fictional": True,
         "storage_index_read": False, "document_characters": sum(len(c.text) for c in chunks),
         "llm_timeout_seconds": settings.llm_timeout_seconds, "trials_per_mode": TRIALS,
         "runs": runs,

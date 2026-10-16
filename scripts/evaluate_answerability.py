@@ -25,7 +25,7 @@ REPORT = ROOT_DIR / "docs/answerability-evaluation.md"
 
 
 def run(with_llm: bool) -> dict:
-    if with_llm and (not settings.deepseek_api_key or settings.chat_mode != "generation"):
+    if with_llm and (not settings.llm_api_key or settings.chat_mode != "generation"):
         raise RuntimeError("--with-llm requires a configured generation-mode public benchmark")
     questions = json.loads(MANIFEST.read_text(encoding="utf-8"))["questions"]
     chunks = build_chunks(load_benchmark(), chunk_size=settings.chunk_size, chunk_overlap=settings.chunk_overlap)

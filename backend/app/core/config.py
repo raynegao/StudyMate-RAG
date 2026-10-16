@@ -9,6 +9,14 @@ from pathlib import Path
 # Whole-document summaries: at most this many section calls plus one synthesis call.
 SUMMARY_MAX_BATCHES = 8
 
+# Answer model providers. Both speak the OpenAI chat-completions protocol; only the
+# selected provider ever receives document text.
+GEMINI_OPENAI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
+LLM_PROVIDERS = {
+    "deepseek": {"label": "DeepSeek", "key_env": "DEEPSEEK_API_KEY", "default_model": "deepseek-v4-flash"},
+    "gemini": {"label": "Gemini", "key_env": "GEMINI_API_KEY", "default_model": "gemini-3.8-flash"},
+}
+
 
 def _int_env(name: str, default: int) -> int:
     value = os.getenv(name)
@@ -45,12 +53,18 @@ class Settings:
     knowledge_base_name: str = field(default_factory=lambda: os.getenv("STUDYMATE_KNOWLEDGE_BASE_NAME", "默认资料库"))
     chat_mode: str = field(default_factory=lambda: os.getenv("STUDYMATE_CHAT_MODE", "generation"))
 
+    llm_provider: str = field(
+        default_factory=lambda: os.getenv("STUDYMATE_LLM_PROVIDER", "deepseek").strip().lower()
+    )
     deepseek_api_key: str | None = field(default_factory=lambda: os.getenv("DEEPSEEK_API_KEY"))
     deepseek_base_url: str = field(default_factory=lambda: os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com"))
+    gemini_api_key: str | None = field(default_factory=lambda: os.getenv("GEMINI_API_KEY") or None)
+    gemini_base_url: str = field(default_factory=lambda: os.getenv("GEMINI_BASE_URL", GEMINI_OPENAI_BASE_URL))
     embedding_model: str = field(
         default_factory=lambda: os.getenv("STUDYMATE_LOCAL_EMBEDDING_MODEL", "BAAI/bge-small-zh-v1.5")
     )
-    llm_model: str = field(default_factory=lambda: os.getenv("STUDYMATE_LLM_MODEL", "deepseek-v4-flash"))
+    # Empty means the selected provider's default model; see the llm_model property.
+    llm_model_override: str | None = field(default_factory=lambda: os.getenv("STUDYMATE_LLM_MODEL") or None)
     llm_temperature: float = field(default_factory=lambda: _float_env("STUDYMATE_LLM_TEMPERATURE", 0.0))
     llm_timeout_seconds: float = field(default_factory=lambda: _float_env("STUDYMATE_LLM_TIMEOUT", 30.0))
     embedding_device: str | None = field(default_factory=lambda: os.getenv("STUDYMATE_EMBEDDING_DEVICE") or None)
@@ -73,6 +87,25 @@ class Settings:
             raise ValueError("chunk token 上限至少为 8，相似度阈值须在 0 到 1 之间")
         if not 1 <= self.summary_concurrency <= SUMMARY_MAX_BATCHES:
             raise ValueError(f"概括并发数必须在 1 到 {SUMMARY_MAX_BATCHES} 之间")
+        if self.llm_provider not in LLM_PROVIDERS:
+            raise ValueError("STUDYMATE_LLM_PROVIDER 必须是 deepseek 或 gemini")
+
+    @property
+    def llm_provider_label(self) -> str:
+        return LLM_PROVIDERS[self.llm_provider]["label"]
+
+    @property
+    def llm_api_key(self) -> str | None:
+        key = self.gemini_api_key if self.llm_provider == "gemini" else self.deepseek_api_key
+        return key or None
+
+    @property
+    def llm_base_url(self) -> str:
+        return self.gemini_base_url if self.llm_provider == "gemini" else self.deepseek_base_url
+
+    @property
+    def llm_model(self) -> str:
+        return self.llm_model_override or LLM_PROVIDERS[self.llm_provider]["default_model"]
 
     @property
     def chat_request_timeout_seconds(self) -> float:

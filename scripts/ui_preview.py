@@ -10,7 +10,7 @@ from frontend import streamlit_app as ui
 DOC = "a" * 32
 scenario = st.query_params.get("scenario", "ready")
 runtime = {"chat_mode": "retrieval_only" if scenario == "local" else "generation",
-           "default_top_k": 6, "summary_request_timeout_seconds": 330, "max_upload_size_mb": 25}
+           "default_top_k": 6, "summary_request_timeout_seconds": 330, "max_upload_size_mb": 25, "llm_provider": "deepseek"}
 documents = [{"document_id": DOC, "filename": "高效学习：从理解到应用.pdf", "chunk_count": 86},
              {"document_id": "b" * 32, "filename": "知识管理与阅读笔记.pdf", "chunk_count": 42}]
 if scenario == "empty":

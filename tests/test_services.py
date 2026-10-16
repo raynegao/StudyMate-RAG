@@ -144,7 +144,28 @@ def test_llm_requires_explicit_deepseek_key(monkeypatch):
     )
 
     with pytest.raises(LLMNotConfiguredError):
-        llm_service._get_deepseek_client()
+        llm_service._get_llm_client()
+
+
+def test_gemini_provider_uses_its_own_key_endpoint_and_default_model(monkeypatch):
+    from app.services import llm_service
+
+    llm_service._cached_client.cache_clear()
+    monkeypatch.setattr(
+        llm_service, "settings",
+        replace(settings, llm_provider="gemini", gemini_api_key=None, deepseek_api_key="placeholder"),
+    )
+    with pytest.raises(LLMNotConfiguredError):
+        llm_service._get_llm_client()
+
+    monkeypatch.setattr(llm_service, "settings", replace(settings, llm_provider="gemini", gemini_api_key="placeholder"))
+    client = llm_service._get_llm_client()
+    assert str(client.base_url).startswith("https://generativelanguage.googleapis.com/v1beta/openai/")
+    assert llm_service.settings.llm_model == "gemini-3.8-flash"
+    assert replace(settings, llm_provider="gemini", llm_model_override="gemini-3.5-flash-lite").llm_model == "gemini-3.5-flash-lite"
+    llm_service._cached_client.cache_clear()
+    with pytest.raises(ValueError):
+        replace(settings, llm_provider="openai")
 
 
 def test_llm_provider_failure_uses_typed_error(monkeypatch):
@@ -160,7 +181,7 @@ def test_llm_provider_failure_uses_typed_error(monkeypatch):
     client = SimpleNamespace(
         chat=SimpleNamespace(completions=BrokenCompletions()),
     )
-    monkeypatch.setattr(llm_service, "_get_deepseek_client", lambda: client)
+    monkeypatch.setattr(llm_service, "_get_llm_client", lambda: client)
 
     with pytest.raises(LLMServiceError) as exc_info:
         llm_service.complete_answer("课程问题")
@@ -178,7 +199,7 @@ def test_llm_malformed_response_uses_typed_error(monkeypatch):
             )
         )
     )
-    monkeypatch.setattr(llm_service, "_get_deepseek_client", lambda: client)
+    monkeypatch.setattr(llm_service, "_get_llm_client", lambda: client)
 
     with pytest.raises(LLMServiceError):
         llm_service.complete_answer("课程问题")
@@ -196,7 +217,7 @@ def test_llm_unexpected_provider_error_uses_typed_error(monkeypatch):
             completions=SimpleNamespace(create=fail_request),
         )
     )
-    monkeypatch.setattr(llm_service, "_get_deepseek_client", lambda: client)
+    monkeypatch.setattr(llm_service, "_get_llm_client", lambda: client)
 
     with pytest.raises(LLMServiceError) as exc_info:
         llm_service.complete_answer("课程问题")

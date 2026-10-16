@@ -8,7 +8,7 @@ StudyMate RAG 为课程 PDF 提供本地向量检索和带引用的问答能力�
 
 - Python 3.12、FastAPI、Pydantic、Uvicorn
 - sentence-transformers、`BAAI/bge-small-zh-v1.5`、ChromaDB
-- DeepSeek Chat API
+- DeepSeek Chat API 或 Gemini API（OpenAI 兼容接口），由 `STUDYMATE_LLM_PROVIDER` 切换
 - Streamlit
 - uv、pytest、Ruff、coverage、Docker Compose
 
@@ -22,7 +22,7 @@ StudyMate RAG 为课程 PDF 提供本地向量检索和带引用的问答能力�
 - `frontend/styles.css`、`.streamlit/config.toml`：消费端阅读界面的本地样式与主题；`scripts/ui_preview.py` 是不调用模型或资料库的虚构 UI 预览
 - `tests/`：API contract、服务层和前端辅助逻辑测试
 - `scripts/`：启动、测试、smoke、公开样例生成和不依赖后端的 UI 预览脚本
-- `config/profiles/`：可公开的单实例运行配置；课程入口按用户授权默认 DeepSeek，`local` 保留仅检索模式
+- `config/profiles/`：可公开的单实例运行配置；课程入口按用户授权默认启用智能回答（DeepSeek，或 `STUDYMATE_LLM_PROVIDER=gemini` 切换为 Gemini），`local` 保留仅检索模式
 - `evaluation/`：公开虚构基准、加难基准、匿名真实课程清单（含加难题），以及 Git 忽略的本机来源映射
 - `output/evaluation/`、`output/e2e/`：可公开、可机读的量化与真实栈验收证据
 
@@ -56,11 +56,11 @@ docker compose --env-file .env.local up --build
 - 同步重任务必须离开 FastAPI 事件循环。
 - 分块同时满足实际 tokenizer 上限，embedding 不得静默截断；当前默认 300 字符、60 重叠、384 tokens、Top K 6。
 - 前后端上传上限保持一致；页面使用 `/api/config` 获取资料库名称、模式、上限和等待预算。
-- DeepSeek 默认读取超时 30 秒、连接最多 5 秒、不自动重试；`local`、`prepare`、`verify` 必须保持 `retrieval_only`，常规启动按用户 2026-09-05 明确要求启用 DeepSeek。
+- 回答模型（DeepSeek 或 Gemini）默认读取超时 30 秒、连接最多 5 秒、不自动重试；`local`、`prepare`、`verify` 必须保持 `retrieval_only`，常规启动按用户 2026-09-05 明确要求启用 DeepSeek。
 - 页面问答必须携带所选 `document_id`，上传后选中新文档；整篇概括读取该文档全部已索引文本，不用 top-k 抽样冒充全文。
 - 页面文案面向普通读者，不展示内部 ID、向量距离、片段计数、服务地址、异常正文或调试控件。问答沿用配置中的 Top K；页面不提供数字调参。API 原始引用不变，展示层转为页码链接并按页折叠原文；本地模式仍可查看未生成回答的相关原文。
 - 概括最多 8 批、每批 12000 字符，超限必须在外发前明确拒绝；分段请求按 `STUDYMATE_SUMMARY_CONCURRENCY`（默认 4）并发，摘要须保持页序，任一分段失败即取消未开始的分段，不得为凑结果自动重试；生成保留原始片段引用和页码，覆盖范围不包括扫描图片。
-- DeepSeek V4 整篇概括显式非思考，具体问答保留思考；两者 4096 token 输出上限，检查 `finish_reason=length`，不得将空正文或截断回答作为成功返回。
+- DeepSeek V4 整篇概括显式非思考，具体问答保留思考；两者 4096 token 输出上限，检查 `finish_reason=length`，不得将空正文或截断回答作为成功返回。Gemini 3 无法关闭思考，概括用 `reasoning_effort=minimal`、问答用 `low`，思考 token 计入同一上限。
 - 客户端只接收稳定、脱敏的 JSON 错误，完整异常只写服务日志。
 - API 行为变化时同步更新测试、`docs/api.md` 和 README。
 - 依赖变更先修改 `requirements.in` 或 `requirements-dev.in`，再用锁文件头部记录的 `uv pip compile --universal --torch-backend cpu` 命令重新生成锁文件。
@@ -75,6 +75,6 @@ docker compose --env-file .env.local up --build
 ## 数据与安全
 
 - 不提交 API Key、`.env`、`.env.local`、上传资料、Chroma 数据、模型缓存或虚拟环境。
-- 不读取、迁移、重建或对外发送旧私人索引内容。当前 `real-course-v2` 的所选文档可按用户明确授权用于 DeepSeek 问答；不得混入其他 PDF，也不得把私人回答写入公开验收文件。
+- 不读取、迁移、重建或对外发送旧私人索引内容。当前 `real-course-v2` 的所选文档可按用户明确授权用于 DeepSeek 问答，2026-10-16 起同样授权发送给 Gemini，但同一时间只有所选提供方收到原文；不得混入其他 PDF，也不得把私人回答写入公开验收文件。
 - 删除操作只能接受 32 位十六进制 `document_id`，并同时处理对应上传文件和向量。
 - 自动化演示和外部模型验收只使用 `output/pdf/` 中的公开虚构资料；用户已授权的实际 PDF 问答只在本机应用内处理，不作为公开样例。

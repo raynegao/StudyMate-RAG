@@ -78,10 +78,36 @@ def test_runtime_config_exposes_no_storage_paths_or_credentials(client, monkeypa
     assert data == {
         "knowledge_base_name": "测试库", "max_upload_size_mb": 70,
         "chat_mode": "generation", "default_top_k": settings.default_top_k,
+        "llm_provider": settings.llm_provider,
         "chat_request_timeout_seconds": 110,
         # Two rounds of four section calls plus one synthesis call: 3 x 80 + 60.
         "summary_request_timeout_seconds": 300,
     }
+
+
+@pytest.mark.parametrize("provider,key_env", [("deepseek", "DEEPSEEK_API_KEY"), ("gemini", "GEMINI_API_KEY")])
+def test_course_launcher_checks_the_selected_provider_key(tmp_path, provider, key_env):
+    fake_python = tmp_path / "python"
+    fake_python.write_text(f"#!{Path(sys.executable).resolve()}\n# Exit immediately; never prepares or serves data.\n")
+    fake_python.chmod(0o755)
+    base_env = {k: v for k, v in os.environ.items() if k not in ("DEEPSEEK_API_KEY", "GEMINI_API_KEY")}
+    env = {**base_env, "STUDYMATE_ENV_FILE": str(tmp_path / "missing.env"),
+           "STUDYMATE_COURSE_MODE": "generation", "STUDYMATE_LLM_PROVIDER": provider}
+    # In generation mode the key preflight runs before any Python or data access; the fake
+    # interpreter guarantees nothing is prepared or served even if that ever changed.
+    missing = subprocess.run(["bash", "scripts/run_real_course.sh", "all"], cwd=ROOT, capture_output=True,
+                             text=True, env={**env, "PYTHON_BIN": str(fake_python)}, timeout=15)
+    assert missing.returncode == 1 and key_env in missing.stderr
+    assert missing.stdout == ""  # Stopped at the preflight, not after launching servers.
+    configured = subprocess.run(["bash", "scripts/run_real_course.sh", "--print-config"], cwd=ROOT,
+                                check=True, capture_output=True, text=True, env={**env, key_env: "placeholder"})
+    config = json.loads(configured.stdout)
+    assert (config["llm_provider"], config["llm_configured"]) == (provider, True)
+    assert "placeholder" not in configured.stdout
+    local = subprocess.run(["bash", "scripts/run_real_course.sh", "--print-config"], cwd=ROOT, check=True,
+                           capture_output=True, text=True,
+                           env={**env, key_env: "placeholder", "STUDYMATE_COURSE_MODE": "retrieval_only"})
+    assert json.loads(local.stdout)["llm_configured"] is False
 
 
 def test_token_budget_preserves_tail_and_sentences():
@@ -140,7 +166,7 @@ def test_provider_timeout_is_bounded_and_not_retried(monkeypatch):
         api_key="placeholder", base_url="https://example.invalid", max_retries=0,
         timeout=httpx.Timeout(30, connect=5), http_client=httpx.Client(transport=httpx.MockTransport(timeout)),
     ) as provider:
-        monkeypatch.setattr(llm_service, "_get_deepseek_client", lambda: provider)
+        monkeypatch.setattr(llm_service, "_get_llm_client", lambda: provider)
         with pytest.raises(LLMTimeoutError):
             llm_service.complete_answer("虚构问题")
     assert len(calls) == 1

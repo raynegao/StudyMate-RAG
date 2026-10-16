@@ -106,7 +106,7 @@ curl -X POST http://127.0.0.1:8000/api/upload \
 
 `distance` 是 Chroma 返回的向量距离，通常越小越相关，不是相似度百分比。`cited=true` 表示答案文本实际包含对应的 `[S1]` 标记；其余来源只是检索候选。
 
-空知识库会直接返回友好提示和空来源列表，不加载 BGE，也不调用 DeepSeek。
+空知识库会直接返回友好提示和空来源列表，不加载 BGE，也不调用回答模型。
 
 `status` 的含义：
 
@@ -117,7 +117,7 @@ curl -X POST http://127.0.0.1:8000/api/upload \
 
 归一化向量使用 Chroma 默认平方 L2 距离。默认生成模式相似度门槛为 0.35，等价于距离不大于 1.30；显式课程本地模式使用 0.50。低分片段被过滤，高分仍不保证答案存在，因此生成提示和无答案测试继续约束拒答。整篇概括不使用相似度门槛。
 
-DeepSeek 读取超时默认为 30 秒，连接超时最多 5 秒，SDK 自动重试为 0。前端从运行配置获取等待预算（至少 60 秒，或读取超时加 30 秒）。这些是 HTTP 阶段超时，不是对任意网络行为的绝对总时长保证。
+回答模型（DeepSeek 或 Gemini，均通过 OpenAI 兼容协议调用）读取超时默认为 30 秒，连接超时最多 5 秒，SDK 自动重试为 0。前端从运行配置获取等待预算（至少 60 秒，或读取超时加 30 秒）。这些是 HTTP 阶段超时，不是对任意网络行为的绝对总时长保证。
 
 常见错误：
 
@@ -126,18 +126,18 @@ DeepSeek 读取超时默认为 30 秒，连接超时最多 5 秒，SDK 自动重
 - `404 document_not_found`：所选 PDF 不存在或已删除
 - `422 summary_too_large`：超过整篇概括预算，外部调用尚未开始
 - `502 embedding_failed`：问题向量生成失败
-- `502 llm_request_failed`：DeepSeek 请求失败
+- `502 llm_request_failed`：回答模型请求失败
 - `502 llm_output_incomplete`：模型达到输出上限，答案未完整生成，不返回截断内容作为成功答案
 - `502 summary_citations_invalid`：概括已生成但缺少引用或引用越界，结果被丢弃；这是输出质量问题而非服务故障，可直接重试
-- `503 llm_not_configured`：未设置 `DEEPSEEK_API_KEY`
+- `503 llm_not_configured`：未设置所选提供方的 API Key（`DEEPSEEK_API_KEY` 或 `GEMINI_API_KEY`）
 - `503 vector_store_unavailable`：ChromaDB 不可用
 - `504 llm_timeout`：生成请求超时，本次未自动重试
 
 ## GET /api/config
 
-返回 `knowledge_base_name`、`chat_mode`、`max_upload_size_mb`、`default_top_k`、`chat_request_timeout_seconds`、`summary_request_timeout_seconds`。不返回 API Key、本机路径或私人原文件名。概括等待预算为 `(ceil(8 / 概括并发数) + 1) × LLM阶段超时 + 60`，默认 4 路并发时为 150 秒，并发数为 1 时与旧版串行一致为 330 秒；前端智能模式也使用该预算，因为它可能路由到概括。后端每次模型调用仍为零重试和有限阶段超时。
+返回 `knowledge_base_name`、`chat_mode`、`llm_provider`（`deepseek` 或 `gemini`，页面据此显示提供方名称，不返回模型名）、`max_upload_size_mb`、`default_top_k`、`chat_request_timeout_seconds`、`summary_request_timeout_seconds`。不返回 API Key、本机路径或私人原文件名。概括等待预算为 `(ceil(8 / 概括并发数) + 1) × LLM阶段超时 + 60`，默认 4 路并发时为 150 秒，并发数为 1 时与旧版串行一致为 330 秒；前端智能模式也使用该预算，因为它可能路由到概括。后端每次模型调用仍为零重试和有限阶段超时。
 
-整篇概括显式关闭 DeepSeek 思考模式，具体问答保留思考；两者 `max_tokens=4096`，并检查 `finish_reason`，避免旧预算耗尽后正文为空。HTTP 200 仍需检查完整性、正文及有效引用，不等于应用层成功。
+DeepSeek：整篇概括显式关闭思考，具体问答保留思考。Gemini 3 无法关闭思考：概括用 `reasoning_effort=minimal`，问答用 `low`，思考 token 计入同一输出上限；两者 `max_tokens=4096`，并检查 `finish_reason`，避免旧预算耗尽后正文为空。HTTP 200 仍需检查完整性、正文及有效引用，不等于应用层成功。
 
 ### 消费端展示边界（2026-09-06）
 

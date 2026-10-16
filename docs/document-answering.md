@@ -17,7 +17,7 @@ scripts/run_real_course.sh
 
 ## 生成与隐私
 
-用户已明确要求使用 DeepSeek，因此常规入口从 `.env.local` 加载凭据并启用生成；不打印密钥，前端进程不继承该 Key。点击回答会发送所选 PDF 的必要原文，整篇概括会处理全部已索引文字。不会自动发送其他 PDF，不迁移、删除或重建旧私人索引。
+用户已明确要求使用 DeepSeek，因此常规入口从 `.env.local` 加载凭据并启用生成（2026-10-16 起也可设置 `STUDYMATE_LLM_PROVIDER=gemini` 改用 Gemini，用户已授权将课程原文发送给 Gemini；同一时间只有所选提供方收到原文）；不打印密钥，前端进程不继承该 Key。点击回答会发送所选 PDF 的必要原文，整篇概括会处理全部已索引文字。不会自动发送其他 PDF，不迁移、删除或重建旧私人索引。
 
 不希望外发时运行 `scripts/run_real_course.sh local`，或设置 `STUDYMATE_COURSE_MODE=retrieval_only`。`prepare` 和 `verify` 始终强制纯本地；本地模式明确不提供生成式概括。自动化外部模型验收仍只用公开虚构 PDF，实际私人问答内容不写入公开产物。
 

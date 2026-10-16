@@ -3,13 +3,13 @@
 [![CI](https://github.com/raynegao/StudyMate-RAG/actions/workflows/ci.yml/badge.svg)](https://github.com/raynegao/StudyMate-RAG/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-StudyMate RAG 是一个面向课程 PDF 的资料问答系统。它使用本地 BGE 模型生成向量、通过 ChromaDB 检索相关片段，再调用 DeepSeek 生成带来源标记的回答。
+StudyMate RAG 是一个面向课程 PDF 的资料问答系统。它使用本地 BGE 模型生成向量、通过 ChromaDB 检索相关片段，再调用 DeepSeek 或 Gemini 生成带来源标记的回答。
 
 ![问答与引用界面](output/playwright/studymate-question-and-citations.png)
 
 ## English summary
 
-StudyMate RAG is a local-first question-answering system for Chinese course PDFs. It combines `BAAI/bge-small-zh-v1.5` embeddings, ChromaDB retrieval, DeepSeek generation and verifiable page-level citations behind a FastAPI API and Streamlit interface. The repository includes locked Python 3.12 dependencies, non-root Docker images, automated quality gates, a 30-question public benchmark and an isolated real-stack Docker E2E check.
+StudyMate RAG is a local-first question-answering system for Chinese course PDFs. It combines `BAAI/bge-small-zh-v1.5` embeddings, ChromaDB retrieval, DeepSeek or Gemini generation and verifiable page-level citations behind a FastAPI API and Streamlit interface. The repository includes locked Python 3.12 dependencies, non-root Docker images, automated quality gates, a 30-question public benchmark and an isolated real-stack Docker E2E check.
 
 Key evidence:
 
@@ -42,7 +42,7 @@ See the [quantitative evaluation](docs/evaluation.md), [architecture](docs/archi
 
 - Python 3.12、FastAPI、Pydantic、Uvicorn
 - sentence-transformers、BGE、ChromaDB
-- DeepSeek Chat API
+- DeepSeek Chat API 或 Gemini API（OpenAI 兼容接口），由 `STUDYMATE_LLM_PROVIDER` 切换
 - Streamlit
 - pytest、Ruff、coverage、Docker Compose
 
@@ -64,14 +64,14 @@ source .venv/bin/activate
 uv pip sync --python .venv/bin/python --torch-backend cpu backend/requirements-dev.txt
 ```
 
-### 2. 配置 DeepSeek
+### 2. 配置回答模型（DeepSeek 或 Gemini）
 
 ```bash
 cp .env.example .env.local
 chmod 600 .env.local
 ```
 
-编辑 `.env.local`，填写 `DEEPSEEK_API_KEY`，然后在启动终端加载：
+编辑 `.env.local`：默认提供方是 DeepSeek，填写 `DEEPSEEK_API_KEY`；改用 Gemini 时设置 `STUDYMATE_LLM_PROVIDER=gemini` 并填写 `GEMINI_API_KEY`（通过 Gemini 的 OpenAI 兼容接口调用，默认模型 `gemini-3.8-flash`）。两种密钥可以同时保留，只有所选提供方会收到资料原文。然后在启动终端加载：
 
 ```bash
 set -a
@@ -80,6 +80,12 @@ set +a
 ```
 
 `.env`、`.env.local`、上传文件、Chroma 数据和模型缓存均已被 Git 忽略。
+
+配置完成后，可以用两条公开虚构的提问验证所选提供方能正常回答和概括（不读取任何上传资料，结果写入 `output/e2e/`，不含密钥）：
+
+```bash
+.venv/bin/python scripts/verify_llm_provider.py
+```
 
 ### 3. 本地启动
 
@@ -112,11 +118,11 @@ scripts/run_real_course.sh
 
 打开 `http://127.0.0.1:8502`，在“我的资料”选择正在阅读的 PDF。后端在 `127.0.0.1:8001`。初始资料包含 3 份 PDF、275 个片段，后续上传的文档继续保留；上传上限 70 MB，具体问题默认检索 6 个片段，数字参数不出现在用户页面。按 Ctrl+C 停止服务，资料保留。
 
-按用户明确授权，这个入口默认启用 DeepSeek，从 `.env.local` 加载凭据，只使用 `real-course-v2` 上传目录、Chroma 目录和 collection，不迁移或重建旧私人索引。重复启动会校验初始回执，不重复导入或覆盖后续上传。首次在其他机器运行，需要填写 `evaluation/private/real-course-sources.json` 的授权来源映射。
+按用户明确授权，这个入口默认启用智能回答（DeepSeek，或按 `.env.local` 中的 `STUDYMATE_LLM_PROVIDER` 切换为 Gemini），从 `.env.local` 加载凭据，只使用 `real-course-v2` 上传目录、Chroma 目录和 collection，不迁移或重建旧私人索引。重复启动会校验初始回执，不重复导入或覆盖后续上传。首次在其他机器运行，需要填写 `evaluation/private/real-course-sources.json` 的授权来源映射。
 
 在“添加资料”上传后自动选中新 PDF。选择“问资料”输入问题，或切换“概括全文”并点击“生成概括”。三个阅读方向按钮只填写要求，仍需用户点击生成才发送原文。“这份资料的核心概念是什么？”会自动走整篇概括；“总结第三章的公式”这类指定对象的问题按原文检索。具体问题也仅在所选 PDF 内检索。
 
-点击回答会将所选 PDF 的必要原文发送给 DeepSeek；概括会覆盖全部已索引文本，不发送其他 PDF。隐私文档及其回答不写入公开评测记录。不希望内容外发时运行 `scripts/run_real_course.sh local`，该模式只检索原文，明确不生成整篇概括。
+点击回答会将所选 PDF 的必要原文发送给所选的回答模型（DeepSeek 或 Gemini）；概括会覆盖全部已索引文本，不发送其他 PDF。隐私文档及其回答不写入公开评测记录。不希望内容外发时运行 `scripts/run_real_course.sh local`，该模式只检索原文，明确不生成整篇概括。
 
 概括按页读取全部已索引片段，不受 top-k 限制。每批最多 12000 字符、最多 8 批，多批先分别归纳再综合；超限在任何外发前提示拆分，不截取开头冒充全文。页面显示已阅读的文字页数与原文页码；片段统计仅保留在 API，扫描图片与未提取文字不在覆盖范围。详见 [指定文档问答说明](docs/document-answering.md) 与 [界面改版记录](docs/consumer-ui.md)。
 
