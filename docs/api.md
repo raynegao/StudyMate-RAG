@@ -135,7 +135,7 @@ DeepSeek 读取超时默认为 30 秒，连接超时最多 5 秒，SDK 自动重
 
 ## GET /api/config
 
-返回 `knowledge_base_name`、`chat_mode`、`max_upload_size_mb`、`default_top_k`、`chat_request_timeout_seconds`、`summary_request_timeout_seconds`。不返回 API Key、本机路径或私人原文件名。概括等待预算默认为 `9 × LLM阶段超时 + 60`，即 330 秒；前端智能模式也使用该预算，因为它可能路由到概括。后端每次模型调用仍为零重试和有限阶段超时。
+返回 `knowledge_base_name`、`chat_mode`、`max_upload_size_mb`、`default_top_k`、`chat_request_timeout_seconds`、`summary_request_timeout_seconds`。不返回 API Key、本机路径或私人原文件名。概括等待预算为 `(ceil(8 / 概括并发数) + 1) × LLM阶段超时 + 60`，默认 4 路并发时为 150 秒，并发数为 1 时与旧版串行一致为 330 秒；前端智能模式也使用该预算，因为它可能路由到概括。后端每次模型调用仍为零重试和有限阶段超时。
 
 整篇概括显式关闭 DeepSeek 思考模式，具体问答保留思考；两者 `max_tokens=4096`，并检查 `finish_reason`，避免旧预算耗尽后正文为空。HTTP 200 仍需检查完整性、正文及有效引用，不等于应用层成功。
 

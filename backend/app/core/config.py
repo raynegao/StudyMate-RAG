@@ -1,8 +1,13 @@
 from __future__ import annotations
 
+import math
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
+
+
+# Whole-document summaries: at most this many section calls plus one synthesis call.
+SUMMARY_MAX_BATCHES = 8
 
 
 def _int_env(name: str, default: int) -> int:
@@ -57,6 +62,7 @@ class Settings:
     min_retrieval_similarity: float = field(default_factory=lambda: _float_env("STUDYMATE_MIN_RETRIEVAL_SIMILARITY", 0.35))
     embedding_batch_size: int = field(default_factory=lambda: _int_env("STUDYMATE_EMBEDDING_BATCH_SIZE", 64))
     max_upload_size_mb: int = field(default_factory=lambda: _int_env("STUDYMATE_MAX_UPLOAD_SIZE_MB", 25))
+    summary_concurrency: int = field(default_factory=lambda: _int_env("STUDYMATE_SUMMARY_CONCURRENCY", 4))
 
     def __post_init__(self) -> None:
         if self.chat_mode not in {"generation", "retrieval_only"}:
@@ -65,6 +71,8 @@ class Settings:
             raise ValueError("LLM timeout 必须大于 0，top_k 必须在 1 到 10 之间")
         if self.chunk_max_tokens < 8 or not 0 <= self.min_retrieval_similarity <= 1:
             raise ValueError("chunk token 上限至少为 8，相似度阈值须在 0 到 1 之间")
+        if not 1 <= self.summary_concurrency <= SUMMARY_MAX_BATCHES:
+            raise ValueError(f"概括并发数必须在 1 到 {SUMMARY_MAX_BATCHES} 之间")
 
     @property
     def chat_request_timeout_seconds(self) -> float:
@@ -77,8 +85,10 @@ class Settings:
 
     @property
     def summary_request_timeout_seconds(self) -> float:
-        # At most eight section calls and one synthesis call, with no SDK retries.
-        return max(self.chat_request_timeout_seconds, 9 * self.llm_timeout_seconds + 60)
+        # Section calls run in rounds of `summary_concurrency`, then one synthesis call.
+        # No SDK retries; with concurrency 1 this equals the old sequential budget.
+        rounds = math.ceil(SUMMARY_MAX_BATCHES / self.summary_concurrency) + 1
+        return max(self.chat_request_timeout_seconds, rounds * self.llm_timeout_seconds + 60)
 
 
 settings = Settings()
