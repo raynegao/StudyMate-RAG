@@ -23,7 +23,7 @@ StudyMate RAG 为课程 PDF 提供本地向量检索和带引用的问答能力�
 - `tests/`：API contract、服务层和前端辅助逻辑测试
 - `scripts/`：启动、测试、smoke、公开样例生成和不依赖后端的 UI 预览脚本
 - `config/profiles/`：可公开的单实例运行配置；课程入口按用户授权默认 DeepSeek，`local` 保留仅检索模式
-- `evaluation/`：公开虚构基准、匿名真实课程清单，以及 Git 忽略的本机来源映射
+- `evaluation/`：公开虚构基准、加难基准、匿名真实课程清单（含加难题），以及 Git 忽略的本机来源映射
 - `output/evaluation/`、`output/e2e/`：可公开、可机读的量化与真实栈验收证据
 
 ## 常用命令
@@ -39,6 +39,7 @@ scripts/smoke_api.sh
 .venv/bin/python scripts/evaluate_rag.py
 .venv/bin/python scripts/evaluate_real_course.py
 .venv/bin/python scripts/evaluate_answerability.py --with-llm
+.venv/bin/python scripts/evaluate_hard.py --with-llm
 scripts/run_real_course.sh
 scripts/run_real_course.sh local
 scripts/run_real_course.sh verify
@@ -68,6 +69,7 @@ docker compose --env-file .env.local up --build
 - 评测集或检索逻辑变化时重新生成公开 PDF、量化结果和 `docs/evaluation.md`；真实栈变化时重跑隔离 Docker E2E。
 - 真实课程评测只提交匿名别名、完整性哈希、页码和最小答案关键词；原 PDF、本机路径、学校/教师信息和学生数据必须留在 `evaluation/private/` 或其他 Git 忽略位置。
 - 标准页或答案关键词修订后保留原口径指标；不要把标注变化算成检索提升。拒答评测区分资料外问题和同主题缺失事实。
+- 原 30 题与原 15 题已接近满分，判断检索改动时以 `docs/hard-evaluation.md` 的加难集为准。加难题在首次运行前固定，不按结果改题或改判分；新增题目需另起版本并保留旧版本指标。
 
 ## 数据与安全
 

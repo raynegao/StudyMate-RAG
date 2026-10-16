@@ -1,0 +1,1233 @@
+{
+  "benchmark": {
+    "public_hard": {
+      "name": "StudyMate RAG Public Hard Chinese Benchmark",
+      "version": "1.0.0",
+      "dataset_sha256": "71ffb85dbbbb30071e4fafaf6733c0364f8a1313ecc592f5c9dcb427dbe366c0",
+      "question_count": 24,
+      "all_content_fictional": true
+    },
+    "questions_frozen_before_first_run": true,
+    "real_course_hard": {
+      "name": "StudyMate RAG Anonymous Real Course Hard Benchmark",
+      "version": "1.0.0",
+      "dataset_sha256": "f73e62999dcdf0fdbcca337a83579bd2784eac5464e19f51c4dc68c4d3f5c261",
+      "question_count": 15,
+      "all_content_fictional": false,
+      "source_hashes_verified": true,
+      "evidence_keywords_verified": true
+    }
+  },
+  "run": {
+    "generated_at": "2026-10-16T02:21:07.442396+00:00",
+    "git_revision": "3a296ad",
+    "embedding_model": "BAAI/bge-small-zh-v1.5",
+    "sentence_transformers": "3.3.1",
+    "torch": "2.5.1",
+    "chunk_size": 300,
+    "chunk_overlap": 60,
+    "chunk_max_tokens": 384,
+    "top_k_values": [
+      1,
+      3,
+      6
+    ]
+  },
+  "method": "A question counts as retrieved at K only when every evidence group has a chunk from one of its pages in the top K. Document scope ranks only chunks of the gold document, as the app does for a selected PDF; global scope ranks the whole corpus. The original questions are re-measured with the same rule.",
+  "public": {
+    "hard": {
+      "retrieval": {
+        "all": {
+          "question_count": 24,
+          "bge_document": {
+            "recall_at_1": 0.5,
+            "recall_at_3": 0.9583333333333334,
+            "recall_at_6": 1.0
+          },
+          "bge_global": {
+            "recall_at_1": 0.5,
+            "recall_at_3": 0.9583333333333334,
+            "recall_at_6": 0.9583333333333334
+          },
+          "lexical_document": {
+            "recall_at_1": 0.6666666666666666,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "lexical_global": {
+            "recall_at_1": 0.6666666666666666,
+            "recall_at_3": 0.9583333333333334,
+            "recall_at_6": 1.0
+          }
+        },
+        "boundary": {
+          "question_count": 3,
+          "bge_document": {
+            "recall_at_1": 1.0,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "bge_global": {
+            "recall_at_1": 1.0,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "lexical_document": {
+            "recall_at_1": 1.0,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "lexical_global": {
+            "recall_at_1": 1.0,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          }
+        },
+        "distractor": {
+          "question_count": 13,
+          "bge_document": {
+            "recall_at_1": 0.6153846153846154,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "bge_global": {
+            "recall_at_1": 0.6153846153846154,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "lexical_document": {
+            "recall_at_1": 0.7692307692307693,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "lexical_global": {
+            "recall_at_1": 0.7692307692307693,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          }
+        },
+        "multi_page": {
+          "question_count": 3,
+          "bge_document": {
+            "recall_at_1": 0.0,
+            "recall_at_3": 0.6666666666666666,
+            "recall_at_6": 1.0
+          },
+          "bge_global": {
+            "recall_at_1": 0.0,
+            "recall_at_3": 0.6666666666666666,
+            "recall_at_6": 0.6666666666666666
+          },
+          "lexical_document": {
+            "recall_at_1": 0.0,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "lexical_global": {
+            "recall_at_1": 0.0,
+            "recall_at_3": 0.6666666666666666,
+            "recall_at_6": 1.0
+          }
+        },
+        "paraphrase": {
+          "question_count": 5,
+          "bge_document": {
+            "recall_at_1": 0.2,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "bge_global": {
+            "recall_at_1": 0.2,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "lexical_document": {
+            "recall_at_1": 0.6,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "lexical_global": {
+            "recall_at_1": 0.6,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          }
+        }
+      },
+      "questions": [
+        {
+          "id": "OBS-H1",
+          "type": "distractor",
+          "ranks": {
+            "bge": {
+              "document": 2,
+              "global": 2
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        },
+        {
+          "id": "OBS-H2",
+          "type": "distractor",
+          "ranks": {
+            "bge": {
+              "document": 1,
+              "global": 1
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        },
+        {
+          "id": "OBS-H3",
+          "type": "distractor",
+          "ranks": {
+            "bge": {
+              "document": 1,
+              "global": 1
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        },
+        {
+          "id": "OBS-H4",
+          "type": "paraphrase",
+          "ranks": {
+            "bge": {
+              "document": 2,
+              "global": 2
+            },
+            "lexical": {
+              "document": 3,
+              "global": 3
+            }
+          }
+        },
+        {
+          "id": "OBS-H5",
+          "type": "paraphrase",
+          "ranks": {
+            "bge": {
+              "document": 2,
+              "global": 2
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        },
+        {
+          "id": "OBS-H6",
+          "type": "boundary",
+          "ranks": {
+            "bge": {
+              "document": 1,
+              "global": 1
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        },
+        {
+          "id": "OBS-H7",
+          "type": "multi_page",
+          "ranks": {
+            "bge": {
+              "document": 2,
+              "global": 2
+            },
+            "lexical": {
+              "document": 2,
+              "global": 2
+            }
+          }
+        },
+        {
+          "id": "OBS-H8",
+          "type": "distractor",
+          "ranks": {
+            "bge": {
+              "document": 2,
+              "global": 2
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        },
+        {
+          "id": "ECO-H1",
+          "type": "distractor",
+          "ranks": {
+            "bge": {
+              "document": 1,
+              "global": 1
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        },
+        {
+          "id": "ECO-H2",
+          "type": "distractor",
+          "ranks": {
+            "bge": {
+              "document": 1,
+              "global": 1
+            },
+            "lexical": {
+              "document": 2,
+              "global": 2
+            }
+          }
+        },
+        {
+          "id": "ECO-H3",
+          "type": "distractor",
+          "ranks": {
+            "bge": {
+              "document": 2,
+              "global": 2
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        },
+        {
+          "id": "ECO-H4",
+          "type": "paraphrase",
+          "ranks": {
+            "bge": {
+              "document": 2,
+              "global": 2
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        },
+        {
+          "id": "ECO-H5",
+          "type": "paraphrase",
+          "ranks": {
+            "bge": {
+              "document": 2,
+              "global": 3
+            },
+            "lexical": {
+              "document": 2,
+              "global": 3
+            }
+          }
+        },
+        {
+          "id": "ECO-H6",
+          "type": "boundary",
+          "ranks": {
+            "bge": {
+              "document": 1,
+              "global": 1
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        },
+        {
+          "id": "ECO-H7",
+          "type": "multi_page",
+          "ranks": {
+            "bge": {
+              "document": 4,
+              "global": 14
+            },
+            "lexical": {
+              "document": 3,
+              "global": 6
+            }
+          }
+        },
+        {
+          "id": "ECO-H8",
+          "type": "distractor",
+          "ranks": {
+            "bge": {
+              "document": 2,
+              "global": 2
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        },
+        {
+          "id": "CMP-H1",
+          "type": "distractor",
+          "ranks": {
+            "bge": {
+              "document": 1,
+              "global": 1
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        },
+        {
+          "id": "CMP-H2",
+          "type": "distractor",
+          "ranks": {
+            "bge": {
+              "document": 1,
+              "global": 1
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        },
+        {
+          "id": "CMP-H3",
+          "type": "distractor",
+          "ranks": {
+            "bge": {
+              "document": 1,
+              "global": 1
+            },
+            "lexical": {
+              "document": 2,
+              "global": 2
+            }
+          }
+        },
+        {
+          "id": "CMP-H4",
+          "type": "paraphrase",
+          "ranks": {
+            "bge": {
+              "document": 1,
+              "global": 1
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        },
+        {
+          "id": "CMP-H5",
+          "type": "boundary",
+          "ranks": {
+            "bge": {
+              "document": 1,
+              "global": 1
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        },
+        {
+          "id": "CMP-H6",
+          "type": "distractor",
+          "ranks": {
+            "bge": {
+              "document": 2,
+              "global": 2
+            },
+            "lexical": {
+              "document": 2,
+              "global": 2
+            }
+          }
+        },
+        {
+          "id": "CMP-H7",
+          "type": "multi_page",
+          "ranks": {
+            "bge": {
+              "document": 3,
+              "global": 3
+            },
+            "lexical": {
+              "document": 3,
+              "global": 3
+            }
+          }
+        },
+        {
+          "id": "CMP-H8",
+          "type": "distractor",
+          "ranks": {
+            "bge": {
+              "document": 1,
+              "global": 1
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        }
+      ],
+      "answer_evaluation": {
+        "llm_model": "deepseek-v4-flash",
+        "top_k": 6,
+        "scope": "document",
+        "answer_accuracy": 0.9583333333333334,
+        "citation_support": 0.9583333333333334,
+        "answered_rate": 1.0,
+        "generation_latency_mean_ms": 1654.9902136127155,
+        "by_type": {
+          "boundary": {
+            "question_count": 3,
+            "answer_accuracy": 1.0,
+            "citation_support": 1.0
+          },
+          "distractor": {
+            "question_count": 13,
+            "answer_accuracy": 0.9230769230769231,
+            "citation_support": 0.9230769230769231
+          },
+          "multi_page": {
+            "question_count": 3,
+            "answer_accuracy": 1.0,
+            "citation_support": 1.0
+          },
+          "paraphrase": {
+            "question_count": 5,
+            "answer_accuracy": 1.0,
+            "citation_support": 1.0
+          }
+        },
+        "questions": [
+          {
+            "id": "OBS-H1",
+            "type": "distractor",
+            "status": "answered",
+            "answer": "通过零点校准的传感器使用紫晶校准牌标记，其激活窗口为 18 分钟，超过窗口后必须重新执行零点校准 [S2]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 1371.2705420330167
+          },
+          {
+            "id": "OBS-H2",
+            "type": "distractor",
+            "status": "answered",
+            "answer": "增益校准完成后使用的是琥珀校准牌，其激活窗口为 28 分钟，超过窗口后必须重新执行增益校准 [S1]。与零点校准使用的标记不同，琥珀校准牌可以在同一观测轮次内转移给备用设备 [S1]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 1229.3707905337214
+          },
+          {
+            "id": "OBS-H3",
+            "type": "distractor",
+            "status": "answered",
+            "answer": "每天执行完整同步的是东塔，其在协调世界时 02:30 执行一次完整同步 [S1]。东塔同步生成的审计记录保留 45 天，过期记录由归档服务批量移除 [S1]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 1238.8496659696102
+          },
+          {
+            "id": "OBS-H4",
+            "type": "paraphrase",
+            "status": "answered",
+            "answer": "被贴上红色隔离标签的仪器需要持续 2 个观测轮次；两个轮次都未再次出现故障后，才可以从隔离区移回常规观测队列 [S2]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 1283.2726249471307
+          },
+          {
+            "id": "OBS-H5",
+            "type": "paraphrase",
+            "status": "answered",
+            "answer": "镜头温度高于 -12 摄氏度时会触发 A17 告警，此时值班人员应暂停曝光并检查制冷回路；不应继续提高采样频率 [S2]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 1655.3585408255458
+          },
+          {
+            "id": "OBS-H6",
+            "type": "boundary",
+            "status": "answered",
+            "answer": "漂移评分正好是 0.63 的记录会进入自动归档队列 [S1]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 1600.962582975626
+          },
+          {
+            "id": "OBS-H7",
+            "type": "multi_page",
+            "status": "answered",
+            "answer": "从主镜冷启动开始，夜间巡检至少需要等待 **11 分钟**（主镜冷启动预热时间）才能开始正式观测 [S2][S4]。\n\n预热结束后，还需先执行一次**天顶脉冲采样**；只有这组采样判定有效后，值班人员才可以写入当晚第一条正式观测记录 [S1]。有效天顶脉冲采样的要求是：包含连续 7 次测量，相邻两次测量的间隔不得超过 4 秒，缺少一次测量即需整组重新开始 [S4]。\n\n因此，最短等待时间为 11 分钟，且必须完成一次有效的天顶脉冲采样后，才可写入当晚第一条正式观测记录。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 2673.8891657441854
+          },
+          {
+            "id": "OBS-H8",
+            "type": "distractor",
+            "status": "answered",
+            "answer": "地面反射校正使用的是天底脉冲采样：必须包含连续 9 次测量，相邻两次测量的间隔不得超过 6 秒 [S2]。资料还指出天底采样只用于地面反射校正，不能替代天顶脉冲采样 [S2]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 1641.3674168288708
+          },
+          {
+            "id": "ECO-H1",
+            "type": "distractor",
+            "status": "answered",
+            "answer": "琥珀苔灌溉当天仍保持 9 小时紫光照明，不能用增加照明时间代替补水 [S1]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 905.3924176841974
+          },
+          {
+            "id": "ECO-H2",
+            "type": "distractor",
+            "status": "answered",
+            "answer": "银苔每 4 天灌溉一次，每平方米使用 2.6 升循环水 [S1]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 1161.1037077382207
+          },
+          {
+            "id": "ECO-H3",
+            "type": "distractor",
+            "status": "answered",
+            "answer": "不是用于幼苗的普通雾培温室，相对湿度应保持在 **68% 到 74%** [S2]。  \n而只用于播种后前两周幼苗的雾培育苗间，相对湿度是 **80% 到 86%** [S1]。",
+            "answer_correct": false,
+            "forbidden_keywords_found": [
+              "80%"
+            ],
+            "citation_support": 0.5,
+            "latency_ms": 2366.318500600755
+          },
+          {
+            "id": "ECO-H4",
+            "type": "paraphrase",
+            "status": "answered",
+            "answer": "绿色样本瓶盖最多使用 8 次，达到次数后必须更换 [S2]。清洗只能恢复洁净度，不能重置使用次数，因此洗干净后不能重新计数 [S2]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 1997.2254177555442
+          },
+          {
+            "id": "ECO-H5",
+            "type": "paraphrase",
+            "status": "answered",
+            "answer": "资料中与“碳排放气体”对应的是二氧化碳浓度的应急规程：当二氧化碳浓度高于 950 ppm 时，应急通风阀会自动开启 [S2]；当浓度回落到安全区间后，仍需保持通风 3 分钟 [S2]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 3235.5296667665243
+          },
+          {
+            "id": "ECO-H6",
+            "type": "boundary",
+            "status": "answered",
+            "answer": "育苗区土壤的目标 pH 范围是 6.2 到 6.8 [S1]。测得 7.0 高于该范围，按资料应暂停施用含钙添加剂 [S1]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 1338.7585831806064
+          },
+          {
+            "id": "ECO-H7",
+            "type": "multi_page",
+            "status": "answered",
+            "answer": "季度巡检需要核对的授粉走廊最小净宽度下限是 **3.5 米** [S4]；二氧化碳应急通风阀在浓度 **高于 950 ppm** 时自动开启 [S1]。季度巡检流程也确实要求先确认授粉走廊净宽度没有低于下限，再测试该应急通风阀能否在规定浓度自动开启 [S2]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 2463.1325425580144
+          },
+          {
+            "id": "ECO-H8",
+            "type": "distractor",
+            "status": "answered",
+            "answer": "金翅雀佩戴的声学信标在无遮挡环境中的标称检测半径为 90 米 [S3]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 1179.99816685915
+          },
+          {
+            "id": "CMP-H1",
+            "type": "distractor",
+            "status": "answered",
+            "answer": "不会。珍珠缓存的读取命中不会延长生存时间，只有重新写入才会刷新计时 [S1]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 1324.2234159260988
+          },
+          {
+            "id": "CMP-H2",
+            "type": "distractor",
+            "status": "answered",
+            "answer": "珊瑚缓存条目的默认生存时间是 180 秒 [S1]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 883.515709079802
+          },
+          {
+            "id": "CMP-H3",
+            "type": "distractor",
+            "status": "answered",
+            "answer": "不是给批处理用的调度器是灯塔调度器，其默认时间片为 24 毫秒 [S1]。只服务批处理队列的是信标调度器 [S2]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 0.5,
+            "latency_ms": 2090.1189167052507
+          },
+          {
+            "id": "CMP-H4",
+            "type": "paraphrase",
+            "status": "answered",
+            "answer": "计算节点冷启动时必须预留 **256 MB** 内存给诊断代理 [S1]。即使节点暂时没有运行诊断，预留区也**不得被用户任务申请** [S1]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 1613.6371660977602
+          },
+          {
+            "id": "CMP-H5",
+            "type": "boundary",
+            "status": "answered",
+            "answer": "第 13 个作业会停留在等待队列中，直到已有作业释放执行槽位 [S1]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 853.4010844305158
+          },
+          {
+            "id": "CMP-H6",
+            "type": "distractor",
+            "status": "answered",
+            "answer": "网络请求最多重试 4 次，达到上限后请求进入失败队列，不再自动发送 [S2]。因此最多会自动重发 4 次 [S2]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 1249.448542483151
+          },
+          {
+            "id": "CMP-H7",
+            "type": "multi_page",
+            "status": "answered",
+            "answer": "发布前检查涉及的三个数字分别是：\n\n- 状态快照每 **15 分钟**生成一次 [S3]。\n- 故障恢复流程最多允许丢失 **2 笔**事务 [S3]。\n- 审计日志在线保留 **21 天** [S2]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 2266.4738334715366
+          },
+          {
+            "id": "CMP-H8",
+            "type": "distractor",
+            "status": "answered",
+            "answer": "运行不可信代码的绿色沙箱，单个最多同时运行 6 个作业 [S1]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 2097.146125510335
+          }
+        ]
+      }
+    },
+    "original_reference": {
+      "retrieval": {
+        "all": {
+          "question_count": 30,
+          "bge_document": {
+            "recall_at_1": 1.0,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "bge_global": {
+            "recall_at_1": 0.9666666666666667,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "lexical_document": {
+            "recall_at_1": 1.0,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "lexical_global": {
+            "recall_at_1": 0.9666666666666667,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          }
+        },
+        "original": {
+          "question_count": 30,
+          "bge_document": {
+            "recall_at_1": 1.0,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "bge_global": {
+            "recall_at_1": 0.9666666666666667,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "lexical_document": {
+            "recall_at_1": 1.0,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "lexical_global": {
+            "recall_at_1": 0.9666666666666667,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          }
+        }
+      }
+    }
+  },
+  "real_course": {
+    "hard": {
+      "retrieval": {
+        "all": {
+          "question_count": 15,
+          "bge_document": {
+            "recall_at_1": 0.26666666666666666,
+            "recall_at_3": 0.4,
+            "recall_at_6": 0.5333333333333333
+          },
+          "bge_global": {
+            "recall_at_1": 0.26666666666666666,
+            "recall_at_3": 0.4,
+            "recall_at_6": 0.5333333333333333
+          },
+          "lexical_document": {
+            "recall_at_1": 0.2,
+            "recall_at_3": 0.3333333333333333,
+            "recall_at_6": 0.4666666666666667
+          },
+          "lexical_global": {
+            "recall_at_1": 0.2,
+            "recall_at_3": 0.26666666666666666,
+            "recall_at_6": 0.4
+          }
+        },
+        "condition": {
+          "question_count": 2,
+          "bge_document": {
+            "recall_at_1": 0.5,
+            "recall_at_3": 0.5,
+            "recall_at_6": 0.5
+          },
+          "bge_global": {
+            "recall_at_1": 0.5,
+            "recall_at_3": 0.5,
+            "recall_at_6": 0.5
+          },
+          "lexical_document": {
+            "recall_at_1": 0.5,
+            "recall_at_3": 0.5,
+            "recall_at_6": 1.0
+          },
+          "lexical_global": {
+            "recall_at_1": 0.5,
+            "recall_at_3": 0.5,
+            "recall_at_6": 1.0
+          }
+        },
+        "distractor": {
+          "question_count": 3,
+          "bge_document": {
+            "recall_at_1": 0.3333333333333333,
+            "recall_at_3": 0.3333333333333333,
+            "recall_at_6": 0.3333333333333333
+          },
+          "bge_global": {
+            "recall_at_1": 0.3333333333333333,
+            "recall_at_3": 0.3333333333333333,
+            "recall_at_6": 0.3333333333333333
+          },
+          "lexical_document": {
+            "recall_at_1": 0.0,
+            "recall_at_3": 0.0,
+            "recall_at_6": 0.3333333333333333
+          },
+          "lexical_global": {
+            "recall_at_1": 0.0,
+            "recall_at_3": 0.0,
+            "recall_at_6": 0.0
+          }
+        },
+        "multi_page": {
+          "question_count": 3,
+          "bge_document": {
+            "recall_at_1": 0.0,
+            "recall_at_3": 0.3333333333333333,
+            "recall_at_6": 0.3333333333333333
+          },
+          "bge_global": {
+            "recall_at_1": 0.0,
+            "recall_at_3": 0.3333333333333333,
+            "recall_at_6": 0.3333333333333333
+          },
+          "lexical_document": {
+            "recall_at_1": 0.0,
+            "recall_at_3": 0.3333333333333333,
+            "recall_at_6": 0.3333333333333333
+          },
+          "lexical_global": {
+            "recall_at_1": 0.0,
+            "recall_at_3": 0.0,
+            "recall_at_6": 0.3333333333333333
+          }
+        },
+        "numeric": {
+          "question_count": 4,
+          "bge_document": {
+            "recall_at_1": 0.5,
+            "recall_at_3": 0.75,
+            "recall_at_6": 1.0
+          },
+          "bge_global": {
+            "recall_at_1": 0.5,
+            "recall_at_3": 0.75,
+            "recall_at_6": 1.0
+          },
+          "lexical_document": {
+            "recall_at_1": 0.25,
+            "recall_at_3": 0.5,
+            "recall_at_6": 0.5
+          },
+          "lexical_global": {
+            "recall_at_1": 0.25,
+            "recall_at_3": 0.5,
+            "recall_at_6": 0.5
+          }
+        },
+        "paraphrase": {
+          "question_count": 3,
+          "bge_document": {
+            "recall_at_1": 0.0,
+            "recall_at_3": 0.0,
+            "recall_at_6": 0.3333333333333333
+          },
+          "bge_global": {
+            "recall_at_1": 0.0,
+            "recall_at_3": 0.0,
+            "recall_at_6": 0.3333333333333333
+          },
+          "lexical_document": {
+            "recall_at_1": 0.3333333333333333,
+            "recall_at_3": 0.3333333333333333,
+            "recall_at_6": 0.3333333333333333
+          },
+          "lexical_global": {
+            "recall_at_1": 0.3333333333333333,
+            "recall_at_3": 0.3333333333333333,
+            "recall_at_6": 0.3333333333333333
+          }
+        }
+      },
+      "questions": [
+        {
+          "id": "REAL-A-H1",
+          "type": "paraphrase",
+          "ranks": {
+            "bge": {
+              "document": 19,
+              "global": 50
+            },
+            "lexical": {
+              "document": 59,
+              "global": 107
+            }
+          }
+        },
+        {
+          "id": "REAL-A-H2",
+          "type": "numeric",
+          "ranks": {
+            "bge": {
+              "document": 4,
+              "global": 6
+            },
+            "lexical": {
+              "document": 64,
+              "global": 98
+            }
+          }
+        },
+        {
+          "id": "REAL-A-H3",
+          "type": "distractor",
+          "ranks": {
+            "bge": {
+              "document": 1,
+              "global": 1
+            },
+            "lexical": {
+              "document": 11,
+              "global": 22
+            }
+          }
+        },
+        {
+          "id": "REAL-A-H4",
+          "type": "numeric",
+          "ranks": {
+            "bge": {
+              "document": 1,
+              "global": 1
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        },
+        {
+          "id": "REAL-A-H5",
+          "type": "multi_page",
+          "ranks": {
+            "bge": {
+              "document": 31,
+              "global": 75
+            },
+            "lexical": {
+              "document": 29,
+              "global": 75
+            }
+          }
+        },
+        {
+          "id": "REAL-B-H1",
+          "type": "paraphrase",
+          "ranks": {
+            "bge": {
+              "document": 21,
+              "global": 30
+            },
+            "lexical": {
+              "document": 45,
+              "global": 156
+            }
+          }
+        },
+        {
+          "id": "REAL-B-H2",
+          "type": "numeric",
+          "ranks": {
+            "bge": {
+              "document": 1,
+              "global": 1
+            },
+            "lexical": {
+              "document": 2,
+              "global": 2
+            }
+          }
+        },
+        {
+          "id": "REAL-B-H3",
+          "type": "distractor",
+          "ranks": {
+            "bge": {
+              "document": 21,
+              "global": 38
+            },
+            "lexical": {
+              "document": 6,
+              "global": 9
+            }
+          }
+        },
+        {
+          "id": "REAL-B-H4",
+          "type": "condition",
+          "ranks": {
+            "bge": {
+              "document": 1,
+              "global": 1
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        },
+        {
+          "id": "REAL-B-H5",
+          "type": "multi_page",
+          "ranks": {
+            "bge": {
+              "document": 2,
+              "global": 3
+            },
+            "lexical": {
+              "document": 3,
+              "global": 5
+            }
+          }
+        },
+        {
+          "id": "REAL-C-H1",
+          "type": "distractor",
+          "ranks": {
+            "bge": {
+              "document": 30,
+              "global": 92
+            },
+            "lexical": {
+              "document": 32,
+              "global": 48
+            }
+          }
+        },
+        {
+          "id": "REAL-C-H2",
+          "type": "paraphrase",
+          "ranks": {
+            "bge": {
+              "document": 4,
+              "global": 4
+            },
+            "lexical": {
+              "document": 1,
+              "global": 1
+            }
+          }
+        },
+        {
+          "id": "REAL-C-H3",
+          "type": "numeric",
+          "ranks": {
+            "bge": {
+              "document": 3,
+              "global": 3
+            },
+            "lexical": {
+              "document": 76,
+              "global": 265
+            }
+          }
+        },
+        {
+          "id": "REAL-C-H4",
+          "type": "multi_page",
+          "ranks": {
+            "bge": {
+              "document": 7,
+              "global": 7
+            },
+            "lexical": {
+              "document": 7,
+              "global": 7
+            }
+          }
+        },
+        {
+          "id": "REAL-C-H5",
+          "type": "condition",
+          "ranks": {
+            "bge": {
+              "document": 10,
+              "global": 12
+            },
+            "lexical": {
+              "document": 5,
+              "global": 5
+            }
+          }
+        }
+      ]
+    },
+    "original_reference": {
+      "retrieval": {
+        "all": {
+          "question_count": 15,
+          "bge_document": {
+            "recall_at_1": 0.7333333333333333,
+            "recall_at_3": 0.8666666666666667,
+            "recall_at_6": 1.0
+          },
+          "bge_global": {
+            "recall_at_1": 0.7333333333333333,
+            "recall_at_3": 0.8666666666666667,
+            "recall_at_6": 1.0
+          },
+          "lexical_document": {
+            "recall_at_1": 0.3333333333333333,
+            "recall_at_3": 0.7333333333333333,
+            "recall_at_6": 0.9333333333333333
+          },
+          "lexical_global": {
+            "recall_at_1": 0.26666666666666666,
+            "recall_at_3": 0.6666666666666666,
+            "recall_at_6": 0.9333333333333333
+          }
+        },
+        "original": {
+          "question_count": 15,
+          "bge_document": {
+            "recall_at_1": 0.7333333333333333,
+            "recall_at_3": 0.8666666666666667,
+            "recall_at_6": 1.0
+          },
+          "bge_global": {
+            "recall_at_1": 0.7333333333333333,
+            "recall_at_3": 0.8666666666666667,
+            "recall_at_6": 1.0
+          },
+          "lexical_document": {
+            "recall_at_1": 0.3333333333333333,
+            "recall_at_3": 0.7333333333333333,
+            "recall_at_6": 0.9333333333333333
+          },
+          "lexical_global": {
+            "recall_at_1": 0.26666666666666666,
+            "recall_at_3": 0.6666666666666666,
+            "recall_at_6": 0.9333333333333333
+          }
+        }
+      }
+    },
+    "privacy": {
+      "source_files_committed": false,
+      "source_paths_in_output": false,
+      "source_text_in_output": false,
+      "external_llm_calls": false
+    }
+  }
+}

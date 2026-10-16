@@ -1,0 +1,676 @@
+{
+  "name": "StudyMate RAG Public Hard Chinese Benchmark",
+  "version": "1.0.0",
+  "description": "Harder fictional questions over extended copies of the public PDFs. Each hard PDF keeps the original pages 2-4 unchanged and adds a page of confusable entities and procedures. Questions were fixed before the first evaluation run.",
+  "question_types": {
+    "paraphrase": "No named entity from the source; wording differs from the source text.",
+    "distractor": "A confusable entity with different values exists in the same document.",
+    "boundary": "Asks about an edge value or condition stated by a rule.",
+    "multi_page": "Needs evidence from more than one page; every evidence group must be retrieved."
+  },
+  "documents": [
+    {
+      "filename": "studymate-hard-observatory.pdf",
+      "base_document": "studymate-eval-observatory.pdf",
+      "title": "极光观测站操作基础（加难版）",
+      "subtitle": "公开虚构评测资料 A-H",
+      "extra_pages": [
+        {
+          "heading": "相近设备与例外规程",
+          "sections": [
+            {
+              "title": "琥珀校准牌",
+              "text": "琥珀校准牌用于标记已经通过增益校准的传感器。校准牌的激活窗口为 28 分钟，超过窗口后必须重新执行增益校准。与零点校准使用的标记不同，琥珀校准牌可以在同一观测轮次内转移给备用设备。"
+            },
+            {
+              "title": "天底脉冲采样",
+              "text": "天底脉冲采样必须包含连续 9 次测量，相邻两次测量的间隔不得超过 6 秒。天底采样只用于地面反射校正，不能替代天顶脉冲采样。"
+            },
+            {
+              "title": "副镜冷启动",
+              "text": "副镜完成冷启动后预热 6 分钟即可用于对焦测试，但正式观测仍以主镜预热完成为准。副镜预热期间同样不得写入正式观测记录。"
+            },
+            {
+              "title": "西塔同步计划",
+              "text": "西塔每天在协调世界时 14:30 执行一次增量同步。增量同步生成的审计记录保留 30 天，到期后由归档服务批量移除。"
+            },
+            {
+              "title": "夜间巡检流程",
+              "text": "夜间巡检开始时，先等待主镜冷启动预热结束，再执行一次天顶脉冲采样。只有这组采样判定有效后，值班人员才可以写入当晚第一条正式观测记录。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "studymate-hard-ecology.pdf",
+      "base_document": "studymate-eval-ecology.pdf",
+      "title": "封闭生态舱维护手册（加难版）",
+      "subtitle": "公开虚构评测资料 B-H",
+      "extra_pages": [
+        {
+          "heading": "相近物种与例外规程",
+          "sections": [
+            {
+              "title": "银苔灌溉",
+              "text": "银苔每 4 天灌溉一次，每平方米使用 2.6 升循环水，灌溉当天保持 7 小时紫光照明。银苔与琥珀苔种植在同一舱段，但两者不能共用灌溉计划。"
+            },
+            {
+              "title": "雾培育苗间",
+              "text": "雾培育苗间只用于播种后前两周的幼苗，相对湿度保持在 80% 到 86%，标准温度为 24 摄氏度。幼苗移出后执行普通雾培温室的环境标准。"
+            },
+            {
+              "title": "金翅雀声学信标",
+              "text": "金翅雀佩戴的声学信标工作频率为 38 kHz，在无遮挡环境中的标称检测半径为 90 米。金翅雀信标与银翅雀信标不能使用同一接收器。"
+            },
+            {
+              "title": "蓝色样本瓶盖",
+              "text": "蓝色样本瓶盖只用于无菌样本，最多使用 3 次。蓝色瓶盖不得与绿色瓶盖混放在同一清洗篮中。"
+            },
+            {
+              "title": "季度巡检流程",
+              "text": "季度巡检先确认授粉走廊的净宽度没有低于下限，再测试二氧化碳应急通风阀能否在规定浓度自动开启，最后抽查一次营养液配比。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "studymate-hard-computing.pdf",
+      "base_document": "studymate-eval-computing.pdf",
+      "title": "棱镜计算平台运行规范（加难版）",
+      "subtitle": "公开虚构评测资料 C-H",
+      "extra_pages": [
+        {
+          "heading": "相近组件与例外规程",
+          "sections": [
+            {
+              "title": "信标调度器",
+              "text": "信标调度器只服务批处理队列，默认时间片是 40 毫秒。批处理的高优先级队列与普通队列按照 2:1 的次数比例获得执行机会。"
+            },
+            {
+              "title": "珊瑚缓存",
+              "text": "珊瑚缓存条目的默认生存时间是 180 秒。与珍珠缓存不同，珊瑚缓存的读取命中会让生存时间重新计时。"
+            },
+            {
+              "title": "绿色沙箱",
+              "text": "绿色沙箱专门运行不可信代码，单个绿色沙箱最多同时运行 6 个作业。超出的作业会被直接拒绝，而不是进入等待队列。"
+            },
+            {
+              "title": "存储写入重试",
+              "text": "存储写入请求最多重试 2 次，相邻重试之间固定等待 1 秒。存储写入的重试规则与网络请求的重试规则相互独立。"
+            },
+            {
+              "title": "发布前检查流程",
+              "text": "版本发布前先确认最近一次运行状态快照已经写入索引，再核对恢复点目标允许丢失的事务上限，最后确认审计日志仍处于在线保留期内。"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "OBS-H1",
+      "type": "distractor",
+      "question": "通过零点校准的传感器，它的校准标记多久以后失效？",
+      "gold_document": "studymate-hard-observatory.pdf",
+      "evidence": [
+        {
+          "pages": [
+            2
+          ],
+          "keywords": [
+            "18 分钟",
+            "零点校准"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "18 分钟"
+      ],
+      "forbidden_answer_keywords": [
+        "28 分钟"
+      ]
+    },
+    {
+      "id": "OBS-H2",
+      "type": "distractor",
+      "question": "增益校准完成后使用的标记，激活窗口有多长？能不能交给别的设备用？",
+      "gold_document": "studymate-hard-observatory.pdf",
+      "evidence": [
+        {
+          "pages": [
+            5
+          ],
+          "keywords": [
+            "28 分钟",
+            "备用设备"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "28 分钟",
+        "备用设备"
+      ],
+      "forbidden_answer_keywords": [
+        "18 分钟"
+      ]
+    },
+    {
+      "id": "OBS-H3",
+      "type": "distractor",
+      "question": "每天凌晨做完整同步的那座塔，同步留下的审计记录保存多久？",
+      "gold_document": "studymate-hard-observatory.pdf",
+      "evidence": [
+        {
+          "pages": [
+            3
+          ],
+          "keywords": [
+            "02:30",
+            "45 天"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "45 天"
+      ],
+      "forbidden_answer_keywords": [
+        "30 天"
+      ]
+    },
+    {
+      "id": "OBS-H4",
+      "type": "paraphrase",
+      "question": "出过故障被单独隔开的仪器，要平稳度过几轮才能重新排进日常观测？",
+      "gold_document": "studymate-hard-observatory.pdf",
+      "evidence": [
+        {
+          "pages": [
+            4
+          ],
+          "keywords": [
+            "2 个观测轮次"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "2"
+      ]
+    },
+    {
+      "id": "OBS-H5",
+      "type": "paraphrase",
+      "question": "镜头温度偏高时，值班的人应该先做什么，又不应该做什么？",
+      "gold_document": "studymate-hard-observatory.pdf",
+      "evidence": [
+        {
+          "pages": [
+            4
+          ],
+          "keywords": [
+            "暂停曝光",
+            "制冷回路"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "暂停曝光",
+        "制冷回路"
+      ]
+    },
+    {
+      "id": "OBS-H6",
+      "type": "boundary",
+      "question": "漂移评分正好是 0.63 的记录会被送到哪里？",
+      "gold_document": "studymate-hard-observatory.pdf",
+      "evidence": [
+        {
+          "pages": [
+            2
+          ],
+          "keywords": [
+            "0.63",
+            "自动归档"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "自动归档"
+      ]
+    },
+    {
+      "id": "OBS-H7",
+      "type": "multi_page",
+      "question": "夜间巡检从主镜冷启动开始，至少要等多久、完成怎样的采样，才能写入当晚第一条正式记录？",
+      "gold_document": "studymate-hard-observatory.pdf",
+      "evidence": [
+        {
+          "pages": [
+            5
+          ],
+          "keywords": [
+            "夜间巡检"
+          ]
+        },
+        {
+          "pages": [
+            2
+          ],
+          "keywords": [
+            "11 分钟",
+            "连续 7 次"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "11 分钟",
+        "7"
+      ]
+    },
+    {
+      "id": "OBS-H8",
+      "type": "distractor",
+      "question": "做地面反射校正的那种采样，要连续测几次，每次间隔最多多久？",
+      "gold_document": "studymate-hard-observatory.pdf",
+      "evidence": [
+        {
+          "pages": [
+            5
+          ],
+          "keywords": [
+            "9 次",
+            "6 秒"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "9",
+        "6 秒"
+      ],
+      "forbidden_answer_keywords": [
+        "4 秒"
+      ]
+    },
+    {
+      "id": "ECO-H1",
+      "type": "distractor",
+      "question": "琥珀苔灌溉当天，紫光照明要开几个小时？",
+      "gold_document": "studymate-hard-ecology.pdf",
+      "evidence": [
+        {
+          "pages": [
+            2
+          ],
+          "keywords": [
+            "9 小时",
+            "琥珀苔"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "9 小时"
+      ],
+      "forbidden_answer_keywords": [
+        "7 小时"
+      ]
+    },
+    {
+      "id": "ECO-H2",
+      "type": "distractor",
+      "question": "银苔多久浇一次水，每平方米用多少水？",
+      "gold_document": "studymate-hard-ecology.pdf",
+      "evidence": [
+        {
+          "pages": [
+            5
+          ],
+          "keywords": [
+            "4 天",
+            "2.6 升"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "4 天",
+        "2.6 升"
+      ],
+      "forbidden_answer_keywords": [
+        "1.8 升"
+      ]
+    },
+    {
+      "id": "ECO-H3",
+      "type": "distractor",
+      "question": "不是给幼苗用的那个雾培温室，湿度要控制在什么范围？",
+      "gold_document": "studymate-hard-ecology.pdf",
+      "evidence": [
+        {
+          "pages": [
+            2
+          ],
+          "keywords": [
+            "68%",
+            "74%"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "68%",
+        "74%"
+      ],
+      "forbidden_answer_keywords": [
+        "80%"
+      ]
+    },
+    {
+      "id": "ECO-H4",
+      "type": "paraphrase",
+      "question": "装样本的绿色盖子用到第几次就必须换新？洗干净以后能重新计数吗？",
+      "gold_document": "studymate-hard-ecology.pdf",
+      "evidence": [
+        {
+          "pages": [
+            3
+          ],
+          "keywords": [
+            "8 次",
+            "不能重置"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "8 次"
+      ]
+    },
+    {
+      "id": "ECO-H5",
+      "type": "paraphrase",
+      "question": "舱内空气里碳排放气体浓度过高时会自动怎么处理？降下来以后还要持续多久？",
+      "gold_document": "studymate-hard-ecology.pdf",
+      "evidence": [
+        {
+          "pages": [
+            4
+          ],
+          "keywords": [
+            "950 ppm",
+            "3 分钟"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "950 ppm",
+        "3 分钟"
+      ]
+    },
+    {
+      "id": "ECO-H6",
+      "type": "boundary",
+      "question": "育苗区土壤的 pH 测出来是 7.0，应该怎么处理？",
+      "gold_document": "studymate-hard-ecology.pdf",
+      "evidence": [
+        {
+          "pages": [
+            4
+          ],
+          "keywords": [
+            "6.8",
+            "含钙添加剂"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "含钙添加剂"
+      ]
+    },
+    {
+      "id": "ECO-H7",
+      "type": "multi_page",
+      "question": "季度巡检需要核对的通道宽度下限和应急阀开启浓度分别是多少？",
+      "gold_document": "studymate-hard-ecology.pdf",
+      "evidence": [
+        {
+          "pages": [
+            5
+          ],
+          "keywords": [
+            "季度巡检"
+          ]
+        },
+        {
+          "pages": [
+            3
+          ],
+          "keywords": [
+            "3.5 米"
+          ]
+        },
+        {
+          "pages": [
+            4
+          ],
+          "keywords": [
+            "950 ppm"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "3.5 米",
+        "950 ppm"
+      ]
+    },
+    {
+      "id": "ECO-H8",
+      "type": "distractor",
+      "question": "金翅雀身上的信标，在没有遮挡时能探测多远？",
+      "gold_document": "studymate-hard-ecology.pdf",
+      "evidence": [
+        {
+          "pages": [
+            5
+          ],
+          "keywords": [
+            "90 米",
+            "金翅雀"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "90 米"
+      ],
+      "forbidden_answer_keywords": [
+        "120 米"
+      ]
+    },
+    {
+      "id": "CMP-H1",
+      "type": "distractor",
+      "question": "珍珠缓存的条目被读取命中后，生存时间会重新计时吗？",
+      "gold_document": "studymate-hard-computing.pdf",
+      "evidence": [
+        {
+          "pages": [
+            2
+          ],
+          "keywords": [
+            "96 秒",
+            "读取命中"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "不会"
+      ]
+    },
+    {
+      "id": "CMP-H2",
+      "type": "distractor",
+      "question": "珊瑚缓存条目默认多久过期？",
+      "gold_document": "studymate-hard-computing.pdf",
+      "evidence": [
+        {
+          "pages": [
+            5
+          ],
+          "keywords": [
+            "180 秒"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "180 秒"
+      ],
+      "forbidden_answer_keywords": [
+        "96 秒"
+      ]
+    },
+    {
+      "id": "CMP-H3",
+      "type": "distractor",
+      "question": "不是给批处理用的那个调度器，默认时间片有多长？",
+      "gold_document": "studymate-hard-computing.pdf",
+      "evidence": [
+        {
+          "pages": [
+            2
+          ],
+          "keywords": [
+            "24 毫秒"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "24 毫秒"
+      ],
+      "forbidden_answer_keywords": [
+        "40 毫秒"
+      ]
+    },
+    {
+      "id": "CMP-H4",
+      "type": "paraphrase",
+      "question": "计算节点刚开机时，要给诊断程序留出多少内存？没有诊断在运行时能借给用户任务吗？",
+      "gold_document": "studymate-hard-computing.pdf",
+      "evidence": [
+        {
+          "pages": [
+            2
+          ],
+          "keywords": [
+            "256 MB",
+            "诊断代理"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "256 MB"
+      ]
+    },
+    {
+      "id": "CMP-H5",
+      "type": "boundary",
+      "question": "第 13 个作业提交到蓝色沙箱时会发生什么？",
+      "gold_document": "studymate-hard-computing.pdf",
+      "evidence": [
+        {
+          "pages": [
+            4
+          ],
+          "keywords": [
+            "第 13 个作业",
+            "等待队列"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "等待队列"
+      ]
+    },
+    {
+      "id": "CMP-H6",
+      "type": "distractor",
+      "question": "网络请求失败以后，最多会自动重发几次？",
+      "gold_document": "studymate-hard-computing.pdf",
+      "evidence": [
+        {
+          "pages": [
+            3
+          ],
+          "keywords": [
+            "4 次",
+            "250 毫秒"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "4 次"
+      ],
+      "forbidden_answer_keywords": [
+        "2 次"
+      ]
+    },
+    {
+      "id": "CMP-H7",
+      "type": "multi_page",
+      "question": "发布前检查涉及的三个数字分别是多少：快照多久生成一次、恢复时最多允许丢几笔事务、审计日志在线保留几天？",
+      "gold_document": "studymate-hard-computing.pdf",
+      "evidence": [
+        {
+          "pages": [
+            5
+          ],
+          "keywords": [
+            "发布前"
+          ]
+        },
+        {
+          "pages": [
+            4
+          ],
+          "keywords": [
+            "15 分钟",
+            "2 笔"
+          ]
+        },
+        {
+          "pages": [
+            3
+          ],
+          "keywords": [
+            "21 天"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "15 分钟",
+        "2 笔",
+        "21 天"
+      ]
+    },
+    {
+      "id": "CMP-H8",
+      "type": "distractor",
+      "question": "运行不可信代码的沙箱，一次最多能并行多少个作业？",
+      "gold_document": "studymate-hard-computing.pdf",
+      "evidence": [
+        {
+          "pages": [
+            5
+          ],
+          "keywords": [
+            "6 个作业",
+            "不可信代码"
+          ]
+        }
+      ],
+      "answer_keywords": [
+        "6"
+      ],
+      "forbidden_answer_keywords": [
+        "12"
+      ]
+    }
+  ]
+}
