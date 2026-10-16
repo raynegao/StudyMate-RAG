@@ -1,0 +1,40 @@
+{
+  "verified_at": "2026-10-16T02:39:02.893079+00:00",
+  "llm_model": "deepseek-v4-flash",
+  "all_content_fictional": true,
+  "storage_index_read": false,
+  "document_characters": 68676,
+  "llm_timeout_seconds": 30.0,
+  "trials_per_mode": 3,
+  "trials_completed_per_mode": 1,
+  "runs": [
+    {
+      "status": "answered",
+      "batches": 6,
+      "cited_sources": 40,
+      "summary_concurrency": 1,
+      "elapsed_seconds": 44.27
+    },
+    {
+      "status": "answered",
+      "batches": 6,
+      "cited_sources": 25,
+      "summary_concurrency": 4,
+      "elapsed_seconds": 19.25
+    },
+    {
+      "status": "llm_request_failed",
+      "provider_error": true,
+      "summary_concurrency": 4,
+      "detail": "HTTP 402 insufficient balance"
+    }
+  ],
+  "median_seconds_successful": {
+    "sequential": 44.27,
+    "concurrency_4": 19.25
+  },
+  "speedup": 2.3,
+  "citation_failures": 0,
+  "aborted": "provider error llm_request_failed (HTTP 402 insufficient balance) on the first run of trial 2; no further requests sent",
+  "note": "Small sample; provider latency varies, so the speedup is indicative, not a benchmark. Citation failures are the designed guard rejecting labels that are not in the section notes. Recorded from the run's printed per-run results because the account ran out of balance mid-run; rerun scripts/verify_summary_concurrency.py after topping up to complete three trials per mode."
+}

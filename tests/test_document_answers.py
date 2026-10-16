@@ -102,19 +102,80 @@ def test_summary_reads_every_chunk_including_tail(monkeypatch):
     assert result["sources"][-1]["cited"] is True
 
 
+def section_or_synthesis(prompts, lock=None, delay=0.0, active=None):
+    """Fake model: a section cites its own first label, the synthesis cites S1 and S3."""
+    import re
+    import threading
+    import time
+
+    lock = lock or threading.Lock()
+
+    def generate(prompt):
+        with lock:
+            prompts.append(prompt)
+            if active is not None:
+                active["now"] += 1
+                active["max"] = max(active["max"], active["now"])
+        time.sleep(delay)
+        if active is not None:
+            with lock:
+                active["now"] -= 1
+        if "<不可信摘要>" in prompt:
+            return "完整概览 [S1] [S3]"
+        label = re.search(r"\[(S\d+)\]", prompt).group(1)
+        return f"{label} 部分要点 [{label}]"
+    return generate
+
+
 def test_large_summary_maps_all_sections_then_synthesizes(monkeypatch):
     chunks = [source(i, f"section-{i} " + "课" * 7000) for i in range(3)]
     monkeypatch.setattr(summary_service, "get_document_chunks", lambda doc: chunks)
     prompts = []
-    def generate(prompt):
-        prompts.append(prompt)
-        return f"第 {len(prompts)} 部分 [S{len(prompts)}]" if len(prompts) <= 3 else "完整概览 [S1] [S3]"
-    monkeypatch.setattr(summary_service, "complete_answer", generate)
+    monkeypatch.setattr(summary_service, "complete_answer", section_or_synthesis(prompts))
     result = summary_service.summarize_document(DOC_A, "主要内容")
     assert len(prompts) == 4
-    assert all(chunks[i].text in prompts[i] for i in range(3))
-    assert "[S3]" in prompts[-1]
+    sections, synthesis = prompts[:3], prompts[3]
+    assert all(sum(chunk.text in prompt for prompt in sections) == 1 for chunk in chunks)
+    # Section notes reach the synthesis in page order regardless of completion order.
+    assert synthesis.index("S1 部分要点") < synthesis.index("S2 部分要点") < synthesis.index("S3 部分要点")
     assert result["metadata"]["batches"] == 3
+
+
+@pytest.mark.parametrize("concurrency", [1, 3])
+def test_summary_sections_run_with_bounded_concurrency(monkeypatch, concurrency):
+    chunks = [source(i, f"section-{i} " + "课" * 7000) for i in range(8)]
+    monkeypatch.setattr(summary_service, "settings", replace(settings, summary_concurrency=concurrency))
+    monkeypatch.setattr(summary_service, "get_document_chunks", lambda doc: chunks)
+    prompts, active = [], {"now": 0, "max": 0}
+    monkeypatch.setattr(summary_service, "complete_answer", section_or_synthesis(prompts, delay=0.05, active=active))
+    result = summary_service.summarize_document(DOC_A, "主要内容")
+    assert active["max"] == concurrency
+    assert len(prompts) == 9 and "<不可信摘要>" in prompts[-1]
+    assert [f"S{i}" in prompts[-1] for i in range(1, 9)] == [True] * 8
+    assert result["metadata"]["batches"] == 8
+
+
+def test_failed_section_stops_unstarted_sections_and_synthesis(monkeypatch):
+    import threading
+    import time
+
+    chunks = [source(i, f"section-{i} " + "课" * 7000) for i in range(8)]
+    monkeypatch.setattr(summary_service, "settings", replace(settings, summary_concurrency=2))
+    monkeypatch.setattr(summary_service, "get_document_chunks", lambda doc: chunks)
+    calls, lock = [], threading.Lock()
+
+    def generate(prompt):
+        with lock:
+            calls.append(prompt)
+        if "section-0" in prompt:
+            return "没有引用的摘要"
+        time.sleep(0.2)
+        return "其他部分 [S2]"
+    monkeypatch.setattr(summary_service, "complete_answer", generate)
+    with pytest.raises(SummaryCitationError):
+        summary_service.summarize_document(DOC_A, "主要内容")
+    assert len(calls) < 8
+    assert not any("<不可信摘要>" in prompt for prompt in calls)
 
 
 @pytest.mark.parametrize("answer", ["无引用摘要", "摘要 [S99]"])

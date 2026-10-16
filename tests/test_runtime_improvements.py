@@ -72,13 +72,15 @@ def test_course_all_launcher_prints_url_and_cleans_up(tmp_path):
 
 def test_runtime_config_exposes_no_storage_paths_or_credentials(client, monkeypatch):
     from app.api import health
-    monkeypatch.setattr(health, "settings", replace(settings, knowledge_base_name="测试库", max_upload_size_mb=70, llm_timeout_seconds=80))
+    monkeypatch.setattr(health, "settings", replace(settings, knowledge_base_name="测试库", max_upload_size_mb=70, llm_timeout_seconds=80,
+                                                         summary_concurrency=4))
     data = client.get("/api/config").json()
     assert data == {
         "knowledge_base_name": "测试库", "max_upload_size_mb": 70,
         "chat_mode": "generation", "default_top_k": settings.default_top_k,
         "chat_request_timeout_seconds": 110,
-        "summary_request_timeout_seconds": 780,
+        # Two rounds of four section calls plus one synthesis call: 3 x 80 + 60.
+        "summary_request_timeout_seconds": 300,
     }
 
 
@@ -239,3 +241,17 @@ def test_settings_read_environment_at_construction(monkeypatch):
     monkeypatch.setenv("STUDYMATE_CHAT_MODE", "bogus")
     with pytest.raises(ValueError):
         Settings()
+
+
+def test_summary_budget_follows_concurrency_rounds():
+    from app.core.config import Settings
+
+    base = replace(settings, llm_timeout_seconds=30)
+    assert replace(base, summary_concurrency=1).summary_request_timeout_seconds == 330
+    assert replace(base, summary_concurrency=4).summary_request_timeout_seconds == 150
+    assert replace(base, summary_concurrency=8).summary_request_timeout_seconds == 120
+    for invalid in ("0", "9"):
+        with pytest.MonkeyPatch.context() as patch:
+            patch.setenv("STUDYMATE_SUMMARY_CONCURRENCY", invalid)
+            with pytest.raises(ValueError):
+                Settings()
