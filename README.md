@@ -295,7 +295,7 @@ data/                     本地上传文件和 Chroma 数据，不提交内容
 
 ## 当前边界
 
-当前版本为 `0.3.0`，聚焦稳定的单知识库 PDF 问答闭环，不包含 OCR、Hybrid Search、Rerank、Query Rewrite、多轮记忆、用户系统或云部署。
+当前版本为 `0.4.0`，聚焦稳定的单知识库 PDF 问答闭环，不包含 OCR、Hybrid Search、Rerank、Query Rewrite、多轮记忆、用户系统或云部署。
 
 ## License
 

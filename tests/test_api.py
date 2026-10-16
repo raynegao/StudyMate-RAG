@@ -18,7 +18,7 @@ def test_openapi_reports_release_version(client):
     response = client.get("/openapi.json")
 
     assert response.status_code == 200
-    assert response.json()["info"]["version"] == "0.3.0"
+    assert response.json()["info"]["version"] == "0.4.0"
 
 
 def test_upload_rejects_non_pdf(client):

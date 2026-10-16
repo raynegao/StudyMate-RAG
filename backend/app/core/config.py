@@ -26,7 +26,7 @@ class Settings:
     environment instead of re-importing this module."""
 
     app_name: str = field(default_factory=lambda: os.getenv("STUDYMATE_APP_NAME", "StudyMate RAG API"))
-    app_version: str = field(default_factory=lambda: os.getenv("STUDYMATE_APP_VERSION", "0.3.0"))
+    app_version: str = field(default_factory=lambda: os.getenv("STUDYMATE_APP_VERSION", "0.4.0"))
     log_level: str = field(default_factory=lambda: os.getenv("STUDYMATE_LOG_LEVEL", "INFO").upper())
     frontend_api_base_url: str = field(
         default_factory=lambda: os.getenv("STUDYMATE_API_BASE_URL", "http://127.0.0.1:8000")
