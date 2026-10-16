@@ -1,4 +1,4 @@
-# StudyMate RAG API 0.3.0
+# StudyMate RAG API 0.4.0
 
 - 默认地址：`http://127.0.0.1:8000`
 - 交互式文档：`http://127.0.0.1:8000/docs`
