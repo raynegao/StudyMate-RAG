@@ -20,6 +20,8 @@ SELECTED_DOCUMENT_KEY = "selected_document_id"
 QUESTION_KEY = "reading_question"
 TASK_KEY = "reading_task"
 
+PROVIDER_LABELS = {"deepseek": "DeepSeek", "gemini": "Gemini"}
+
 ERROR_MESSAGES = {
     "unsupported_file_type": "目前支持 PDF 格式，请换一份文件试试。",
     "upload_too_large": "文件太大了，请按上传区提示的大小限制缩小文件后重试。",
@@ -40,6 +42,11 @@ ERROR_MESSAGES = {
     "summary_citations_invalid": "这次概括没有对应到原文页码，结果未采用。请再试一次，或减少概括要求。",
     "validation_error": "请检查所选资料和问题后，再试一次。",
 }
+
+
+def provider_label(runtime: dict[str, Any]) -> str:
+    """Reader-facing name of the answer model provider; never an internal model name."""
+    return PROVIDER_LABELS.get(str(runtime.get("llm_provider", "")), "智能模型")
 
 
 def connection_error_message() -> str:
@@ -326,7 +333,7 @@ def render_chat(runtime: dict[str, Any], documents: list[dict[str, Any]]) -> Non
         submitted = st.button(("生成概括" if summary else "开始提问") if generation else "查找原文",
                               key="submit-reading", type="primary", use_container_width=True,
                               disabled=(not summary and not question.strip()) or (summary and not generation))
-    st.caption("由 DeepSeek 提供回答 · 点击生成时，所需原文会发送给 DeepSeek；概括会读取整份资料的文字。" if generation
+    st.caption(f"由 {provider_label(runtime)} 提供回答 · 点击生成时，所需原文会发送给 {provider_label(runtime)}；概括会读取整份资料的文字。" if generation
                else "仅在本机查找资料内容。")
     if submitted:
         prompt = question.strip() or "请概括这份资料的主要内容、核心概念及重要条件。"
@@ -391,7 +398,7 @@ def main() -> None:
     render_document_management(documents)
     with st.sidebar.expander("使用与隐私"):
         st.write("每次只使用你选中的资料，不会混入其他文件的内容。")
-        st.write("智能回答会把所需原文发送给 DeepSeek，全文概括会处理资料中全部可读取的文字。" if runtime["chat_mode"] == "generation"
+        st.write(f"智能回答会把所需原文发送给 {provider_label(runtime)}，全文概括会处理资料中全部可读取的文字。" if runtime["chat_mode"] == "generation"
                  else "当前只在本机查找原文，不会把资料内容发送给外部 AI。")
         st.caption("暂不支持纯图片扫描件。重要信息请结合原文核对。")
 

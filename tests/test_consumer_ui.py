@@ -8,7 +8,7 @@ from frontend import streamlit_app as ui
 
 DOC = "a" * 32
 RUNTIME = {"chat_mode": "generation", "default_top_k": 6,
-           "summary_request_timeout_seconds": 330, "max_upload_size_mb": 25}
+           "summary_request_timeout_seconds": 330, "max_upload_size_mb": 25, "llm_provider": "deepseek"}
 DOCUMENTS = [{"document_id": DOC, "filename": "公开学习资料.pdf", "chunk_count": 86}]
 
 
@@ -90,6 +90,15 @@ def test_consumer_chat_has_no_debug_controls_and_preserves_top_six(monkeypatch):
     assert "所需原文会发送给 DeepSeek" in text
     assert at.expander[0].label == "第 3 页 · 1 处参考"
     assert not at.expander[0].proto.expanded
+
+
+def test_provider_label_follows_runtime_config(monkeypatch):
+    monkeypatch.setattr(ui, "api_post", lambda *a, **kw: ({"answer": "公开结论 [S1]", "sources": [], "status": "answered"}, None))
+    at = AppTest.from_function(chat_app, args=({**RUNTIME, "llm_provider": "gemini"}, DOCUMENTS)).run()
+    assert not at.exception
+    text = visible_copy(at)
+    assert "由 Gemini 提供回答" in text and "所需原文会发送给 Gemini" in text
+    assert "DeepSeek" not in text and "gemini-" not in text
 
 
 def test_reading_starter_prefills_but_does_not_send_document(monkeypatch):

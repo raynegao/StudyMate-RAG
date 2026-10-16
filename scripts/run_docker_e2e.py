@@ -97,8 +97,8 @@ def run_e2e(*, env_file: Path | None, output_path: Path) -> dict[str, Any]:
         raise FileNotFoundError(f"Missing public demo PDF: {DEMO_PDF}")
     if env_file is not None and not env_file.exists():
         raise FileNotFoundError(f"Environment file does not exist: {env_file}")
-    if env_file is None and not os.getenv("DEEPSEEK_API_KEY"):
-        raise RuntimeError("Provide --env-file or set DEEPSEEK_API_KEY.")
+    if env_file is None and not (os.getenv("DEEPSEEK_API_KEY") or os.getenv("GEMINI_API_KEY")):
+        raise RuntimeError("Provide --env-file or export DEEPSEEK_API_KEY or GEMINI_API_KEY.")
 
     backend_port = free_port()
     frontend_port = free_port()
@@ -173,10 +173,10 @@ def run_e2e(*, env_file: Path | None, output_path: Path) -> dict[str, Any]:
                 },
             )
             if "三个星港周期" not in chat["answer"] or "双重校验" not in chat["answer"]:
-                raise AssertionError("DeepSeek answer is missing expected public-demo facts.")
+                raise AssertionError("Model answer is missing expected public-demo facts.")
             cited_sources = [source for source in chat["sources"] if source["cited"]]
             if not cited_sources:
-                raise AssertionError("DeepSeek answer did not include a valid citation.")
+                raise AssertionError("Model answer did not include a valid citation.")
             overview = request_json(
                 "POST", f"{backend_url}/api/chat",
                 json={"question": "这份资料的核心概念是什么？", "document_id": document_id},
@@ -216,7 +216,7 @@ def run_e2e(*, env_file: Path | None, output_path: Path) -> dict[str, Any]:
 
             result = {
                 "verified_at": datetime.now(timezone.utc).isoformat(),
-                "environment": "isolated Docker Compose project with real BGE, ChromaDB and DeepSeek",
+                "environment": "isolated Docker Compose project with real BGE, ChromaDB and the configured answer model",
                 "public_fixture": str(DEMO_PDF.relative_to(ROOT_DIR)),
                 "backend_health": backend_health,
                 "frontend_health": frontend_health,
@@ -229,7 +229,8 @@ def run_e2e(*, env_file: Path | None, output_path: Path) -> dict[str, Any]:
                     "filename": upload["filename"],
                     "chunk_count": upload["chunk_count"],
                 },
-                "deepseek_answer_correct": True,
+                "llm_provider": runtime.get("llm_provider"),
+                "answer_correct": True,
                 "cited_source_count": len(cited_sources),
                 "listed_before_restart": any(
                     document["document_id"] == document_id
@@ -284,7 +285,7 @@ def parse_args() -> argparse.Namespace:
         "--env-file",
         type=Path,
         default=DEFAULT_ENV_FILE if DEFAULT_ENV_FILE.exists() else None,
-        help="Compose environment file. Omit when DEEPSEEK_API_KEY is exported.",
+        help="Compose environment file. Omit when DEEPSEEK_API_KEY or GEMINI_API_KEY is exported.",
     )
     parser.add_argument("--output", type=Path, default=RESULT_PATH)
     return parser.parse_args()

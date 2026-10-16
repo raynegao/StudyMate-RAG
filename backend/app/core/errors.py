@@ -119,13 +119,13 @@ class SummaryTooLargeError(ServiceError):
 class LLMNotConfiguredError(ServiceError):
     status_code = status.HTTP_503_SERVICE_UNAVAILABLE
     code = "llm_not_configured"
-    public_message = "DeepSeek 服务尚未配置。"
+    public_message = "回答模型尚未配置。"
 
 
 class LLMServiceError(ServiceError):
     status_code = status.HTTP_502_BAD_GATEWAY
     code = "llm_request_failed"
-    public_message = "DeepSeek 服务调用失败，请稍后重试。"
+    public_message = "回答模型调用失败，请稍后重试。"
 
 
 class LLMTimeoutError(ServiceError):

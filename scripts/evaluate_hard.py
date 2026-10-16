@@ -2,7 +2,7 @@
 """Evaluate harder question types with the same document-scoped retrieval the app uses.
 
 Public part: three fictional hard PDFs (original pages plus a page of confusable entities),
-optionally with DeepSeek answers. Real-course part: retrieval-only over the anonymous course
+optionally with answers from the configured model provider. Real-course part: retrieval-only over the anonymous course
 PDFs listed in the git-ignored private source map; only IDs, types and ranks are written.
 The original 30 public and 15 real-course questions are re-measured with the same method as
 a reference, so the difficulty gap is comparable. Question sets are fixed before running.
@@ -155,8 +155,8 @@ def summarize(questions: list[dict[str, Any]], ranks: dict) -> dict[str, Any]:
 
 
 def evaluate_answers(questions: list[dict[str, Any]], rankings: dict) -> dict[str, Any]:
-    if not settings.deepseek_api_key or settings.chat_mode != "generation":
-        raise RuntimeError("--with-llm needs DEEPSEEK_API_KEY and generation mode. Load .env.local first.")
+    if not settings.llm_api_key or settings.chat_mode != "generation":
+        raise RuntimeError(f"--with-llm needs an API key for {settings.llm_provider} and generation mode. Load .env.local first.")
     records, latencies = [], []
     for index, question in enumerate(questions, start=1):
         retrieved = [as_retrieved_chunk(chunk, score) for chunk, score in rankings[question["id"]][: settings.default_top_k]]
@@ -185,7 +185,8 @@ def evaluate_answers(questions: list[dict[str, Any]], rankings: dict) -> dict[st
         by_type[question_type] = {"question_count": len(items), "answer_accuracy": rate(items, "answer_correct"),
                                   "citation_support": rate(items, "citation_support")}
     return {
-        "llm_model": settings.llm_model, "top_k": settings.default_top_k, "scope": "document",
+        "llm_provider": settings.llm_provider, "llm_model": settings.llm_model,
+        "top_k": settings.default_top_k, "scope": "document",
         "answer_accuracy": rate(records, "answer_correct"), "citation_support": rate(records, "citation_support"),
         "answered_rate": statistics.fmean(r["status"] == "answered" for r in records),
         "generation_latency_mean_ms": statistics.fmean(latencies),
@@ -348,7 +349,7 @@ def render_report(result: dict[str, Any]) -> str:
         ".venv/bin/python scripts/generate_evaluation_assets.py",
         ".venv/bin/python scripts/evaluate_hard.py            # public + local real-course retrieval",
         "set -a && source .env.local && set +a",
-        ".venv/bin/python scripts/evaluate_hard.py --with-llm # also DeepSeek answers on the public hard set",
+        ".venv/bin/python scripts/evaluate_hard.py --with-llm # also model answers on the public hard set",
         ".venv/bin/python scripts/evaluate_hard.py --public-only",
         "```", "",
         "Machine-readable results: [hard-results.json](../output/evaluation/hard-results.json).", "",
@@ -363,7 +364,7 @@ def render_report(result: dict[str, Any]) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--with-llm", action="store_true", help="Call DeepSeek for the public hard set.")
+    parser.add_argument("--with-llm", action="store_true", help="Call the configured answer model for the public hard set.")
     parser.add_argument("--public-only", action="store_true", help="Skip the local real-course PDFs.")
     parser.add_argument("--output", type=Path, default=RESULT_PATH)
     parser.add_argument("--report", type=Path, default=REPORT_PATH)

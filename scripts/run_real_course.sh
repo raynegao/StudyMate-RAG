@@ -13,10 +13,11 @@ case "$COURSE_MODE" in
   generation|retrieval_only) ;;
   *) echo "STUDYMATE_COURSE_MODE 必须为 generation 或 retrieval_only" >&2; exit 2 ;;
 esac
+ENV_FILE="${STUDYMATE_ENV_FILE:-.env.local}"
 set -a
 # Load credentials without printing them, then pin storage/chunk settings below.
-if [[ "$COURSE_MODE" == "generation" && -f .env.local ]]; then
-  source .env.local
+if [[ "$COURSE_MODE" == "generation" && -f "$ENV_FILE" ]]; then
+  source "$ENV_FILE"
 fi
 source config/profiles/real-course-local.env
 set +a
@@ -33,20 +34,27 @@ export STUDYMATE_BACKEND_PORT="${STUDYMATE_COURSE_BACKEND_PORT:-8001}"
 export STUDYMATE_FRONTEND_PORT="${STUDYMATE_COURSE_FRONTEND_PORT:-8502}"
 export STUDYMATE_API_BASE_URL="http://127.0.0.1:$STUDYMATE_BACKEND_PORT"
 if [[ "$COURSE_MODE" == "retrieval_only" ]]; then
-  unset DEEPSEEK_API_KEY
+  unset DEEPSEEK_API_KEY GEMINI_API_KEY
 fi
 PYTHON_BIN="${PYTHON_BIN:-$ROOT_DIR/.venv/bin/python}"
 
 if [[ "$ACTION" == "--print-config" ]]; then
-  exec "$PYTHON_BIN" -c 'import json; from app.core.config import settings; print(json.dumps({"knowledge_base_name":settings.knowledge_base_name,"chat_mode":settings.chat_mode,"max_upload_size_mb":settings.max_upload_size_mb,"top_k":settings.default_top_k,"upload_profile":settings.upload_dir.name,"chroma_profile":settings.chroma_dir.name}, ensure_ascii=False))'
+  exec "$PYTHON_BIN" -c 'import json; from app.core.config import settings; print(json.dumps({"knowledge_base_name":settings.knowledge_base_name,"chat_mode":settings.chat_mode,"max_upload_size_mb":settings.max_upload_size_mb,"top_k":settings.default_top_k,"upload_profile":settings.upload_dir.name,"chroma_profile":settings.chroma_dir.name,"llm_provider":settings.llm_provider,"llm_configured":bool(settings.llm_api_key)}, ensure_ascii=False))'
 fi
 case "$ACTION" in
   all|prepare|verify|backend|frontend) ;;
   *) echo "用法：scripts/run_real_course.sh [all|local|prepare|verify|backend|frontend|--print-config]" >&2; exit 2 ;;
 esac
 
-if [[ "$COURSE_MODE" == "generation" && -z "${DEEPSEEK_API_KEY:-}" ]]; then
-  echo "DeepSeek 尚未配置，请在 .env.local 填写 DEEPSEEK_API_KEY；或使用 scripts/run_real_course.sh local。" >&2
+LLM_PROVIDER="${STUDYMATE_LLM_PROVIDER:-deepseek}"
+case "$LLM_PROVIDER" in
+  deepseek) KEY_VAR=DEEPSEEK_API_KEY ;;
+  gemini) KEY_VAR=GEMINI_API_KEY ;;
+  *) echo "STUDYMATE_LLM_PROVIDER 必须为 deepseek 或 gemini" >&2; exit 2 ;;
+esac
+if [[ "$COURSE_MODE" == "generation" && -z "${!KEY_VAR:-}" ]]; then
+  # Braces keep bash 3.2 from reading the following full-width punctuation as part of the name.
+  echo "回答模型 ${LLM_PROVIDER} 尚未配置，请在 ${ENV_FILE} 填写 ${KEY_VAR}；或使用 scripts/run_real_course.sh local。" >&2
   exit 1
 fi
 STUDYMATE_CHAT_MODE=retrieval_only "$PYTHON_BIN" scripts/prepare_real_course.py
@@ -54,7 +62,7 @@ case "$ACTION" in
   prepare) exit 0 ;;
   verify) exec "$PYTHON_BIN" scripts/verify_real_course.py ;;
   backend) exec scripts/run_backend.sh ;;
-  frontend) exec env -u DEEPSEEK_API_KEY scripts/run_frontend.sh ;;
+  frontend) exec env -u DEEPSEEK_API_KEY -u GEMINI_API_KEY scripts/run_frontend.sh ;;
 esac
 
 # Fail before launching either server if the chosen ports are occupied.
@@ -67,7 +75,7 @@ for s,p in zip(sockets,ports):
     s.listen(1)'
 scripts/run_backend.sh &
 backend_pid=$!
-env -u DEEPSEEK_API_KEY scripts/run_frontend.sh &
+env -u DEEPSEEK_API_KEY -u GEMINI_API_KEY scripts/run_frontend.sh &
 frontend_pid=$!
 cleanup() {
   kill "$backend_pid" "$frontend_pid" 2>/dev/null || true

@@ -14,7 +14,7 @@ flowchart LR
     S --> P["pypdf 解析与 chunking"]
     S --> E["本地 BGE embedding"]
     S --> V["ChromaDB"]
-    S --> L["DeepSeek Chat API"]
+    S --> L["DeepSeek / Gemini (OpenAI-compatible)"]
     P --> D["上传文件目录"]
     E --> H["Hugging Face 模型缓存"]
 ```
@@ -29,7 +29,7 @@ flowchart LR
 - `services/vector_store.py`：Chroma CRUD 和距离返回
 - `services/rag_service.py`：空库短路、相关性过滤、本地检索模式、生成与引用有效性检查
 - `services/summary_service.py`：概览识别、指定 PDF 按页读取、全量分批归纳与综合、原始引用校验；超限在外发前失败
-- `services/llm_service.py`：DeepSeek 客户端与系统级安全约束
+- `services/llm_service.py`：回答模型客户端（DeepSeek 或 Gemini，OpenAI 兼容接口）与系统级安全约束
 - `core/errors.py`：类型化服务异常和统一 JSON 错误
 
 ## 上传流程
@@ -67,7 +67,7 @@ sequenceDiagram
     participant R as RAG 服务
     participant E as BGE
     participant V as ChromaDB
-    participant L as DeepSeek
+    participant L as DeepSeek / Gemini
 
     C->>A: question 与可选 top_k
     A->>R: answer_question
@@ -96,7 +96,7 @@ sequenceDiagram
 
 - 上传文件：`data/uploads/`
 - Chroma 索引：`data/chroma_db/`
-- 文档库入口：`scripts/run_real_course.sh` 按用户明确授权启用 DeepSeek，从 `.env.local` 安全加载 Key；`local`、`prepare`、`verify` 保持纯本地。复用 `real-course-v2` 存储和后续上传，不读取或重建旧私人索引；前端只发送所选 PDF
+- 文档库入口：`scripts/run_real_course.sh` 按用户明确授权启用智能回答（DeepSeek 或 Gemini），从 `.env.local` 安全加载 Key；`local`、`prepare`、`verify` 保持纯本地。复用 `real-course-v2` 存储和后续上传，不读取或重建旧私人索引；前端只发送所选 PDF
 - 课程库每个服务进程仍只连接一个资料库；此入口不引入多知识库切换功能
 - BGE 缓存：Docker named volume `studymate_hf_cache`
 - 宿主机目录可通过 `STUDYMATE_HOST_UPLOAD_DIR` 和 `STUDYMATE_HOST_CHROMA_DIR` 覆盖

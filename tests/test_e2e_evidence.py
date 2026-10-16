@@ -15,7 +15,7 @@ def test_committed_real_stack_evidence_is_complete():
     assert result["backend_health"]["status"] == "ok"
     assert result["frontend_health"]["status"] == "ok"
     assert result["upload"]["chunk_count"] > 0
-    assert result["deepseek_answer_correct"] is True
+    assert result.get("answer_correct", result.get("deepseek_answer_correct")) is True
     assert result["cited_source_count"] > 0
     assert result["listed_before_restart"] is True
     assert result["persistence_after_backend_restart"] is True

@@ -13,6 +13,7 @@ class HealthResponse(BaseModel):
 class RuntimeConfigResponse(BaseModel):
     knowledge_base_name: str
     chat_mode: Literal["generation", "retrieval_only"]
+    llm_provider: Literal["deepseek", "gemini"]
     max_upload_size_mb: int
     default_top_k: int
     chat_request_timeout_seconds: float
