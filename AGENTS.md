@@ -60,7 +60,7 @@ docker compose --env-file .env.local up --build
 - 页面问答必须携带所选 `document_id`，上传后选中新文档；整篇概括读取该文档全部已索引文本，不用 top-k 抽样冒充全文。
 - 页面文案面向普通读者，不展示内部 ID、向量距离、片段计数、服务地址、异常正文或调试控件。问答沿用配置中的 Top K；页面不提供数字调参。API 原始引用不变，展示层转为页码链接并按页折叠原文；本地模式仍可查看未生成回答的相关原文。
 - 概括最多 8 批、每批 12000 字符，超限必须在外发前明确拒绝；分段请求按 `STUDYMATE_SUMMARY_CONCURRENCY`（默认 4）并发，摘要须保持页序，任一分段失败即取消未开始的分段，不得为凑结果自动重试；生成保留原始片段引用和页码，覆盖范围不包括扫描图片。
-- DeepSeek V4 整篇概括显式非思考，具体问答保留思考；两者 4096 token 输出上限，检查 `finish_reason=length`，不得将空正文或截断回答作为成功返回。Gemini 3 无法关闭思考，概括用 `reasoning_effort=minimal`、问答用 `low`，思考 token 计入同一上限。
+- DeepSeek V4 整篇概括显式非思考，具体问答保留思考；两者 4096 token 输出上限，检查 `finish_reason=length`，不得将空正文或截断回答作为成功返回。Gemini 3 无法关闭思考，`gemini-3.8-flash` 不接受 `minimal`，概括与问答都用 `reasoning_effort=low`，思考 token 计入同一上限。
 - 客户端只接收稳定、脱敏的 JSON 错误，完整异常只写服务日志。
 - API 行为变化时同步更新测试、`docs/api.md` 和 README。
 - 依赖变更先修改 `requirements.in` 或 `requirements-dev.in`，再用锁文件头部记录的 `uv pip compile --universal --torch-backend cpu` 命令重新生成锁文件。

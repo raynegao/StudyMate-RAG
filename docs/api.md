@@ -137,7 +137,7 @@ curl -X POST http://127.0.0.1:8000/api/upload \
 
 返回 `knowledge_base_name`、`chat_mode`、`llm_provider`（`deepseek` 或 `gemini`，页面据此显示提供方名称，不返回模型名）、`max_upload_size_mb`、`default_top_k`、`chat_request_timeout_seconds`、`summary_request_timeout_seconds`。不返回 API Key、本机路径或私人原文件名。概括等待预算为 `(ceil(8 / 概括并发数) + 1) × LLM阶段超时 + 60`，默认 4 路并发时为 150 秒，并发数为 1 时与旧版串行一致为 330 秒；前端智能模式也使用该预算，因为它可能路由到概括。后端每次模型调用仍为零重试和有限阶段超时。
 
-DeepSeek：整篇概括显式关闭思考，具体问答保留思考。Gemini 3 无法关闭思考：概括用 `reasoning_effort=minimal`，问答用 `low`，思考 token 计入同一输出上限；两者 `max_tokens=4096`，并检查 `finish_reason`，避免旧预算耗尽后正文为空。HTTP 200 仍需检查完整性、正文及有效引用，不等于应用层成功。
+DeepSeek：整篇概括显式关闭思考，具体问答保留思考。Gemini 3 无法关闭思考，且 `gemini-3.8-flash` 不接受 `minimal`（返回 400），概括与问答都用 `reasoning_effort=low`，思考 token 计入同一输出上限；两者 `max_tokens=4096`，并检查 `finish_reason`，避免旧预算耗尽后正文为空。HTTP 200 仍需检查完整性、正文及有效引用，不等于应用层成功。
 
 ### 消费端展示边界（2026-09-06）
 

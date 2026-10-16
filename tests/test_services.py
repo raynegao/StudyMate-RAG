@@ -140,7 +140,7 @@ def test_llm_requires_explicit_deepseek_key(monkeypatch):
     monkeypatch.setattr(
         llm_service,
         "settings",
-        replace(settings, deepseek_api_key=None),
+        replace(settings, llm_provider="deepseek", deepseek_api_key=None),
     )
 
     with pytest.raises(LLMNotConfiguredError):
