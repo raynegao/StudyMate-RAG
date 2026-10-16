@@ -48,12 +48,13 @@ def _get_llm_client() -> OpenAI:
 def reasoning_options(*, thinking: bool) -> dict:
     """Provider-specific reasoning controls, sent as extra request-body fields.
 
-    DeepSeek V4 can switch thinking off entirely. Gemini 3 models cannot, so the lowest
-    effort levels are used instead; their thinking tokens count toward ``max_tokens``, and
-    a ``finish_reason`` of ``length`` is still rejected by ``complete_answer``.
+    DeepSeek V4 can switch thinking off entirely. Gemini 3 models cannot, and
+    gemini-3.8-flash rejects ``minimal`` (HTTP 400, verified 2026-10-16), so ``low`` is the
+    lowest level for both paths; thinking tokens count toward ``max_tokens``, and a
+    ``finish_reason`` of ``length`` is still rejected by ``complete_answer``.
     """
     if settings.llm_provider == "gemini":
-        return {"reasoning_effort": "low" if thinking else "minimal"}
+        return {"reasoning_effort": "low"}
     return {"thinking": {"type": "enabled" if thinking else "disabled"}}
 
 

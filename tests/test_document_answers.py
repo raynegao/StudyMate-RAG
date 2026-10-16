@@ -226,6 +226,7 @@ def test_generation_disables_thinking_and_reserves_answer_budget(monkeypatch):
         return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content="完整回答 [S1]"), finish_reason="stop")])
     client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
     monkeypatch.setattr(llm_service, "_get_llm_client", lambda: client)
+    monkeypatch.setattr(llm_service, "settings", replace(settings, llm_provider="deepseek"))
     assert llm_service.complete_answer("公开虚构问题") == "完整回答 [S1]"
     assert captured["extra_body"] == {"thinking": {"type": "disabled"}}
     assert captured["max_tokens"] == 4096
@@ -238,6 +239,7 @@ def test_specific_qa_retains_reasoning_with_larger_output_budget(monkeypatch):
         return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content="精确回答 [S1]"), finish_reason="stop")])
     client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
     monkeypatch.setattr(llm_service, "_get_llm_client", lambda: client)
+    monkeypatch.setattr(llm_service, "settings", replace(settings, llm_provider="deepseek"))
     assert llm_service.complete_reasoned_answer("公开问题") == "精确回答 [S1]"
     assert captured["extra_body"]["thinking"]["type"] == "enabled"
     assert captured["max_tokens"] == 4096
@@ -254,7 +256,8 @@ def test_gemini_requests_use_lowest_reasoning_levels(monkeypatch):
     llm_service.complete_answer("公开虚构概括")
     llm_service.complete_reasoned_answer("公开虚构问题")
     assert [c["model"] for c in captured] == ["gemini-3.8-flash"] * 2
-    assert [c["extra_body"] for c in captured] == [{"reasoning_effort": "minimal"}, {"reasoning_effort": "low"}]
+    # gemini-3.8-flash rejects "minimal", so both paths use the lowest accepted level.
+    assert [c["extra_body"] for c in captured] == [{"reasoning_effort": "low"}, {"reasoning_effort": "low"}]
     assert all(c["max_tokens"] == 4096 for c in captured)
 
 

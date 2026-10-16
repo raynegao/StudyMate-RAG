@@ -1,0 +1,24 @@
+{
+  "verified_at": "2026-10-16T21:39:31.486207+00:00",
+  "llm_provider": "gemini",
+  "llm_model": "gemini-3.8-flash",
+  "all_content_fictional": true,
+  "storage_index_read": false,
+  "question": {
+    "ok": true,
+    "status": "answered",
+    "keyword_found": true,
+    "cited": [
+      "S1"
+    ],
+    "elapsed_seconds": 18.57
+  },
+  "summary": {
+    "ok": true,
+    "status": "answered",
+    "cited_sources": 2,
+    "batches": 1,
+    "elapsed_seconds": 14.38
+  },
+  "passed": true
+}
