@@ -18,7 +18,7 @@ def test_openapi_reports_release_version(client):
     response = client.get("/openapi.json")
 
     assert response.status_code == 200
-    assert response.json()["info"]["version"] == "0.4.0"
+    assert response.json()["info"]["version"] == "0.5.0"
 
 
 def test_upload_rejects_non_pdf(client):
@@ -266,6 +266,16 @@ def test_embedding_failure_is_stable_and_does_not_leak_details(client, monkeypat
     payload = response.json()
     assert payload["error"]["code"] == "embedding_failed"
     assert "private model path" not in response.text
+
+
+def test_rate_limit_and_quota_errors_have_stable_api_mapping(client, monkeypatch):
+    from app.core.errors import LLMQuotaExhaustedError, LLMRateLimitedError
+
+    for error, status_code, code in ((LLMRateLimitedError, 429, "llm_rate_limited"),
+                                     (LLMQuotaExhaustedError, 503, "llm_quota_exhausted")):
+        monkeypatch.setattr("app.services.rag_service.answer_question", lambda question, top_k, error=error: (_ for _ in ()).throw(error()))
+        response = client.post("/api/chat", json={"question": "重点是什么？"})
+        assert (response.status_code, response.json()["error"]["code"]) == (status_code, code)
 
 
 def test_unknown_service_error_is_generic_and_does_not_leak_details(

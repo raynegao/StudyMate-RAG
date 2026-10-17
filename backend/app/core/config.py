@@ -39,7 +39,7 @@ class Settings:
     environment instead of re-importing this module."""
 
     app_name: str = field(default_factory=lambda: os.getenv("STUDYMATE_APP_NAME", "StudyMate RAG API"))
-    app_version: str = field(default_factory=lambda: os.getenv("STUDYMATE_APP_VERSION", "0.4.0"))
+    app_version: str = field(default_factory=lambda: os.getenv("STUDYMATE_APP_VERSION", "0.5.0"))
     log_level: str = field(default_factory=lambda: os.getenv("STUDYMATE_LOG_LEVEL", "INFO").upper())
     frontend_api_base_url: str = field(
         default_factory=lambda: os.getenv("STUDYMATE_API_BASE_URL", "http://127.0.0.1:8000")
@@ -89,6 +89,14 @@ class Settings:
             raise ValueError(f"概括并发数必须在 1 到 {SUMMARY_MAX_BATCHES} 之间")
         if self.llm_provider not in LLM_PROVIDERS:
             raise ValueError("STUDYMATE_LLM_PROVIDER 必须是 deepseek 或 gemini")
+        model = (self.llm_model_override or "").lower()
+        if (self.llm_provider == "gemini" and model.startswith("deepseek")) or (
+            self.llm_provider == "deepseek" and model.startswith(("gemini", "gemma"))
+        ):
+            raise ValueError(
+                f"STUDYMATE_LLM_MODEL={self.llm_model_override} 与 STUDYMATE_LLM_PROVIDER={self.llm_provider} 不匹配；"
+                "留空即使用该提供方的默认模型"
+            )
 
     @property
     def llm_provider_label(self) -> str:

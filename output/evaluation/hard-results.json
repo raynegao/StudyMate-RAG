@@ -19,8 +19,8 @@
     }
   },
   "run": {
-    "generated_at": "2026-10-16T02:21:07.442396+00:00",
-    "git_revision": "3a296ad",
+    "generated_at": "2026-10-16T22:32:43.207254+00:00",
+    "git_revision": "479763b",
     "embedding_model": "BAAI/bge-small-zh-v1.5",
     "sentence_transformers": "3.3.1",
     "torch": "2.5.1",
@@ -58,6 +58,16 @@
             "recall_at_1": 0.6666666666666666,
             "recall_at_3": 0.9583333333333334,
             "recall_at_6": 1.0
+          },
+          "fusion_document": {
+            "recall_at_1": 0.625,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "fusion_global": {
+            "recall_at_1": 0.5833333333333334,
+            "recall_at_3": 0.9583333333333334,
+            "recall_at_6": 0.9583333333333334
           }
         },
         "boundary": {
@@ -78,6 +88,16 @@
             "recall_at_6": 1.0
           },
           "lexical_global": {
+            "recall_at_1": 1.0,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "fusion_document": {
+            "recall_at_1": 1.0,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "fusion_global": {
             "recall_at_1": 1.0,
             "recall_at_3": 1.0,
             "recall_at_6": 1.0
@@ -104,6 +124,16 @@
             "recall_at_1": 0.7692307692307693,
             "recall_at_3": 1.0,
             "recall_at_6": 1.0
+          },
+          "fusion_document": {
+            "recall_at_1": 0.6923076923076923,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "fusion_global": {
+            "recall_at_1": 0.6923076923076923,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
           }
         },
         "multi_page": {
@@ -127,6 +157,16 @@
             "recall_at_1": 0.0,
             "recall_at_3": 0.6666666666666666,
             "recall_at_6": 1.0
+          },
+          "fusion_document": {
+            "recall_at_1": 0.0,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "fusion_global": {
+            "recall_at_1": 0.0,
+            "recall_at_3": 0.6666666666666666,
+            "recall_at_6": 0.6666666666666666
           }
         },
         "paraphrase": {
@@ -150,6 +190,16 @@
             "recall_at_1": 0.6,
             "recall_at_3": 1.0,
             "recall_at_6": 1.0
+          },
+          "fusion_document": {
+            "recall_at_1": 0.6,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "fusion_global": {
+            "recall_at_1": 0.4,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
           }
         }
       },
@@ -165,6 +215,10 @@
             "lexical": {
               "document": 1,
               "global": 1
+            },
+            "fusion": {
+              "document": 2,
+              "global": 2
             }
           }
         },
@@ -177,6 +231,10 @@
               "global": 1
             },
             "lexical": {
+              "document": 1,
+              "global": 1
+            },
+            "fusion": {
               "document": 1,
               "global": 1
             }
@@ -193,6 +251,10 @@
             "lexical": {
               "document": 1,
               "global": 1
+            },
+            "fusion": {
+              "document": 1,
+              "global": 1
             }
           }
         },
@@ -207,6 +269,10 @@
             "lexical": {
               "document": 3,
               "global": 3
+            },
+            "fusion": {
+              "document": 2,
+              "global": 2
             }
           }
         },
@@ -221,6 +287,10 @@
             "lexical": {
               "document": 1,
               "global": 1
+            },
+            "fusion": {
+              "document": 2,
+              "global": 2
             }
           }
         },
@@ -233,6 +303,10 @@
               "global": 1
             },
             "lexical": {
+              "document": 1,
+              "global": 1
+            },
+            "fusion": {
               "document": 1,
               "global": 1
             }
@@ -249,6 +323,10 @@
             "lexical": {
               "document": 2,
               "global": 2
+            },
+            "fusion": {
+              "document": 2,
+              "global": 2
             }
           }
         },
@@ -263,6 +341,10 @@
             "lexical": {
               "document": 1,
               "global": 1
+            },
+            "fusion": {
+              "document": 2,
+              "global": 2
             }
           }
         },
@@ -275,6 +357,10 @@
               "global": 1
             },
             "lexical": {
+              "document": 1,
+              "global": 1
+            },
+            "fusion": {
               "document": 1,
               "global": 1
             }
@@ -291,6 +377,10 @@
             "lexical": {
               "document": 2,
               "global": 2
+            },
+            "fusion": {
+              "document": 1,
+              "global": 1
             }
           }
         },
@@ -305,6 +395,10 @@
             "lexical": {
               "document": 1,
               "global": 1
+            },
+            "fusion": {
+              "document": 2,
+              "global": 2
             }
           }
         },
@@ -317,6 +411,10 @@
               "global": 2
             },
             "lexical": {
+              "document": 1,
+              "global": 1
+            },
+            "fusion": {
               "document": 1,
               "global": 1
             }
@@ -333,6 +431,10 @@
             "lexical": {
               "document": 2,
               "global": 3
+            },
+            "fusion": {
+              "document": 1,
+              "global": 2
             }
           }
         },
@@ -345,6 +447,10 @@
               "global": 1
             },
             "lexical": {
+              "document": 1,
+              "global": 1
+            },
+            "fusion": {
               "document": 1,
               "global": 1
             }
@@ -361,6 +467,10 @@
             "lexical": {
               "document": 3,
               "global": 6
+            },
+            "fusion": {
+              "document": 3,
+              "global": 9
             }
           }
         },
@@ -373,6 +483,10 @@
               "global": 2
             },
             "lexical": {
+              "document": 1,
+              "global": 1
+            },
+            "fusion": {
               "document": 1,
               "global": 1
             }
@@ -389,6 +503,10 @@
             "lexical": {
               "document": 1,
               "global": 1
+            },
+            "fusion": {
+              "document": 1,
+              "global": 1
             }
           }
         },
@@ -401,6 +519,10 @@
               "global": 1
             },
             "lexical": {
+              "document": 1,
+              "global": 1
+            },
+            "fusion": {
               "document": 1,
               "global": 1
             }
@@ -417,6 +539,10 @@
             "lexical": {
               "document": 2,
               "global": 2
+            },
+            "fusion": {
+              "document": 1,
+              "global": 1
             }
           }
         },
@@ -429,6 +555,10 @@
               "global": 1
             },
             "lexical": {
+              "document": 1,
+              "global": 1
+            },
+            "fusion": {
               "document": 1,
               "global": 1
             }
@@ -445,6 +575,10 @@
             "lexical": {
               "document": 1,
               "global": 1
+            },
+            "fusion": {
+              "document": 1,
+              "global": 1
             }
           }
         },
@@ -457,6 +591,10 @@
               "global": 2
             },
             "lexical": {
+              "document": 2,
+              "global": 2
+            },
+            "fusion": {
               "document": 2,
               "global": 2
             }
@@ -473,6 +611,10 @@
             "lexical": {
               "document": 3,
               "global": 3
+            },
+            "fusion": {
+              "document": 3,
+              "global": 3
             }
           }
         },
@@ -485,6 +627,10 @@
               "global": 1
             },
             "lexical": {
+              "document": 1,
+              "global": 1
+            },
+            "fusion": {
               "document": 1,
               "global": 1
             }
@@ -764,7 +910,11 @@
             "citation_support": 1.0,
             "latency_ms": 2097.146125510335
           }
-        ]
+        ],
+        "recorded_in_run": {
+          "generated_at": "2026-10-16T02:21:07.442396+00:00",
+          "git_revision": "3a296ad"
+        }
       }
     },
     "original_reference": {
@@ -790,6 +940,16 @@
             "recall_at_1": 0.9666666666666667,
             "recall_at_3": 1.0,
             "recall_at_6": 1.0
+          },
+          "fusion_document": {
+            "recall_at_1": 1.0,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "fusion_global": {
+            "recall_at_1": 1.0,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
           }
         },
         "original": {
@@ -811,6 +971,16 @@
           },
           "lexical_global": {
             "recall_at_1": 0.9666666666666667,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "fusion_document": {
+            "recall_at_1": 1.0,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0
+          },
+          "fusion_global": {
+            "recall_at_1": 1.0,
             "recall_at_3": 1.0,
             "recall_at_6": 1.0
           }
@@ -842,6 +1012,16 @@
             "recall_at_1": 0.2,
             "recall_at_3": 0.26666666666666666,
             "recall_at_6": 0.4
+          },
+          "fusion_document": {
+            "recall_at_1": 0.26666666666666666,
+            "recall_at_3": 0.3333333333333333,
+            "recall_at_6": 0.5333333333333333
+          },
+          "fusion_global": {
+            "recall_at_1": 0.26666666666666666,
+            "recall_at_3": 0.3333333333333333,
+            "recall_at_6": 0.4666666666666667
           }
         },
         "condition": {
@@ -862,6 +1042,16 @@
             "recall_at_6": 1.0
           },
           "lexical_global": {
+            "recall_at_1": 0.5,
+            "recall_at_3": 0.5,
+            "recall_at_6": 1.0
+          },
+          "fusion_document": {
+            "recall_at_1": 0.5,
+            "recall_at_3": 0.5,
+            "recall_at_6": 1.0
+          },
+          "fusion_global": {
             "recall_at_1": 0.5,
             "recall_at_3": 0.5,
             "recall_at_6": 1.0
@@ -888,6 +1078,16 @@
             "recall_at_1": 0.0,
             "recall_at_3": 0.0,
             "recall_at_6": 0.0
+          },
+          "fusion_document": {
+            "recall_at_1": 0.0,
+            "recall_at_3": 0.0,
+            "recall_at_6": 0.3333333333333333
+          },
+          "fusion_global": {
+            "recall_at_1": 0.0,
+            "recall_at_3": 0.0,
+            "recall_at_6": 0.0
           }
         },
         "multi_page": {
@@ -911,6 +1111,16 @@
             "recall_at_1": 0.0,
             "recall_at_3": 0.0,
             "recall_at_6": 0.3333333333333333
+          },
+          "fusion_document": {
+            "recall_at_1": 0.0,
+            "recall_at_3": 0.3333333333333333,
+            "recall_at_6": 0.6666666666666666
+          },
+          "fusion_global": {
+            "recall_at_1": 0.0,
+            "recall_at_3": 0.3333333333333333,
+            "recall_at_6": 0.6666666666666666
           }
         },
         "numeric": {
@@ -932,6 +1142,16 @@
           },
           "lexical_global": {
             "recall_at_1": 0.25,
+            "recall_at_3": 0.5,
+            "recall_at_6": 0.5
+          },
+          "fusion_document": {
+            "recall_at_1": 0.5,
+            "recall_at_3": 0.5,
+            "recall_at_6": 0.5
+          },
+          "fusion_global": {
+            "recall_at_1": 0.5,
             "recall_at_3": 0.5,
             "recall_at_6": 0.5
           }
@@ -957,6 +1177,16 @@
             "recall_at_1": 0.3333333333333333,
             "recall_at_3": 0.3333333333333333,
             "recall_at_6": 0.3333333333333333
+          },
+          "fusion_document": {
+            "recall_at_1": 0.3333333333333333,
+            "recall_at_3": 0.3333333333333333,
+            "recall_at_6": 0.3333333333333333
+          },
+          "fusion_global": {
+            "recall_at_1": 0.3333333333333333,
+            "recall_at_3": 0.3333333333333333,
+            "recall_at_6": 0.3333333333333333
           }
         }
       },
@@ -972,6 +1202,10 @@
             "lexical": {
               "document": 59,
               "global": 107
+            },
+            "fusion": {
+              "document": 26,
+              "global": 70
             }
           }
         },
@@ -986,6 +1220,10 @@
             "lexical": {
               "document": 64,
               "global": 98
+            },
+            "fusion": {
+              "document": 11,
+              "global": 26
             }
           }
         },
@@ -1000,6 +1238,10 @@
             "lexical": {
               "document": 11,
               "global": 22
+            },
+            "fusion": {
+              "document": 6,
+              "global": 8
             }
           }
         },
@@ -1012,6 +1254,10 @@
               "global": 1
             },
             "lexical": {
+              "document": 1,
+              "global": 1
+            },
+            "fusion": {
               "document": 1,
               "global": 1
             }
@@ -1028,6 +1274,10 @@
             "lexical": {
               "document": 29,
               "global": 75
+            },
+            "fusion": {
+              "document": 30,
+              "global": 74
             }
           }
         },
@@ -1042,6 +1292,10 @@
             "lexical": {
               "document": 45,
               "global": 156
+            },
+            "fusion": {
+              "document": 32,
+              "global": 58
             }
           }
         },
@@ -1056,6 +1310,10 @@
             "lexical": {
               "document": 2,
               "global": 2
+            },
+            "fusion": {
+              "document": 1,
+              "global": 1
             }
           }
         },
@@ -1070,6 +1328,10 @@
             "lexical": {
               "document": 6,
               "global": 9
+            },
+            "fusion": {
+              "document": 8,
+              "global": 14
             }
           }
         },
@@ -1082,6 +1344,10 @@
               "global": 1
             },
             "lexical": {
+              "document": 1,
+              "global": 1
+            },
+            "fusion": {
               "document": 1,
               "global": 1
             }
@@ -1098,6 +1364,10 @@
             "lexical": {
               "document": 3,
               "global": 5
+            },
+            "fusion": {
+              "document": 2,
+              "global": 2
             }
           }
         },
@@ -1112,6 +1382,10 @@
             "lexical": {
               "document": 32,
               "global": 48
+            },
+            "fusion": {
+              "document": 33,
+              "global": 64
             }
           }
         },
@@ -1124,6 +1398,10 @@
               "global": 4
             },
             "lexical": {
+              "document": 1,
+              "global": 1
+            },
+            "fusion": {
               "document": 1,
               "global": 1
             }
@@ -1140,6 +1418,10 @@
             "lexical": {
               "document": 76,
               "global": 265
+            },
+            "fusion": {
+              "document": 21,
+              "global": 33
             }
           }
         },
@@ -1154,6 +1436,10 @@
             "lexical": {
               "document": 7,
               "global": 7
+            },
+            "fusion": {
+              "document": 5,
+              "global": 5
             }
           }
         },
@@ -1168,6 +1454,10 @@
             "lexical": {
               "document": 5,
               "global": 5
+            },
+            "fusion": {
+              "document": 5,
+              "global": 6
             }
           }
         }
@@ -1196,6 +1486,16 @@
             "recall_at_1": 0.26666666666666666,
             "recall_at_3": 0.6666666666666666,
             "recall_at_6": 0.9333333333333333
+          },
+          "fusion_document": {
+            "recall_at_1": 0.7333333333333333,
+            "recall_at_3": 0.9333333333333333,
+            "recall_at_6": 0.9333333333333333
+          },
+          "fusion_global": {
+            "recall_at_1": 0.6666666666666666,
+            "recall_at_3": 0.9333333333333333,
+            "recall_at_6": 0.9333333333333333
           }
         },
         "original": {
@@ -1218,6 +1518,16 @@
           "lexical_global": {
             "recall_at_1": 0.26666666666666666,
             "recall_at_3": 0.6666666666666666,
+            "recall_at_6": 0.9333333333333333
+          },
+          "fusion_document": {
+            "recall_at_1": 0.7333333333333333,
+            "recall_at_3": 0.9333333333333333,
+            "recall_at_6": 0.9333333333333333
+          },
+          "fusion_global": {
+            "recall_at_1": 0.6666666666666666,
+            "recall_at_3": 0.9333333333333333,
             "recall_at_6": 0.9333333333333333
           }
         }

@@ -140,6 +140,22 @@ class LLMOutputLimitError(ServiceError):
     public_message = "模型回答达到输出长度上限，未生成完整答案。请缩小概括范围或减少要求后重试。"
 
 
+class LLMRateLimitedError(LLMServiceError):
+    """The provider rejected the request for rate limiting; nothing is retried automatically."""
+
+    status_code = status.HTTP_429_TOO_MANY_REQUESTS
+    code = "llm_rate_limited"
+    public_message = "回答模型请求过于频繁，请稍等片刻再试。"
+
+
+class LLMQuotaExhaustedError(LLMServiceError):
+    """The provider reports no remaining balance or quota for this account."""
+
+    status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+    code = "llm_quota_exhausted"
+    public_message = "回答模型额度不足，请为所选提供方充值或切换提供方后重试。"
+
+
 class SummaryCitationError(LLMServiceError):
     """The model answered, but without valid page references; the output is discarded."""
 

@@ -102,6 +102,22 @@ def test_consumer_chat_has_no_debug_controls_and_preserves_top_six(monkeypatch):
     assert not at.expander[0].proto.expanded
 
 
+def test_selected_document_is_remembered_in_the_address_bar(monkeypatch):
+    other = "b" * 32
+    documents = [*DOCUMENTS, {"document_id": other, "filename": "第二份公开资料.pdf", "chunk_count": 12}]
+    remembered = {"doc": other}
+    monkeypatch.setattr(ui.st, "query_params", remembered)
+    at = AppTest.from_function(chat_app, args=(RUNTIME, documents)).run()
+    assert not at.exception
+    assert at.selectbox[0].value == other  # A reload keeps the remembered choice, not the newest upload.
+    at.selectbox[0].set_value(DOC).run()
+    assert remembered["doc"] == DOC
+
+    monkeypatch.setattr(ui.st, "query_params", {"doc": "c" * 32})
+    at = AppTest.from_function(chat_app, args=(RUNTIME, documents)).run()
+    assert at.selectbox[0].value == DOC  # An unknown remembered ID falls back to the first document.
+
+
 def test_provider_label_follows_runtime_config(monkeypatch):
     monkeypatch.setattr(ui, "api_post", lambda *a, **kw: ({"answer": "公开结论 [S1]", "sources": [], "status": "answered"}, None))
     at = AppTest.from_function(chat_app, args=({**RUNTIME, "llm_provider": "gemini"}, DOCUMENTS)).run()

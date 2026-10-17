@@ -81,6 +81,8 @@ set +a
 
 `.env`、`.env.local`、上传文件、Chroma 数据和模型缓存均已被 Git 忽略。
 
+Gemini 的额度以 AI Studio 里该项目的"速率限制"页为准：免费层级很小（2026-10-17 看到的是 `gemini-3.8-flash` 每分钟 5 次、每天 20 次，4 段以上的长文档概括会触发限流），预付费层级额度大得多但余额用尽即停。超过限流时后端返回 `429 llm_rate_limited`，余额用尽返回 `503 llm_quota_exhausted`，页面都会给出对应提示，不会自动重试。
+
 配置完成后，可以用两条公开虚构的提问验证所选提供方能正常回答和概括（不读取任何上传资料，结果写入 `output/e2e/`，不含密钥）：
 
 ```bash
@@ -212,6 +214,8 @@ set -a && source .env.local && set +a
 
 完整方法、对比表和局限性见 [docs/evaluation.md](docs/evaluation.md)，机器可读结果见 [evaluation-results.json](output/evaluation/evaluation-results.json)。这些结果来自小规模合成基准，证明可复现性，不代表真实课程域的泛化上限。
 
+提供方说明：以上及下文所有带模型回答的指标都是 DeepSeek 运行的记录（结果文件里的 `llm_model` 字段可查）。Gemini 提供方（2026-10-16 加入）只做了真实调用验证：[验证记录](output/e2e/llm-provider-gemini-result.json)与课程资料库里的实际问答、概括；没有在公开基准上重跑：免费层级每天 20 次请求不够跑完 30 题，而 2026-10-17 项目切到预付费层级后余额为零（API 返回 402）。评测脚本已支持按提供方记录，充值后重跑即可对照。
+
 拒答回归见 [answerability-evaluation.md](docs/answerability-evaluation.md)。检索命中、关键词检查和引用页支持分别统计，引用标记合法不等于每个断言都受到原文支持。最新两道关键词漏判及标注修订说明见 [优化验收记录](docs/optimization-verification.md)。
 
 ### 加难评测
@@ -220,6 +224,7 @@ set -a && source .env.local && set +a
 
 - 公开加难集 24 题：3 份虚构 PDF 保留原第 2 至 4 页，第 5 页加入名称相近、数值不同的干扰内容。BGE 前 1 条命中 50.0%，前 6 条 100.0%；DeepSeek 回答 95.8% 通过关键词与干扰值检查。
 - 真实课程加难集 15 题：只在本机检索，只公开题号、题型和排名。BGE 前 1 条命中 26.7%，前 6 条 53.3%，主要失分在中英文换说法和相近概念干扰。
+- 混合检索的离线测量（2026-10-17）：把向量与字符 n-gram 两路排名做倒数排名融合后，公开加难集前 1 条命中从 50.0% 提到 62.5%，但真实课程加难集前 6 条仍是 53.3%，跨页题变好、数字题变差。收益不足以改动服务路径，当前仍只用向量检索；测量方法保留在加难评测脚本里，以后调参可直接量。
 
 ```bash
 .venv/bin/python scripts/evaluate_hard.py            # 公开集 + 本机真实课程检索
@@ -301,7 +306,7 @@ data/                     本地上传文件和 Chroma 数据，不提交内容
 
 ## 当前边界
 
-当前版本为 `0.4.0`，聚焦稳定的单知识库 PDF 问答闭环，不包含 OCR、Hybrid Search、Rerank、Query Rewrite、多轮记忆、用户系统或云部署。
+当前版本为 `0.5.0`，聚焦稳定的单知识库 PDF 问答闭环，不包含 OCR、Hybrid Search、Rerank、Query Rewrite、多轮记忆、用户系统或云部署。
 
 ## License
 
