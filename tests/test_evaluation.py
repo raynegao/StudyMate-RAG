@@ -124,6 +124,19 @@ def test_coverage_rank_requires_every_evidence_group():
     assert coverage_rank([chunk(2)], {"gold_document": "doc.pdf", "gold_page": 2}) == 1
 
 
+def test_reciprocal_rank_fusion_rewards_agreement_between_rankings():
+    from types import SimpleNamespace
+
+    from scripts.evaluate_hard import fuse_rankings
+
+    def chunk(name):
+        return SimpleNamespace(chunk_id=name, filename="doc.pdf", page_number=1)
+
+    a, b, c = chunk("a"), chunk("b"), chunk("c")
+    fused = fuse_rankings([(a, 0.9), (b, 0.8), (c, 0.1)], [(b, 0.9), (c, 0.5), (a, 0.2)])
+    assert [item.chunk_id for item, _ in fused] == ["b", "a", "c"]
+
+
 def test_hard_result_publishes_only_ranks_for_real_course():
     result = json.loads(HARD_RESULT_PATH.read_text(encoding="utf-8"))
 

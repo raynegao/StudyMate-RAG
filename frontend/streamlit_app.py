@@ -19,6 +19,9 @@ PENDING_DELETE_KEY = "pending_delete_document_id"
 SELECTED_DOCUMENT_KEY = "selected_document_id"
 QUESTION_KEY = "reading_question"
 TASK_KEY = "reading_task"
+# The address bar remembers the chosen document across reloads. It carries only the
+# internal document ID, never a filename, and the page copy still shows no IDs.
+DOCUMENT_QUERY_PARAM = "doc"
 
 PROVIDER_LABELS = {"deepseek": "DeepSeek", "gemini": "Gemini"}
 
@@ -38,6 +41,8 @@ ERROR_MESSAGES = {
     "llm_not_configured": "智能回答暂不可用，请稍后再试。",
     "llm_request_failed": "这次回答没有完成，请稍后再试。",
     "llm_timeout": "这次阅读花的时间有些长，请稍后重试。",
+    "llm_rate_limited": "请求有些频繁，请稍等片刻再试。",
+    "llm_quota_exhausted": "智能回答的额度暂时用完了，请稍后再试。",
     "llm_output_incomplete": "回答未能完整生成，请减少本次要求后重试。",
     "summary_citations_invalid": "这次概括没有对应到原文页码，结果未采用。请再试一次，或减少概括要求。",
     "validation_error": "请检查所选资料和问题后，再试一次。",
@@ -296,12 +301,15 @@ def render_chat(runtime: dict[str, Any], documents: list[dict[str, Any]]) -> Non
         return
     by_id = {d["document_id"]: d for d in documents}
     if st.session_state.get(SELECTED_DOCUMENT_KEY) not in by_id:
-        st.session_state[SELECTED_DOCUMENT_KEY] = documents[0]["document_id"]
+        remembered = st.query_params.get(DOCUMENT_QUERY_PARAM)
+        st.session_state[SELECTED_DOCUMENT_KEY] = remembered if remembered in by_id else documents[0]["document_id"]
     st.sidebar.subheader("我的资料")
     selected = st.sidebar.selectbox(
         "正在阅读", options=list(by_id), key=SELECTED_DOCUMENT_KEY,
         format_func=lambda value: by_id[value].get("filename") or "未命名资料",
     )
+    if st.query_params.get(DOCUMENT_QUERY_PARAM) != selected:
+        st.query_params[DOCUMENT_QUERY_PARAM] = selected
     st.sidebar.caption(f"共 {len(documents)} 份资料 · 每次阅读一份")
     generation = runtime["chat_mode"] == "generation"
     if not generation:

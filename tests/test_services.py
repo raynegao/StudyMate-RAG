@@ -168,6 +168,27 @@ def test_gemini_provider_uses_its_own_key_endpoint_and_default_model(monkeypatch
         replace(settings, llm_provider="openai")
 
 
+@pytest.mark.parametrize("status_code,expected", [(429, "llm_rate_limited"), (402, "llm_quota_exhausted"), (500, "llm_request_failed")])
+def test_provider_status_errors_map_to_distinct_codes(monkeypatch, status_code, expected):
+    import httpx
+    from openai import APIStatusError, RateLimitError
+
+    from app.services import llm_service
+
+    response = httpx.Response(status_code, request=httpx.Request("POST", "https://provider.invalid/v1/chat/completions"))
+    error_type = RateLimitError if status_code == 429 else APIStatusError
+
+    def create(**kwargs):
+        raise error_type("provider detail", response=response, body=None)
+
+    client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
+    monkeypatch.setattr(llm_service, "_get_llm_client", lambda: client)
+    with pytest.raises(LLMServiceError) as exc_info:
+        llm_service.complete_answer("课程问题")
+    assert exc_info.value.code == expected
+    assert "provider detail" not in exc_info.value.public_message
+
+
 def test_llm_provider_failure_uses_typed_error(monkeypatch):
     from openai import OpenAIError
 

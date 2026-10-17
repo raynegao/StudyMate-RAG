@@ -28,15 +28,20 @@ def test_frontend_launcher_applies_upload_override_to_streamlit_server(tmp_path)
     # Exercise the actual launcher, including its Python-version preflight.
     fake_python = tmp_path / "python"
     fake_python.write_text(
-        f"#!{Path(sys.executable).resolve()}\nimport json,sys\nif '-m' in sys.argv: print(json.dumps(sys.argv[1:]))\n"
+        f"#!{Path(sys.executable).resolve()}\nimport json,os,sys\n"
+        "if '-m' in sys.argv: print(json.dumps({'argv': sys.argv[1:], "
+        "'keys': [k for k in ('DEEPSEEK_API_KEY', 'GEMINI_API_KEY') if k in os.environ]}))\n"
     )
     fake_python.chmod(0o755)
     run = subprocess.run(
         ["bash", "scripts/run_frontend.sh"], cwd=ROOT, check=True, capture_output=True, text=True,
-        env={**os.environ, "PYTHON_BIN": str(fake_python), "STUDYMATE_MAX_UPLOAD_SIZE_MB": "70"},
+        env={**os.environ, "PYTHON_BIN": str(fake_python), "STUDYMATE_MAX_UPLOAD_SIZE_MB": "70",
+             "DEEPSEEK_API_KEY": "placeholder", "GEMINI_API_KEY": "placeholder"},
     )
-    argv = json.loads(run.stdout)
+    launched = json.loads(run.stdout)
+    argv = launched["argv"]
     assert argv[argv.index("--server.maxUploadSize") + 1] == "70"
+    assert launched["keys"] == []  # The page process never receives provider credentials.
 
 
 def test_course_profile_is_repeatable_local_only_and_separate():
@@ -108,6 +113,18 @@ def test_course_launcher_checks_the_selected_provider_key(tmp_path, provider, ke
                            capture_output=True, text=True,
                            env={**env, key_env: "placeholder", "STUDYMATE_COURSE_MODE": "retrieval_only"})
     assert json.loads(local.stdout)["llm_configured"] is False
+
+
+@pytest.mark.parametrize("provider,model", [("gemini", "deepseek-v4-flash"), ("deepseek", "gemini-3.8-flash")])
+def test_model_override_must_match_provider(monkeypatch, provider, model):
+    from app.core.config import Settings
+
+    monkeypatch.setenv("STUDYMATE_LLM_PROVIDER", provider)
+    monkeypatch.setenv("STUDYMATE_LLM_MODEL", model)
+    with pytest.raises(ValueError, match="不匹配"):
+        Settings()
+    monkeypatch.setenv("STUDYMATE_LLM_MODEL", "")
+    assert Settings().llm_model.startswith(provider)
 
 
 def test_token_budget_preserves_tail_and_sentences():

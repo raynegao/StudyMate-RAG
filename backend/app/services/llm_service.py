@@ -4,10 +4,17 @@ import logging
 from functools import lru_cache
 
 import httpx
-from openai import APITimeoutError, OpenAI, OpenAIError
+from openai import APIStatusError, APITimeoutError, OpenAI, OpenAIError, RateLimitError
 
 from app.core.config import settings
-from app.core.errors import LLMNotConfiguredError, LLMOutputLimitError, LLMServiceError, LLMTimeoutError
+from app.core.errors import (
+    LLMNotConfiguredError,
+    LLMOutputLimitError,
+    LLMQuotaExhaustedError,
+    LLMRateLimitedError,
+    LLMServiceError,
+    LLMTimeoutError,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -85,6 +92,15 @@ def complete_answer(prompt: str, *, thinking: bool = False) -> str:
         finish_reason = getattr(response.choices[0], "finish_reason", None)
     except APITimeoutError as exc:
         raise LLMTimeoutError() from exc
+    except RateLimitError as exc:
+        logger.warning("llm_rate_limited", extra={"provider": settings.llm_provider})
+        raise LLMRateLimitedError() from exc
+    except APIStatusError as exc:
+        if exc.status_code == 402:
+            logger.warning("llm_quota_exhausted", extra={"provider": settings.llm_provider})
+            raise LLMQuotaExhaustedError() from exc
+        logger.exception("llm_request_failed", extra={"provider": settings.llm_provider, "llm_model": settings.llm_model})
+        raise LLMServiceError() from exc
     except (OpenAIError, AttributeError, IndexError, TypeError) as exc:
         logger.exception("llm_request_failed", extra={"provider": settings.llm_provider, "llm_model": settings.llm_model})
         raise LLMServiceError() from exc

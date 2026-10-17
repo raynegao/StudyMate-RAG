@@ -1,4 +1,4 @@
-# StudyMate RAG API 0.4.0
+# StudyMate RAG API 0.5.0
 
 - 默认地址：`http://127.0.0.1:8000`
 - 交互式文档：`http://127.0.0.1:8000/docs`
@@ -131,6 +131,8 @@ curl -X POST http://127.0.0.1:8000/api/upload \
 - `502 llm_request_failed`：回答模型请求失败
 - `502 llm_output_incomplete`：模型达到输出上限，答案未完整生成，不返回截断内容作为成功答案
 - `502 summary_citations_invalid`：概括已生成但缺少引用或引用越界，结果被丢弃；这是输出质量问题而非服务故障，可直接重试
+- `429 llm_rate_limited`：提供方限流（HTTP 429），本次未自动重试；Gemini 免费层级在概括并发时最常见
+- `503 llm_quota_exhausted`：提供方返回余额或额度不足（HTTP 402）
 - `503 llm_not_configured`：未设置所选提供方的 API Key（`DEEPSEEK_API_KEY` 或 `GEMINI_API_KEY`）
 - `503 vector_store_unavailable`：ChromaDB 不可用
 - `504 llm_timeout`：生成请求超时，本次未自动重试

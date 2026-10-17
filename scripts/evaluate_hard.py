@@ -48,7 +48,8 @@ REPORT_PATH = ROOT_DIR / "docs" / "hard-evaluation.md"
 TOP_K_VALUES = (1, 3, 6)
 PUBLIC_TYPES = {"paraphrase", "distractor", "boundary", "multi_page"}
 REAL_TYPES = {"paraphrase", "numeric", "distractor", "condition", "multi_page"}
-RETRIEVERS = ("bge", "lexical")
+RETRIEVERS = ("bge", "lexical", "fusion")
+FUSION_K = 60
 SCOPES = ("document", "global")
 
 
@@ -114,6 +115,17 @@ def coverage_rank(ranked: list, question: dict[str, Any]) -> int | None:
     return None
 
 
+def fuse_rankings(*rankings: list, k: int = FUSION_K) -> list:
+    """Reciprocal-rank fusion of several rankings; an offline measurement, not the serving path."""
+    scores: dict[str, float] = {}
+    chunks: dict[str, Any] = {}
+    for ranked in rankings:
+        for rank, (chunk, _) in enumerate(ranked, start=1):
+            scores[chunk.chunk_id] = scores.get(chunk.chunk_id, 0.0) + 1.0 / (k + rank)
+            chunks[chunk.chunk_id] = chunk
+    return sorted(((chunks[i], s) for i, s in scores.items()), key=lambda item: item[1], reverse=True)
+
+
 def rank_everything(questions: list[dict[str, Any]], chunks: list) -> tuple[dict, dict]:
     """Return per-question ranks and the document-scoped BGE ranking used for answers."""
     vectors = embed_texts([chunk.text for chunk in chunks])
@@ -125,6 +137,7 @@ def rank_everything(questions: list[dict[str, Any]], chunks: list) -> tuple[dict
             "bge": rank_chunks(chunks, vectors, query_vector),
             "lexical": lexical_rank_chunks(chunks, grams, question["question"]),
         }
+        rankings["fusion"] = fuse_rankings(rankings["bge"], rankings["lexical"])
         ranks[question["id"]] = {}
         for retriever, ranked in rankings.items():
             scoped = [item for item in ranked if item[0].filename == question["gold_document"]]
@@ -194,7 +207,24 @@ def evaluate_answers(questions: list[dict[str, Any]], rankings: dict) -> dict[st
     }
 
 
-def run(*, with_llm: bool, include_real: bool) -> dict[str, Any]:
+def previous_answers(path: Path) -> dict[str, Any] | None:
+    """Answer evaluation from the last recorded run, tagged with that run's provenance.
+
+    Model calls are quota-limited, so retrieval-only reruns keep the previously recorded
+    answers instead of silently dropping them; the report states when they were recorded.
+    """
+    if not path.exists():
+        return None
+    previous = json.loads(path.read_text(encoding="utf-8"))
+    answers = (previous.get("public") or {}).get("hard", {}).get("answer_evaluation")
+    if not answers:
+        return None
+    answers.setdefault("recorded_in_run", {"generated_at": previous["run"]["generated_at"],
+                                           "git_revision": previous["run"]["git_revision"]})
+    return answers
+
+
+def run(*, with_llm: bool, include_real: bool, kept_answers: dict[str, Any] | None = None) -> dict[str, Any]:
     embed_texts(["StudyMate hard benchmark warmup"])
     size, overlap = settings.chunk_size, settings.chunk_overlap
     hard = load_hard()
@@ -222,7 +252,7 @@ def run(*, with_llm: bool, include_real: bool) -> dict[str, Any]:
         "public": {
             "hard": {"retrieval": summarize(hard["questions"], hard_ranks),
                      "questions": [{"id": q["id"], "type": q["type"], "ranks": hard_ranks[q["id"]]} for q in hard["questions"]],
-                     "answer_evaluation": evaluate_answers(hard["questions"], answer_rankings) if with_llm else None},
+                     "answer_evaluation": evaluate_answers(hard["questions"], answer_rankings) if with_llm else kept_answers},
             "original_reference": {"retrieval": summarize(original["questions"], original_ranks)},
         },
         "real_course": None,
@@ -261,16 +291,16 @@ def percent(value: float | None) -> str:
 def render_report(result: dict[str, Any]) -> str:
     def overview_row(label: str, summary: dict[str, Any]) -> str:
         overall = summary["all"]
-        bge, lex, glob = overall["bge_document"], overall["lexical_document"], overall["bge_global"]
+        bge, lex, fus, glob = overall["bge_document"], overall["lexical_document"], overall["fusion_document"], overall["bge_global"]
         return (f"| {label} | {overall['question_count']} | {percent(bge['recall_at_1'])} | {percent(bge['recall_at_3'])} | "
                 f"{percent(bge['recall_at_6'])} | {percent(lex['recall_at_1'])} | {percent(lex['recall_at_6'])} | "
-                f"{percent(glob['recall_at_1'])} |")
+                f"{percent(fus['recall_at_1'])} | {percent(fus['recall_at_6'])} | {percent(glob['recall_at_1'])} |")
 
     def type_rows(summary: dict[str, Any]) -> list[str]:
         return [
             f"| {name} | {item['question_count']} | {percent(item['bge_document']['recall_at_1'])} | "
             f"{percent(item['bge_document']['recall_at_6'])} | {percent(item['lexical_document']['recall_at_1'])} | "
-            f"{percent(item['lexical_document']['recall_at_6'])} |"
+            f"{percent(item['lexical_document']['recall_at_6'])} | {percent(item['fusion_document']['recall_at_6'])} |"
             for name, item in summary.items() if name != "all"
         ]
 
@@ -280,7 +310,7 @@ def render_report(result: dict[str, Any]) -> str:
             answer = answers.get(q["id"]) if answers else None
             outcome = "-" if answer is None else ("correct" if answer["answer_correct"] else f"miss ({answer['status']})")
             rows.append(f"| {q['id']} | {q['type']} | {q['ranks']['bge']['document'] or '>all'} | "
-                        f"{q['ranks']['lexical']['document'] or '>all'} | {outcome} |")
+                        f"{q['ranks']['lexical']['document'] or '>all'} | {q['ranks']['fusion']['document'] or '>all'} | {outcome} |")
         return rows
 
     public, real_course, run_info = result["public"], result["real_course"], result["run"]
@@ -309,17 +339,22 @@ def render_report(result: dict[str, Any]) -> str:
         "document; **boundary** and **condition** ask about an edge value or rule; **numeric** asks for a specific number; "
         "**multi_page** needs several pages.", "",
         "## Overview", "",
-        "| Set | Questions | BGE R@1 | BGE R@3 | BGE R@6 | n-gram R@1 | n-gram R@6 | BGE global R@1 |",
-        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |", *overview, "",
-        "R@K is document-scoped unless marked global. The app uses BGE with top 6.", "",
+        "| Set | Questions | BGE R@1 | BGE R@3 | BGE R@6 | n-gram R@1 | n-gram R@6 | Fusion R@1 | Fusion R@6 | BGE global R@1 |",
+        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |", *overview, "",
+        "R@K is document-scoped unless marked global. The app uses BGE with top 6. **Fusion** is an offline "
+        f"reciprocal-rank fusion (k={FUSION_K}) of the BGE and n-gram rankings, measured here to size a possible "
+        "hybrid retriever; the app does not use it.", "",
         "## Public hard set by type", "",
-        "| Type | Questions | BGE R@1 | BGE R@6 | n-gram R@1 | n-gram R@6 |",
-        "| --- | ---: | ---: | ---: | ---: | ---: |", *type_rows(public["hard"]["retrieval"]), "",
+        "| Type | Questions | BGE R@1 | BGE R@6 | n-gram R@1 | n-gram R@6 | Fusion R@6 |",
+        "| --- | ---: | ---: | ---: | ---: | ---: | ---: |", *type_rows(public["hard"]["retrieval"]), "",
     ]
     if answers:
+        recorded = answers.get("recorded_in_run")
         lines += [
             "## Public hard set answers", "",
-            f"Answers come from `{answers['llm_model']}` through the serving answer path (relevance gate, citation guard and refusal) "
+            *([f"Recorded on `{recorded['generated_at']}` at revision `{recorded['git_revision']}`; the retrieval tables above "
+               "were re-measured later with the same BGE rankings, so the two remain comparable.", ""] if recorded else []),
+            f"Answers come from `{answers.get('llm_provider', 'the configured provider')}` model `{answers['llm_model']}` through the serving answer path (relevance gate, citation guard and refusal) "
             f"with document-scoped BGE top {answers['top_k']}. An answer is correct only when it is answered, contains every answer "
             "keyword and contains none of the distractor values listed for that question. Citation support is the share of cited "
             "sources that lie on an evidence page.", "",
@@ -331,16 +366,16 @@ def render_report(result: dict[str, Any]) -> str:
     lines += [
         "## Public hard questions", "",
         "Rank is the document-scoped rank at which all evidence was retrieved; `>all` means never within the document.", "",
-        "| ID | Type | BGE rank | n-gram rank | Answer |", "| --- | --- | ---: | ---: | --- |",
+        "| ID | Type | BGE rank | n-gram rank | Fusion rank | Answer |", "| --- | --- | ---: | ---: | ---: | --- |",
         *question_rows(public["hard"]["questions"], answer_lookup), "",
     ]
     if real_course:
         lines += [
             "## Real-course hard set by type", "",
             "Retrieval only and run locally. Only IDs, types and ranks are published; source PDFs, paths, text and answers are not.", "",
-            "| Type | Questions | BGE R@1 | BGE R@6 | n-gram R@1 | n-gram R@6 |",
-            "| --- | ---: | ---: | ---: | ---: | ---: |", *type_rows(real_course["hard"]["retrieval"]), "",
-            "| ID | Type | BGE rank | n-gram rank | Answer |", "| --- | --- | ---: | ---: | --- |",
+            "| Type | Questions | BGE R@1 | BGE R@6 | n-gram R@1 | n-gram R@6 | Fusion R@6 |",
+            "| --- | ---: | ---: | ---: | ---: | ---: | ---: |", *type_rows(real_course["hard"]["retrieval"]), "",
+            "| ID | Type | BGE rank | n-gram rank | Fusion rank | Answer |", "| --- | --- | ---: | ---: | ---: | --- |",
             *question_rows(real_course["hard"]["questions"], None), "",
         ]
     lines += [
@@ -369,7 +404,8 @@ def main() -> None:
     parser.add_argument("--output", type=Path, default=RESULT_PATH)
     parser.add_argument("--report", type=Path, default=REPORT_PATH)
     args = parser.parse_args()
-    result = run(with_llm=args.with_llm, include_real=not args.public_only)
+    kept = None if args.with_llm else previous_answers(args.output)
+    result = run(with_llm=args.with_llm, include_real=not args.public_only, kept_answers=kept)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     args.report.write_text(render_report(result), encoding="utf-8")

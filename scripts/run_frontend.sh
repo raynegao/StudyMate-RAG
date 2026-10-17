@@ -26,7 +26,8 @@ fi
 HOST="${STUDYMATE_FRONTEND_HOST:-127.0.0.1}"
 PORT="${STUDYMATE_FRONTEND_PORT:-8501}"
 
-exec "$PYTHON_BIN" -m streamlit run "$ROOT_DIR/frontend/streamlit_app.py" \
+# The page only talks to the backend over HTTP; it never needs provider credentials.
+exec env -u DEEPSEEK_API_KEY -u GEMINI_API_KEY "$PYTHON_BIN" -m streamlit run "$ROOT_DIR/frontend/streamlit_app.py" \
   --server.address "$HOST" \
   --server.port "$PORT" \
   --server.maxUploadSize "${STUDYMATE_MAX_UPLOAD_SIZE_MB:-25}" \
