@@ -19,8 +19,8 @@
     }
   },
   "run": {
-    "generated_at": "2026-10-16T22:32:43.207254+00:00",
-    "git_revision": "479763b",
+    "generated_at": "2026-10-18T00:04:09.880986+00:00",
+    "git_revision": "d65ae46",
     "embedding_model": "BAAI/bge-small-zh-v1.5",
     "sentence_transformers": "3.3.1",
     "torch": "2.5.1",
@@ -638,13 +638,14 @@
         }
       ],
       "answer_evaluation": {
+        "llm_provider": "deepseek",
         "llm_model": "deepseek-v4-flash",
         "top_k": 6,
         "scope": "document",
-        "answer_accuracy": 0.9583333333333334,
-        "citation_support": 0.9583333333333334,
+        "answer_accuracy": 1.0,
+        "citation_support": 0.9791666666666666,
         "answered_rate": 1.0,
-        "generation_latency_mean_ms": 1654.9902136127155,
+        "generation_latency_mean_ms": 1501.0732343653217,
         "by_type": {
           "boundary": {
             "question_count": 3,
@@ -653,8 +654,8 @@
           },
           "distractor": {
             "question_count": 13,
-            "answer_accuracy": 0.9230769230769231,
-            "citation_support": 0.9230769230769231
+            "answer_accuracy": 1.0,
+            "citation_support": 0.9615384615384616
           },
           "multi_page": {
             "question_count": 3,
@@ -672,91 +673,91 @@
             "id": "OBS-H1",
             "type": "distractor",
             "status": "answered",
-            "answer": "通过零点校准的传感器使用紫晶校准牌标记，其激活窗口为 18 分钟，超过窗口后必须重新执行零点校准 [S2]。",
+            "answer": "通过零点校准的传感器使用紫晶校准牌标记，其激活窗口即失效时间为 **18 分钟**；超过这个窗口后，必须重新执行零点校准 [S2]。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 1371.2705420330167
+            "latency_ms": 1270.0687907636166
           },
           {
             "id": "OBS-H2",
             "type": "distractor",
             "status": "answered",
-            "answer": "增益校准完成后使用的是琥珀校准牌，其激活窗口为 28 分钟，超过窗口后必须重新执行增益校准 [S1]。与零点校准使用的标记不同，琥珀校准牌可以在同一观测轮次内转移给备用设备 [S1]。",
+            "answer": "增益校准完成后使用的是琥珀校准牌，其激活窗口为 28 分钟，超过窗口后必须重新执行增益校准 [S1]。该标记可以在同一观测轮次内转移给备用设备 [S1]。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 1229.3707905337214
+            "latency_ms": 1471.9866244122386
           },
           {
             "id": "OBS-H3",
             "type": "distractor",
             "status": "answered",
-            "answer": "每天执行完整同步的是东塔，其在协调世界时 02:30 执行一次完整同步 [S1]。东塔同步生成的审计记录保留 45 天，过期记录由归档服务批量移除 [S1]。",
+            "answer": "东塔每天在协调世界时 02:30 执行一次完整同步，其同步生成的审计记录保留 45 天 [S1]。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 1238.8496659696102
+            "latency_ms": 1622.5570002570748
           },
           {
             "id": "OBS-H4",
             "type": "paraphrase",
             "status": "answered",
-            "answer": "被贴上红色隔离标签的仪器需要持续 2 个观测轮次；两个轮次都未再次出现故障后，才可以从隔离区移回常规观测队列 [S2]。",
+            "answer": "需要平稳度过 **2 个观测轮次**；两个轮次都未再次出现故障后，设备才可以从隔离区移回常规观测队列 [S2]。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 1283.2726249471307
+            "latency_ms": 1353.6128755658865
           },
           {
             "id": "OBS-H5",
             "type": "paraphrase",
             "status": "answered",
-            "answer": "镜头温度高于 -12 摄氏度时会触发 A17 告警，此时值班人员应暂停曝光并检查制冷回路；不应继续提高采样频率 [S2]。",
+            "answer": "当镜头温度高于 -12 摄氏度触发 A17 告警时，值班人员应暂停曝光并检查制冷回路，而不应继续提高采样频率 [S2]。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 1655.3585408255458
+            "latency_ms": 2261.123625561595
           },
           {
             "id": "OBS-H6",
             "type": "boundary",
             "status": "answered",
-            "answer": "漂移评分正好是 0.63 的记录会进入自动归档队列 [S1]。",
+            "answer": "漂移评分正好为 0.63 的记录会进入自动归档队列 [S1]。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 1600.962582975626
+            "latency_ms": 1020.8724169060588
           },
           {
             "id": "OBS-H7",
             "type": "multi_page",
             "status": "answered",
-            "answer": "从主镜冷启动开始，夜间巡检至少需要等待 **11 分钟**（主镜冷启动预热时间）才能开始正式观测 [S2][S4]。\n\n预热结束后，还需先执行一次**天顶脉冲采样**；只有这组采样判定有效后，值班人员才可以写入当晚第一条正式观测记录 [S1]。有效天顶脉冲采样的要求是：包含连续 7 次测量，相邻两次测量的间隔不得超过 4 秒，缺少一次测量即需整组重新开始 [S4]。\n\n因此，最短等待时间为 11 分钟，且必须完成一次有效的天顶脉冲采样后，才可写入当晚第一条正式观测记录。",
+            "answer": "至少需要等待主镜冷启动预热结束，即预热 **11 分钟** [S2][S4]；预热期间不得写入正式观测记录 [S2]。\n\n随后需执行一次天顶脉冲采样，且该组采样必须有效：包含连续 **7 次**测量，相邻两次测量间隔不得超过 **4 秒**；缺少一次测量就需重新开始 [S4]。只有这组采样判定有效后，值班人员才可以写入当晚第一条正式观测记录 [S1]。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 2673.8891657441854
+            "latency_ms": 2449.361083097756
           },
           {
             "id": "OBS-H8",
             "type": "distractor",
             "status": "answered",
-            "answer": "地面反射校正使用的是天底脉冲采样：必须包含连续 9 次测量，相邻两次测量的间隔不得超过 6 秒 [S2]。资料还指出天底采样只用于地面反射校正，不能替代天顶脉冲采样 [S2]。",
+            "answer": "地面反射校正使用的是天底脉冲采样：必须包含连续 9 次测量，相邻两次测量的间隔不得超过 6 秒 [S2]。资料还说明，天底采样只用于地面反射校正，不能替代天顶脉冲采样 [S2]。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 1641.3674168288708
+            "latency_ms": 1212.9179993644357
           },
           {
             "id": "ECO-H1",
             "type": "distractor",
             "status": "answered",
-            "answer": "琥珀苔灌溉当天仍保持 9 小时紫光照明，不能用增加照明时间代替补水 [S1]。",
+            "answer": "琥珀苔灌溉当天仍保持 9 小时紫光照明 [S1]。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 905.3924176841974
+            "latency_ms": 933.8149577379227
           },
           {
             "id": "ECO-H2",
@@ -766,59 +767,57 @@
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 1161.1037077382207
+            "latency_ms": 834.2234585434198
           },
           {
             "id": "ECO-H3",
             "type": "distractor",
             "status": "answered",
-            "answer": "不是用于幼苗的普通雾培温室，相对湿度应保持在 **68% 到 74%** [S2]。  \n而只用于播种后前两周幼苗的雾培育苗间，相对湿度是 **80% 到 86%** [S1]。",
-            "answer_correct": false,
-            "forbidden_keywords_found": [
-              "80%"
-            ],
-            "citation_support": 0.5,
-            "latency_ms": 2366.318500600755
+            "answer": "普通雾培温室的相对湿度应保持在 **68% 到 74%** [S2]。",
+            "answer_correct": true,
+            "forbidden_keywords_found": [],
+            "citation_support": 1.0,
+            "latency_ms": 1996.399624273181
           },
           {
             "id": "ECO-H4",
             "type": "paraphrase",
             "status": "answered",
-            "answer": "绿色样本瓶盖最多使用 8 次，达到次数后必须更换 [S2]。清洗只能恢复洁净度，不能重置使用次数，因此洗干净后不能重新计数 [S2]。",
+            "answer": "绿色样本瓶盖最多使用 8 次，达到次数后必须更换 [S2]。清洗只能恢复洁净度，不能重置使用次数，因此洗干净后也不能重新计数 [S2]。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 1997.2254177555442
+            "latency_ms": 1340.1608346030116
           },
           {
             "id": "ECO-H5",
             "type": "paraphrase",
             "status": "answered",
-            "answer": "资料中与“碳排放气体”对应的是二氧化碳浓度的应急规程：当二氧化碳浓度高于 950 ppm 时，应急通风阀会自动开启 [S2]；当浓度回落到安全区间后，仍需保持通风 3 分钟 [S2]。",
+            "answer": "资料中没有使用“碳排放气体”这一表述；资料中给出的是**二氧化碳**浓度的相关规程：\n\n- 当二氧化碳浓度高于 950 ppm 时，应急通风阀会自动开启 [S2]。\n- 浓度回落到安全区间后，仍需保持通风 3 分钟 [S2]。\n\n如果问题所指的正是二氧化碳，可按上述规则处理；如果“碳排放气体”指其他气体，资料中没有相关信息。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 3235.5296667665243
+            "latency_ms": 2415.2874583378434
           },
           {
             "id": "ECO-H6",
             "type": "boundary",
             "status": "answered",
-            "answer": "育苗区土壤的目标 pH 范围是 6.2 到 6.8 [S1]。测得 7.0 高于该范围，按资料应暂停施用含钙添加剂 [S1]。",
+            "answer": "育苗区土壤的目标 pH 范围是 6.2 到 6.8；测得的 7.0 高于该范围，资料规定此时应暂停施用含钙添加剂 [S1]。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 1338.7585831806064
+            "latency_ms": 1110.829041339457
           },
           {
             "id": "ECO-H7",
             "type": "multi_page",
             "status": "answered",
-            "answer": "季度巡检需要核对的授粉走廊最小净宽度下限是 **3.5 米** [S4]；二氧化碳应急通风阀在浓度 **高于 950 ppm** 时自动开启 [S1]。季度巡检流程也确实要求先确认授粉走廊净宽度没有低于下限，再测试该应急通风阀能否在规定浓度自动开启 [S2]。",
+            "answer": "季度巡检需要核对的授粉走廊最小净宽度下限为 **3.5 米** [S4]；二氧化碳应急通风阀在浓度 **高于 950 ppm** 时自动开启 [S1]。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 2463.1325425580144
+            "latency_ms": 2013.250583782792
           },
           {
             "id": "ECO-H8",
@@ -828,7 +827,7 @@
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 1179.99816685915
+            "latency_ms": 1307.9345002770424
           },
           {
             "id": "CMP-H1",
@@ -838,7 +837,7 @@
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 1324.2234159260988
+            "latency_ms": 1296.9692926853895
           },
           {
             "id": "CMP-H2",
@@ -848,73 +847,69 @@
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 883.515709079802
+            "latency_ms": 1137.0231248438358
           },
           {
             "id": "CMP-H3",
             "type": "distractor",
             "status": "answered",
-            "answer": "不是给批处理用的调度器是灯塔调度器，其默认时间片为 24 毫秒 [S1]。只服务批处理队列的是信标调度器 [S2]。",
+            "answer": "不是用于批处理的调度器对应灯塔调度器，其默认时间片是 **24 毫秒** [S1]。资料还说明，信标调度器只服务批处理队列 [S2]。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 0.5,
-            "latency_ms": 2090.1189167052507
+            "latency_ms": 1948.3989579603076
           },
           {
             "id": "CMP-H4",
             "type": "paraphrase",
             "status": "answered",
-            "answer": "计算节点冷启动时必须预留 **256 MB** 内存给诊断代理 [S1]。即使节点暂时没有运行诊断，预留区也**不得被用户任务申请** [S1]。",
+            "answer": "计算节点冷启动时必须预留 256 MB 内存给诊断代理 [S1]。即使节点暂时没有运行诊断，预留区也不得被用户任务申请 [S1]。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 1613.6371660977602
+            "latency_ms": 1519.2139577120543
           },
           {
             "id": "CMP-H5",
             "type": "boundary",
             "status": "answered",
-            "answer": "第 13 个作业会停留在等待队列中，直到已有作业释放执行槽位 [S1]。",
+            "answer": "第 13 个作业会停留在等待队列中，直到已有作业释放执行槽位，因为单个蓝色沙箱最多同时运行 12 个作业 [S1]。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 853.4010844305158
+            "latency_ms": 1295.5579161643982
           },
           {
             "id": "CMP-H6",
             "type": "distractor",
             "status": "answered",
-            "answer": "网络请求最多重试 4 次，达到上限后请求进入失败队列，不再自动发送 [S2]。因此最多会自动重发 4 次 [S2]。",
+            "answer": "网络请求失败后最多重试 4 次 [S2]。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 1249.448542483151
+            "latency_ms": 1418.332957662642
           },
           {
             "id": "CMP-H7",
             "type": "multi_page",
             "status": "answered",
-            "answer": "发布前检查涉及的三个数字分别是：\n\n- 状态快照每 **15 分钟**生成一次 [S3]。\n- 故障恢复流程最多允许丢失 **2 笔**事务 [S3]。\n- 审计日志在线保留 **21 天** [S2]。",
+            "answer": "快照每 15 分钟生成一次 [S3]；故障恢复最多允许丢失 2 笔事务 [S3]；审计日志在线保留 21 天 [S2]。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 2266.4738334715366
+            "latency_ms": 1687.5169584527612
           },
           {
             "id": "CMP-H8",
             "type": "distractor",
             "status": "answered",
-            "answer": "运行不可信代码的绿色沙箱，单个最多同时运行 6 个作业 [S1]。",
+            "answer": "绿色沙箱专门运行不可信代码，单个绿色沙箱最多同时运行 6 个作业 [S1]。",
             "answer_correct": true,
             "forbidden_keywords_found": [],
             "citation_support": 1.0,
-            "latency_ms": 2097.146125510335
+            "latency_ms": 1108.3435844630003
           }
-        ],
-        "recorded_in_run": {
-          "generated_at": "2026-10-16T02:21:07.442396+00:00",
-          "git_revision": "3a296ad"
-        }
+        ]
       }
     },
     "original_reference": {

@@ -14,11 +14,11 @@ StudyMate RAG is a local-first question-answering system for Chinese course PDFs
 Key evidence:
 
 - 30 questions over 3 fully fictional public PDFs, with gold document, page and answer-keyword annotations
-- Recall@1 and MRR@1 of 100% for BGE on the public synthetic benchmark
-- 29/30 deterministic keyword checks and 100% cited-page accuracy in the previous recorded DeepSeek benchmark (not a semantic entailment score)
+- BGE Recall@1 96.67% and Recall@3 100.00% on the public synthetic benchmark (chunk 300, accepted pages)
+- 30/30 deterministic keyword checks and 100.00% cited-page accuracy in the 2026-10-18 DeepSeek benchmark (not a semantic entailment score)
 - 15/15 real-course questions retrieve gold-page evidence at top-6 in the local-only benchmark
 - 12/12 unsupported questions refused in a separate public regression set
-- A harder set exposes the limits the saturated benchmarks hide: document-scoped BGE top-6 retrieval finds all evidence for 100.0% of 24 public hard questions but only 53.3% of 15 real-course hard questions; 95.8% of public hard answers pass keyword and distractor-value checks
+- A harder set exposes the limits the saturated benchmarks hide: document-scoped BGE top-6 retrieval finds all evidence for 100.0% of 24 public hard questions but only 53.3% of 15 real-course hard questions; 100.00% of public hard answers pass keyword and distractor-value checks
 - Isolated Docker verification of real BGE, ChromaDB persistence across backend restart, DeepSeek answers and cleanup
 - Machine-readable results and a reproducible 75-second demonstration video
 
@@ -143,7 +143,7 @@ scripts/run_real_course.sh verify   # 新库实际 API 的 15 题与隐私边界
 
 LLM 默认连接超时最多 5 秒、读写等阶段超时 30 秒，关闭 SDK 自动重试；前端请求等待至少 60 秒，并随后端预算增加。超时返回脱敏 `504/llm_timeout`。这些是阶段超时，不是包括排队、冷启动在内的严格端到端 SLA。新分块策略只影响新上传，旧私人索引不会自动重建。
 
-整篇概括的分段请求默认 4 路并发（`STUDYMATE_SUMMARY_CONCURRENCY`，1 到 8，设为 1 即恢复串行），各段摘要仍按原页序进入综合；任何一段失败立即报错，尚未开始的分段不再发送。前端等待预算按并发轮数计算，默认 150 秒（2 轮分段请求与 1 次综合请求，再加 60 秒余量）；每次模型调用仍采用上述超时与零重试。用公开虚构的 6 批长文档实测一次，串行 44.3 秒、4 路并发 19.3 秒，见 [实测记录](output/e2e/summary-concurrency-result.json)。短 PDF 通常只需一次调用。生成模式相关性门槛为 0.35，显式课程本地模式为 0.50；概括不经过相似度过滤。
+整篇概括的分段请求默认 4 路并发（`STUDYMATE_SUMMARY_CONCURRENCY`，1 到 8，设为 1 即恢复串行），各段摘要仍按原页序进入综合；任何一段失败立即报错，尚未开始的分段不再发送。前端等待预算按并发轮数计算，默认 150 秒（2 轮分段请求与 1 次综合请求，再加 60 秒余量）；每次模型调用仍采用上述超时与零重试。用公开虚构的 6 批长文档各实测 3 轮取中位数（2026-10-18，DeepSeek）：串行 27.93 秒、4 路并发 12.99 秒，约 2.15 倍，见 [实测记录](output/e2e/summary-concurrency-result.json)。短 PDF 通常只需一次调用。生成模式相关性门槛为 0.35，显式课程本地模式为 0.50；概括不经过相似度过滤。
 
 ## Docker Compose
 
@@ -194,14 +194,14 @@ docker compose down
 
 仓库包含 3 份完全虚构的公开 PDF 和 30 道中文问题。每道题都标注标准文档、页码和答案关键词，评测脚本使用真实 BGE，并对比字符 n-gram 词法基线、3 组字符上限和 5 组 `top_k`。
 
-前一轮公开合成集记录（以对应 JSON 时间戳为准）：
+最近一轮公开合成集记录（2026-10-18，DeepSeek，以对应 JSON 时间戳为准）：
 
-- BGE Recall@1：100%
-- BGE MRR@1：100%
-- 该轮 30 次真实 DeepSeek 调用的关键词检查通过率：96.67%（29/30）
-- 引用页准确率：100%；关键词与引用联合通过率：96.67%
+- BGE Recall@1：96.67%，Recall@3：100.00%，Recall@6：100.00%（分块 300 字符，按人工认可页码计）
+- BGE MRR@1：96.67%
+- 该轮 30 次真实 DeepSeek 调用的关键词检查通过率：100.00%（30/30）
+- 引用页准确率：100.00%；关键词与引用联合通过率：100.00%
 - 检索、生成延迟及逐题回答以机器可读结果为准，生成会随模型输出和网络波动
-- 额外 18 题：12/12 无答案题正确拒答；6/6 可回答变体检索到证据，5/6 通过自动关键词检查
+- 额外 18 题：12/12 无答案题正确拒答；6/6 可回答变体检索到证据，6/6 通过自动关键词检查
 
 ```bash
 .venv/bin/python scripts/generate_evaluation_assets.py
@@ -214,7 +214,7 @@ set -a && source .env.local && set +a
 
 完整方法、对比表和局限性见 [docs/evaluation.md](docs/evaluation.md)，机器可读结果见 [evaluation-results.json](output/evaluation/evaluation-results.json)。这些结果来自小规模合成基准，证明可复现性，不代表真实课程域的泛化上限。
 
-提供方说明：以上及下文所有带模型回答的指标都是 DeepSeek 运行的记录（结果文件里的 `llm_model` 字段可查）。Gemini 提供方（2026-10-16 加入）只做了真实调用验证：[验证记录](output/e2e/llm-provider-gemini-result.json)与课程资料库里的实际问答、概括；没有在公开基准上重跑：免费层级每天 20 次请求不够跑完 30 题，而 2026-10-17 项目切到预付费层级后余额为零（API 返回 402）。评测脚本已支持按提供方记录，充值后重跑即可对照。
+提供方说明：以上及下文所有带模型回答的指标都是 DeepSeek 运行的记录，2026-10-18 在当前代码上统一刷新（结果文件里的 `llm_provider`、`llm_model` 字段可查）。Gemini 提供方（2026-10-16 加入）只做了真实调用验证：[验证记录](output/e2e/llm-provider-gemini-result.json)与课程资料库里的实际问答、概括；没有在公开基准上重跑：免费层级每天 20 次请求不够跑完 30 题，而 2026-10-17 项目切到预付费层级后余额为零（API 返回 402）。评测脚本已支持按提供方记录，充值后重跑即可对照。
 
 拒答回归见 [answerability-evaluation.md](docs/answerability-evaluation.md)。检索命中、关键词检查和引用页支持分别统计，引用标记合法不等于每个断言都受到原文支持。最新两道关键词漏判及标注修订说明见 [优化验收记录](docs/optimization-verification.md)。
 
@@ -222,7 +222,7 @@ set -a && source .env.local && set +a
 
 原有评测已接近满分，分辨不出检索改动是变好还是变差。加难集补充了换说法提问、相近概念干扰、边界条件、数字细节和跨页综合五类题，并用与应用一致的“所选文档内检索”口径，把原题一起重算作对照。题目在首次运行前固定，不按结果调整。
 
-- 公开加难集 24 题：3 份虚构 PDF 保留原第 2 至 4 页，第 5 页加入名称相近、数值不同的干扰内容。BGE 前 1 条命中 50.0%，前 6 条 100.0%；DeepSeek 回答 95.8% 通过关键词与干扰值检查。
+- 公开加难集 24 题：3 份虚构 PDF 保留原第 2 至 4 页，第 5 页加入名称相近、数值不同的干扰内容。BGE 前 1 条命中 50.0%，前 6 条 100.0%；DeepSeek 回答 100.00%（24/24）通过关键词与干扰值检查，引用页支持率 97.92%（2026-10-18）。
 - 真实课程加难集 15 题：只在本机检索，只公开题号、题型和排名。BGE 前 1 条命中 26.7%，前 6 条 53.3%，主要失分在中英文换说法和相近概念干扰。
 - 混合检索的离线测量（2026-10-17）：把向量与字符 n-gram 两路排名做倒数排名融合后，公开加难集前 1 条命中从 50.0% 提到 62.5%，但真实课程加难集前 6 条仍是 53.3%，跨页题变好、数字题变差。收益不足以改动服务路径，当前仍只用向量检索；测量方法保留在加难评测脚本里，以后调参可直接量。
 

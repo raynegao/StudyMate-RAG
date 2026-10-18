@@ -2,7 +2,7 @@
 
 18 additional questions over the public fictional PDFs: 6 held-out answerable paraphrases and 12 unanswerable questions (6 calibration, 6 held-out). Missing-fact negatives share the document's topic but ask for facts that are absent.
 
-Generated: 2026-09-05T09:37:06.038366+00:00; real LLM evaluation: True.
+Generated: 2026-10-18T00:03:58.534886+00:00; real LLM evaluation: True.
 
 The serving relevance gate and answer/citation guard are used unchanged. A low similarity can reject irrelevant context locally; high similarity does not establish answerability. Related missing-fact questions are tested through real generation. The threshold is selected using the original 30 answerable questions and calibration negatives. The held-out split is a development regression set, not a blind generalization claim.
 
@@ -29,7 +29,7 @@ The serving relevance gate and answer/citation guard are used unchanged. A low s
     "unanswerable_count": 6,
     "answerable_count": 6,
     "refusal_accuracy": 1.0,
-    "answer_accuracy": 0.8333333333333334,
+    "answer_accuracy": 1.0,
     "retrieval_evidence_recall": 1.0
   }
 }
@@ -41,7 +41,7 @@ The serving relevance gate and answer/citation guard are used unchanged. A low s
 | ANS-02 | held_out | answerable | 0.445 | False | True |
 | ANS-03 | held_out | answerable | 0.652 | False | True |
 | ANS-04 | held_out | answerable | 0.464 | False | True |
-| ANS-05 | held_out | answerable | 0.598 | False | False |
+| ANS-05 | held_out | answerable | 0.598 | False | True |
 | ANS-06 | held_out | answerable | 0.610 | False | True |
 | NO-01 | calibration | out_of_domain | 0.289 | True | True |
 | NO-02 | calibration | out_of_domain | 0.218 | True | True |

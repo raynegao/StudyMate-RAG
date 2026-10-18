@@ -8,8 +8,8 @@
     "all_content_fictional": true
   },
   "run": {
-    "generated_at": "2026-09-05T09:36:49.860584+00:00",
-    "git_revision": "12f8f9f",
+    "generated_at": "2026-10-18T00:03:02.140903+00:00",
+    "git_revision": "d65ae46",
     "python": "3.12.13",
     "platform": "macOS-26.5.1-arm64-arm-64bit",
     "embedding_model": "BAAI/bge-small-zh-v1.5",
@@ -28,12 +28,12 @@
       "chunk_overlap": 60,
       "top_k": 1,
       "chunk_count": 13,
-      "indexing_latency_ms": 229.59212493151426,
+      "indexing_latency_ms": 168.5613337904215,
       "recall_at_k": 0.9666666666666667,
       "strict_original_page_recall_at_k": 0.9666666666666667,
       "mrr_at_k": 0.9666666666666667,
-      "retrieval_latency_mean_ms": 24.469726315389078,
-      "retrieval_latency_p95_ms": 61.393666081130505
+      "retrieval_latency_mean_ms": 28.522151460250218,
+      "retrieval_latency_p95_ms": 72.26395886391401
     },
     {
       "retriever": "character n-gram",
@@ -42,12 +42,12 @@
       "chunk_overlap": 60,
       "top_k": 1,
       "chunk_count": 13,
-      "indexing_latency_ms": 1.9002500921487808,
+      "indexing_latency_ms": 2.7511250227689743,
       "recall_at_k": 0.9666666666666667,
       "strict_original_page_recall_at_k": 0.9666666666666667,
       "mrr_at_k": 0.9666666666666667,
-      "retrieval_latency_mean_ms": 0.07343616647024949,
-      "retrieval_latency_p95_ms": 0.09812507778406143
+      "retrieval_latency_mean_ms": 0.0832874948779742,
+      "retrieval_latency_p95_ms": 0.1166248694062233
     },
     {
       "retriever": "BGE dense",
@@ -56,12 +56,12 @@
       "chunk_overlap": 60,
       "top_k": 3,
       "chunk_count": 13,
-      "indexing_latency_ms": 229.59212493151426,
+      "indexing_latency_ms": 168.5613337904215,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 0.9833333333333333,
-      "retrieval_latency_mean_ms": 24.469726315389078,
-      "retrieval_latency_p95_ms": 61.393666081130505
+      "retrieval_latency_mean_ms": 28.522151460250218,
+      "retrieval_latency_p95_ms": 72.26395886391401
     },
     {
       "retriever": "character n-gram",
@@ -70,12 +70,12 @@
       "chunk_overlap": 60,
       "top_k": 3,
       "chunk_count": 13,
-      "indexing_latency_ms": 1.9002500921487808,
+      "indexing_latency_ms": 2.7511250227689743,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 0.9833333333333333,
-      "retrieval_latency_mean_ms": 0.07343616647024949,
-      "retrieval_latency_p95_ms": 0.09812507778406143
+      "retrieval_latency_mean_ms": 0.0832874948779742,
+      "retrieval_latency_p95_ms": 0.1166248694062233
     },
     {
       "retriever": "BGE dense",
@@ -84,12 +84,12 @@
       "chunk_overlap": 60,
       "top_k": 4,
       "chunk_count": 13,
-      "indexing_latency_ms": 229.59212493151426,
+      "indexing_latency_ms": 168.5613337904215,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 0.9833333333333333,
-      "retrieval_latency_mean_ms": 24.469726315389078,
-      "retrieval_latency_p95_ms": 61.393666081130505
+      "retrieval_latency_mean_ms": 28.522151460250218,
+      "retrieval_latency_p95_ms": 72.26395886391401
     },
     {
       "retriever": "character n-gram",
@@ -98,12 +98,12 @@
       "chunk_overlap": 60,
       "top_k": 4,
       "chunk_count": 13,
-      "indexing_latency_ms": 1.9002500921487808,
+      "indexing_latency_ms": 2.7511250227689743,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 0.9833333333333333,
-      "retrieval_latency_mean_ms": 0.07343616647024949,
-      "retrieval_latency_p95_ms": 0.09812507778406143
+      "retrieval_latency_mean_ms": 0.0832874948779742,
+      "retrieval_latency_p95_ms": 0.1166248694062233
     },
     {
       "retriever": "BGE dense",
@@ -112,12 +112,12 @@
       "chunk_overlap": 60,
       "top_k": 5,
       "chunk_count": 13,
-      "indexing_latency_ms": 229.59212493151426,
+      "indexing_latency_ms": 168.5613337904215,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 0.9833333333333333,
-      "retrieval_latency_mean_ms": 24.469726315389078,
-      "retrieval_latency_p95_ms": 61.393666081130505
+      "retrieval_latency_mean_ms": 28.522151460250218,
+      "retrieval_latency_p95_ms": 72.26395886391401
     },
     {
       "retriever": "character n-gram",
@@ -126,12 +126,12 @@
       "chunk_overlap": 60,
       "top_k": 5,
       "chunk_count": 13,
-      "indexing_latency_ms": 1.9002500921487808,
+      "indexing_latency_ms": 2.7511250227689743,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 0.9833333333333333,
-      "retrieval_latency_mean_ms": 0.07343616647024949,
-      "retrieval_latency_p95_ms": 0.09812507778406143
+      "retrieval_latency_mean_ms": 0.0832874948779742,
+      "retrieval_latency_p95_ms": 0.1166248694062233
     },
     {
       "retriever": "BGE dense",
@@ -140,12 +140,12 @@
       "chunk_overlap": 60,
       "top_k": 6,
       "chunk_count": 13,
-      "indexing_latency_ms": 229.59212493151426,
+      "indexing_latency_ms": 168.5613337904215,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 0.9833333333333333,
-      "retrieval_latency_mean_ms": 24.469726315389078,
-      "retrieval_latency_p95_ms": 61.393666081130505
+      "retrieval_latency_mean_ms": 28.522151460250218,
+      "retrieval_latency_p95_ms": 72.26395886391401
     },
     {
       "retriever": "character n-gram",
@@ -154,12 +154,12 @@
       "chunk_overlap": 60,
       "top_k": 6,
       "chunk_count": 13,
-      "indexing_latency_ms": 1.9002500921487808,
+      "indexing_latency_ms": 2.7511250227689743,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 0.9833333333333333,
-      "retrieval_latency_mean_ms": 0.07343616647024949,
-      "retrieval_latency_p95_ms": 0.09812507778406143
+      "retrieval_latency_mean_ms": 0.0832874948779742,
+      "retrieval_latency_p95_ms": 0.1166248694062233
     },
     {
       "retriever": "BGE dense",
@@ -168,12 +168,12 @@
       "chunk_overlap": 100,
       "top_k": 1,
       "chunk_count": 12,
-      "indexing_latency_ms": 174.69712486490607,
+      "indexing_latency_ms": 122.48170748353004,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 24.46779015784462,
-      "retrieval_latency_p95_ms": 61.40220770612359
+      "retrieval_latency_mean_ms": 28.504250074426334,
+      "retrieval_latency_p95_ms": 72.24116660654545
     },
     {
       "retriever": "character n-gram",
@@ -182,12 +182,12 @@
       "chunk_overlap": 100,
       "top_k": 1,
       "chunk_count": 12,
-      "indexing_latency_ms": 0.6514168344438076,
+      "indexing_latency_ms": 0.6208326667547226,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 0.08272780105471611,
-      "retrieval_latency_p95_ms": 0.11974992230534554
+      "retrieval_latency_mean_ms": 0.07849174241224925,
+      "retrieval_latency_p95_ms": 0.09899958968162537
     },
     {
       "retriever": "BGE dense",
@@ -196,12 +196,12 @@
       "chunk_overlap": 100,
       "top_k": 3,
       "chunk_count": 12,
-      "indexing_latency_ms": 174.69712486490607,
+      "indexing_latency_ms": 122.48170748353004,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 24.46779015784462,
-      "retrieval_latency_p95_ms": 61.40220770612359
+      "retrieval_latency_mean_ms": 28.504250074426334,
+      "retrieval_latency_p95_ms": 72.24116660654545
     },
     {
       "retriever": "character n-gram",
@@ -210,12 +210,12 @@
       "chunk_overlap": 100,
       "top_k": 3,
       "chunk_count": 12,
-      "indexing_latency_ms": 0.6514168344438076,
+      "indexing_latency_ms": 0.6208326667547226,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 0.08272780105471611,
-      "retrieval_latency_p95_ms": 0.11974992230534554
+      "retrieval_latency_mean_ms": 0.07849174241224925,
+      "retrieval_latency_p95_ms": 0.09899958968162537
     },
     {
       "retriever": "BGE dense",
@@ -224,12 +224,12 @@
       "chunk_overlap": 100,
       "top_k": 4,
       "chunk_count": 12,
-      "indexing_latency_ms": 174.69712486490607,
+      "indexing_latency_ms": 122.48170748353004,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 24.46779015784462,
-      "retrieval_latency_p95_ms": 61.40220770612359
+      "retrieval_latency_mean_ms": 28.504250074426334,
+      "retrieval_latency_p95_ms": 72.24116660654545
     },
     {
       "retriever": "character n-gram",
@@ -238,12 +238,12 @@
       "chunk_overlap": 100,
       "top_k": 4,
       "chunk_count": 12,
-      "indexing_latency_ms": 0.6514168344438076,
+      "indexing_latency_ms": 0.6208326667547226,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 0.08272780105471611,
-      "retrieval_latency_p95_ms": 0.11974992230534554
+      "retrieval_latency_mean_ms": 0.07849174241224925,
+      "retrieval_latency_p95_ms": 0.09899958968162537
     },
     {
       "retriever": "BGE dense",
@@ -252,12 +252,12 @@
       "chunk_overlap": 100,
       "top_k": 5,
       "chunk_count": 12,
-      "indexing_latency_ms": 174.69712486490607,
+      "indexing_latency_ms": 122.48170748353004,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 24.46779015784462,
-      "retrieval_latency_p95_ms": 61.40220770612359
+      "retrieval_latency_mean_ms": 28.504250074426334,
+      "retrieval_latency_p95_ms": 72.24116660654545
     },
     {
       "retriever": "character n-gram",
@@ -266,12 +266,12 @@
       "chunk_overlap": 100,
       "top_k": 5,
       "chunk_count": 12,
-      "indexing_latency_ms": 0.6514168344438076,
+      "indexing_latency_ms": 0.6208326667547226,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 0.08272780105471611,
-      "retrieval_latency_p95_ms": 0.11974992230534554
+      "retrieval_latency_mean_ms": 0.07849174241224925,
+      "retrieval_latency_p95_ms": 0.09899958968162537
     },
     {
       "retriever": "BGE dense",
@@ -280,12 +280,12 @@
       "chunk_overlap": 100,
       "top_k": 6,
       "chunk_count": 12,
-      "indexing_latency_ms": 174.69712486490607,
+      "indexing_latency_ms": 122.48170748353004,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 24.46779015784462,
-      "retrieval_latency_p95_ms": 61.40220770612359
+      "retrieval_latency_mean_ms": 28.504250074426334,
+      "retrieval_latency_p95_ms": 72.24116660654545
     },
     {
       "retriever": "character n-gram",
@@ -294,12 +294,12 @@
       "chunk_overlap": 100,
       "top_k": 6,
       "chunk_count": 12,
-      "indexing_latency_ms": 0.6514168344438076,
+      "indexing_latency_ms": 0.6208326667547226,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 0.08272780105471611,
-      "retrieval_latency_p95_ms": 0.11974992230534554
+      "retrieval_latency_mean_ms": 0.07849174241224925,
+      "retrieval_latency_p95_ms": 0.09899958968162537
     },
     {
       "retriever": "BGE dense",
@@ -308,12 +308,12 @@
       "chunk_overlap": 150,
       "top_k": 1,
       "chunk_count": 12,
-      "indexing_latency_ms": 114.06904179602861,
+      "indexing_latency_ms": 80.06791677325964,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 24.452490111192066,
-      "retrieval_latency_p95_ms": 61.38833286240697
+      "retrieval_latency_mean_ms": 28.52453604961435,
+      "retrieval_latency_p95_ms": 72.26120866835117
     },
     {
       "retriever": "character n-gram",
@@ -322,12 +322,12 @@
       "chunk_overlap": 150,
       "top_k": 1,
       "chunk_count": 12,
-      "indexing_latency_ms": 0.5565839819610119,
+      "indexing_latency_ms": 0.6972495466470718,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 0.07165147302051385,
-      "retrieval_latency_p95_ms": 0.10062474757432938
+      "retrieval_latency_mean_ms": 0.08621659750739734,
+      "retrieval_latency_p95_ms": 0.10858383029699326
     },
     {
       "retriever": "BGE dense",
@@ -336,12 +336,12 @@
       "chunk_overlap": 150,
       "top_k": 3,
       "chunk_count": 12,
-      "indexing_latency_ms": 114.06904179602861,
+      "indexing_latency_ms": 80.06791677325964,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 24.452490111192066,
-      "retrieval_latency_p95_ms": 61.38833286240697
+      "retrieval_latency_mean_ms": 28.52453604961435,
+      "retrieval_latency_p95_ms": 72.26120866835117
     },
     {
       "retriever": "character n-gram",
@@ -350,12 +350,12 @@
       "chunk_overlap": 150,
       "top_k": 3,
       "chunk_count": 12,
-      "indexing_latency_ms": 0.5565839819610119,
+      "indexing_latency_ms": 0.6972495466470718,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 0.07165147302051385,
-      "retrieval_latency_p95_ms": 0.10062474757432938
+      "retrieval_latency_mean_ms": 0.08621659750739734,
+      "retrieval_latency_p95_ms": 0.10858383029699326
     },
     {
       "retriever": "BGE dense",
@@ -364,12 +364,12 @@
       "chunk_overlap": 150,
       "top_k": 4,
       "chunk_count": 12,
-      "indexing_latency_ms": 114.06904179602861,
+      "indexing_latency_ms": 80.06791677325964,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 24.452490111192066,
-      "retrieval_latency_p95_ms": 61.38833286240697
+      "retrieval_latency_mean_ms": 28.52453604961435,
+      "retrieval_latency_p95_ms": 72.26120866835117
     },
     {
       "retriever": "character n-gram",
@@ -378,12 +378,12 @@
       "chunk_overlap": 150,
       "top_k": 4,
       "chunk_count": 12,
-      "indexing_latency_ms": 0.5565839819610119,
+      "indexing_latency_ms": 0.6972495466470718,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 0.07165147302051385,
-      "retrieval_latency_p95_ms": 0.10062474757432938
+      "retrieval_latency_mean_ms": 0.08621659750739734,
+      "retrieval_latency_p95_ms": 0.10858383029699326
     },
     {
       "retriever": "BGE dense",
@@ -392,12 +392,12 @@
       "chunk_overlap": 150,
       "top_k": 5,
       "chunk_count": 12,
-      "indexing_latency_ms": 114.06904179602861,
+      "indexing_latency_ms": 80.06791677325964,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 24.452490111192066,
-      "retrieval_latency_p95_ms": 61.38833286240697
+      "retrieval_latency_mean_ms": 28.52453604961435,
+      "retrieval_latency_p95_ms": 72.26120866835117
     },
     {
       "retriever": "character n-gram",
@@ -406,12 +406,12 @@
       "chunk_overlap": 150,
       "top_k": 5,
       "chunk_count": 12,
-      "indexing_latency_ms": 0.5565839819610119,
+      "indexing_latency_ms": 0.6972495466470718,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 0.07165147302051385,
-      "retrieval_latency_p95_ms": 0.10062474757432938
+      "retrieval_latency_mean_ms": 0.08621659750739734,
+      "retrieval_latency_p95_ms": 0.10858383029699326
     },
     {
       "retriever": "BGE dense",
@@ -420,12 +420,12 @@
       "chunk_overlap": 150,
       "top_k": 6,
       "chunk_count": 12,
-      "indexing_latency_ms": 114.06904179602861,
+      "indexing_latency_ms": 80.06791677325964,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 24.452490111192066,
-      "retrieval_latency_p95_ms": 61.38833286240697
+      "retrieval_latency_mean_ms": 28.52453604961435,
+      "retrieval_latency_p95_ms": 72.26120866835117
     },
     {
       "retriever": "character n-gram",
@@ -434,12 +434,12 @@
       "chunk_overlap": 150,
       "top_k": 6,
       "chunk_count": 12,
-      "indexing_latency_ms": 0.5565839819610119,
+      "indexing_latency_ms": 0.6972495466470718,
       "recall_at_k": 1.0,
       "strict_original_page_recall_at_k": 1.0,
       "mrr_at_k": 1.0,
-      "retrieval_latency_mean_ms": 0.07165147302051385,
-      "retrieval_latency_p95_ms": 0.10062474757432938
+      "retrieval_latency_mean_ms": 0.08621659750739734,
+      "retrieval_latency_p95_ms": 0.10858383029699326
     }
   ],
   "answer_evaluation": {
@@ -447,21 +447,22 @@
       "chunk_size": 300,
       "chunk_overlap": 60,
       "top_k": 6,
+      "llm_provider": "deepseek",
       "llm_model": "deepseek-v4-flash",
       "evaluation_method": "keyword correctness, retrieved evidence, and citation evidence are separate; not semantic entailment grading"
     },
-    "answer_accuracy": 0.9666666666666667,
-    "original_keyword_accuracy": 0.9666666666666667,
+    "answer_accuracy": 1.0,
+    "original_keyword_accuracy": 1.0,
     "citation_accuracy": 1.0,
-    "grounded_answer_rate": 0.9666666666666667,
+    "grounded_answer_rate": 1.0,
     "retrieval_evidence_rate": 1.0,
-    "generation_latency_mean_ms": 1081.4505054925878,
-    "generation_latency_p95_ms": 1728.033416904509,
+    "generation_latency_mean_ms": 1026.202238816768,
+    "generation_latency_p95_ms": 1526.5344996005297,
     "questions": [
       {
         "id": "OBS-01",
         "question": "传感器通过零点校准后用什么标记？",
-        "answer": "紫晶校准牌。[S1]",
+        "answer": "传感器通过零点校准后，使用**紫晶校准牌**标记 [S1]。",
         "answer_keywords": [
           "紫晶校准牌",
           "零点校准"
@@ -470,8 +471,8 @@
           "紫晶校准牌",
           "零点校准"
         ],
-        "original_keyword_check": false,
-        "answer_correct": false,
+        "original_keyword_check": true,
+        "answer_correct": true,
         "response_status": "answered",
         "retrieval_has_evidence": true,
         "citation_ids": [
@@ -479,12 +480,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 1244.5354997180402
+        "latency_ms": 1186.2669996917248
       },
       {
         "id": "OBS-02",
         "question": "校准标记激活以后多长时间失效？",
-        "answer": "紫晶校准牌的激活窗口为 18 分钟，超过窗口后必须重新执行零点校准。[S1]",
+        "answer": "校准牌激活窗口为 18 分钟，超过窗口后失效并必须重新执行零点校准 [S1]。",
         "answer_keywords": [
           "18",
           "分钟"
@@ -502,12 +503,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 840.7394168898463
+        "latency_ms": 1089.0117501839995
       },
       {
         "id": "OBS-03",
         "question": "怎样才算一组有效的天顶脉冲采样？",
-        "answer": "一次有效的天顶脉冲采样必须包含连续 7 次测量，且相邻两次测量的间隔不得超过 4 秒；只要缺少一次测量，整组采样就需要重新开始。[S1]",
+        "answer": "一组有效的天顶脉冲采样必须包含连续 7 次测量，且相邻两次测量的间隔不得超过 4 秒；只要缺少一次测量，整组采样就需要重新开始 [S1]。",
         "answer_keywords": [
           "7",
           "4 秒"
@@ -525,12 +526,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 1374.057165812701
+        "latency_ms": 1031.253875233233
       },
       {
         "id": "OBS-04",
         "question": "漂移评分达到多少可以自动归档？",
-        "answer": "漂移评分自动准入阈值是 0.63；评分大于或等于 0.63 的记录进入自动归档队列，低于 0.63 的记录转入人工复核。[S1]",
+        "answer": "漂移评分的自动准入阈值为 0.63；评分大于或等于 0.63 的记录会进入自动归档队列，低于 0.63 的记录转入人工复核 [S1]。",
         "answer_keywords": [
           "0.63",
           "自动归档"
@@ -548,12 +549,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 759.4881663098931
+        "latency_ms": 1078.721416182816
       },
       {
         "id": "OBS-05",
         "question": "处理偏振噪声时中值滤波器的窗口宽度是多少？",
-        "answer": "处理偏振噪声时，中值滤波器的窗口宽度为 5。[S1]",
+        "answer": "处理偏振噪声时，中值滤波器的窗口宽度是 5 [S1]。",
         "answer_keywords": [
           "5",
           "中值滤波"
@@ -571,12 +572,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 1728.033416904509
+        "latency_ms": 807.4528332799673
       },
       {
         "id": "OBS-06",
         "question": "东塔每天几点同步，审计记录保存多久？",
-        "answer": "东塔每天在协调世界时 02:30 执行一次完整同步，审计记录保留 45 天。[S1]",
+        "answer": "东塔每天在协调世界时 02:30 执行一次完整同步 [S1]。同步生成的审计记录保留 45 天 [S1]。",
         "answer_keywords": [
           "02:30",
           "45 天"
@@ -594,12 +595,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 999.1317912936211
+        "latency_ms": 1547.8571662679315
       },
       {
         "id": "OBS-07",
         "question": "原始观测包通过检查后采用哪种压缩算法？",
-        "answer": "原始观测包通过校验和检查后，使用 Lumen-3 算法压缩。[S1]",
+        "answer": "原始观测包必须先完成校验和检查，通过后使用 Lumen-3 算法压缩 [S1]。",
         "answer_keywords": [
           "Lumen-3",
           "校验和"
@@ -617,12 +618,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 1026.5778750181198
+        "latency_ms": 1035.9932910650969
       },
       {
         "id": "OBS-08",
         "question": "什么温度条件会触发 A17 告警？",
-        "answer": "当镜头温度高于 -12 摄氏度时，控制器触发 A17 告警。[S1]",
+        "answer": "当镜头温度高于 -12 摄氏度时，会触发 A17 告警 [S1]。",
         "answer_keywords": [
           "-12",
           "高于"
@@ -640,12 +641,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 975.7622079923749
+        "latency_ms": 912.3574169352651
       },
       {
         "id": "OBS-09",
         "question": "红色隔离标签会持续几个观测轮次？",
-        "answer": "红色隔离标签持续 2 个观测轮次。[S1]",
+        "answer": "红色隔离标签持续 2 个观测轮次 [S1]。",
         "answer_keywords": [
           "2",
           "观测轮次"
@@ -663,12 +664,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 1007.8639998100698
+        "latency_ms": 1091.6506247594953
       },
       {
         "id": "OBS-10",
         "question": "主链路中断后状态摘要走哪个备用频段？",
-        "answer": "主链路不可用时，观测站切换到 8.4 GHz 备用频段，状态摘要通过该备用频段传输。[S1]",
+        "answer": "主链路中断后，状态摘要通过 **8.4 GHz 备用频段**传输 [S1]。",
         "answer_keywords": [
           "8.4 GHz",
           "状态摘要"
@@ -685,7 +686,7 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 1481.4805001951754
+        "latency_ms": 1262.1797500178218
       },
       {
         "id": "ECO-01",
@@ -708,12 +709,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 882.3629575781524
+        "latency_ms": 951.984291896224
       },
       {
         "id": "ECO-02",
         "question": "每平方米琥珀苔需要多少循环水？",
-        "answer": "每平方米琥珀苔每6天灌溉需要使用 1.8 升循环水。[S1]",
+        "answer": "每平方米琥珀苔使用 1.8 升循环水 [S1]。",
         "answer_keywords": [
           "1.8 升",
           "每平方米"
@@ -731,12 +732,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 896.8393332324922
+        "latency_ms": 1000.0993749126792
       },
       {
         "id": "ECO-03",
         "question": "雾培温室应维持什么湿度和温度？",
-        "answer": "雾培温室的相对湿度应保持在 68% 到 74%，标准温度为 21 摄氏度。[S1]",
+        "answer": "雾培温室的相对湿度应保持在 68% 到 74%，标准温度为 21 摄氏度 [S1]。",
         "answer_keywords": [
           "68%",
           "74%",
@@ -756,12 +757,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 1160.7454996556044
+        "latency_ms": 804.881832562387
       },
       {
         "id": "ECO-04",
         "question": "休眠种子进入唤醒前如何冷藏？",
-        "answer": "休眠种子需要在 -6 摄氏度冷藏 14 天后进入唤醒流程。[S1]",
+        "answer": "休眠种子需在 **-6 摄氏度冷藏 14 天**，之后才能进入唤醒流程 [S1]。资料还指出，冷藏时间不足会降低发芽同步性，且不能通过提高温度来补偿 [S1]。",
         "answer_keywords": [
           "-6",
           "14 天"
@@ -779,7 +780,7 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 1457.6575001701713
+        "latency_ms": 1221.491708420217
       },
       {
         "id": "ECO-05",
@@ -802,12 +803,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 1776.0272920131683
+        "latency_ms": 980.1692077890038
       },
       {
         "id": "ECO-06",
         "question": "授粉昆虫通道至少需要多宽？",
-        "answer": "授粉走廊的最小净宽度是 3.5 米。[S1]",
+        "answer": "授粉走廊的最小净宽度是 3.5 米 [S1]。",
         "answer_keywords": [
           "3.5 米",
           "最小"
@@ -825,12 +826,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 1497.9331251233816
+        "latency_ms": 1149.1113752126694
       },
       {
         "id": "ECO-07",
         "question": "绿色样本瓶盖何时必须更换？",
-        "answer": "绿色样本瓶盖最多使用 8 次，达到次数后必须更换 [S1]。",
+        "answer": "绿色样本瓶盖最多使用 8 次，达到该次数后必须更换 [S1]。",
         "answer_keywords": [
           "8 次",
           "更换"
@@ -848,12 +849,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 1129.3409578502178
+        "latency_ms": 1021.0229596123099
       },
       {
         "id": "ECO-08",
         "question": "育苗区土壤合格的 pH 区间是什么？",
-        "answer": "育苗区土壤合格的 pH 范围是 6.2 到 6.8。[S1]",
+        "answer": "育苗区土壤的目标 pH 范围是 6.2 到 6.8 [S1]。",
         "answer_keywords": [
           "6.2",
           "6.8"
@@ -871,12 +872,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 1161.0825411044061
+        "latency_ms": 880.9892497956753
       },
       {
         "id": "ECO-09",
         "question": "标准营养液里的氮磷钾质量比是多少？",
-        "answer": "标准营养液中氮、磷、钾的质量比例为 4:2:3。[S1]",
+        "answer": "标准营养液中氮、磷、钾的质量比例为 4:2:3 [S1]。",
         "answer_keywords": [
           "4:2:3",
           "氮"
@@ -894,12 +895,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 926.927000284195
+        "latency_ms": 735.2352915331721
       },
       {
         "id": "ECO-10",
         "question": "二氧化碳达到什么条件会自动开应急阀？",
-        "answer": "当二氧化碳浓度高于 950 ppm 时，应急通风阀自动开启 [S1]。",
+        "answer": "二氧化碳浓度高于 950 ppm 时，应急通风阀会自动开启。[S1]",
         "answer_keywords": [
           "950 ppm",
           "高于"
@@ -917,12 +918,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 640.3032089583576
+        "latency_ms": 1185.6468757614493
       },
       {
         "id": "CMP-01",
         "question": "灯塔调度器一个默认时间片有多长？",
-        "answer": "灯塔调度器的默认时间片是 24 毫秒。[S1]",
+        "answer": "灯塔调度器一个默认时间片是 24 毫秒。[S1]",
         "answer_keywords": [
           "24 毫秒",
           "时间片"
@@ -940,12 +941,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 874.3390003219247
+        "latency_ms": 738.9091663062572
       },
       {
         "id": "CMP-02",
         "question": "高优先级队列和普通队列按什么比例获得执行机会？",
-        "answer": "高优先级队列与普通队列按照 3:1 的次数比例获得执行机会。[S1]",
+        "answer": "高优先级队列与普通队列按照 3:1 的次数比例获得执行机会 [S1]。",
         "answer_keywords": [
           "3:1",
           "高优先级"
@@ -963,12 +964,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 1168.4379996731877
+        "latency_ms": 970.9337083622813
       },
       {
         "id": "CMP-03",
         "question": "珍珠缓存条目默认多久过期，读取命中会续期吗？",
-        "answer": "珍珠缓存条目的默认生存时间是 96 秒 [S1]。读取命中不会延长生存时间，只有重新写入才会刷新计时 [S1]。",
+        "answer": "珍珠缓存条目的默认生存时间是 96 秒；读取命中不会延长生存时间，只有重新写入才会刷新计时 [S1]。",
         "answer_keywords": [
           "96 秒",
           "不会"
@@ -986,12 +987,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 1194.4327503442764
+        "latency_ms": 949.5627908036113
       },
       {
         "id": "CMP-04",
         "question": "节点启动时给诊断代理留出多少内存？",
-        "answer": "根据资料，计算节点冷启动时必须预留 256 MB 内存给诊断代理。[S1]",
+        "answer": "节点冷启动时必须为诊断代理预留 256 MB 内存 [S1]。",
         "answer_keywords": [
           "256 MB",
           "诊断代理"
@@ -1009,12 +1010,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 911.5925831720233
+        "latency_ms": 971.3017921894789
       },
       {
         "id": "CMP-05",
         "question": "棱镜校验和采用哪个十六进制多项式？",
-        "answer": "棱镜校验和使用十六进制多项式 0x1D。[S1]",
+        "answer": "棱镜校验和使用十六进制多项式 0x1D [S1]。",
         "answer_keywords": [
           "0x1D",
           "多项式"
@@ -1032,12 +1033,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 1066.7506251484156
+        "latency_ms": 559.8741257563233
       },
       {
         "id": "CMP-06",
         "question": "请求失败时最多重发几次，每次等待多久？",
-        "answer": "根据资料，网络请求最多重试 4 次，相邻重试之间固定等待 250 毫秒。[S1]",
+        "answer": "网络请求最多重试 4 次，相邻重试之间固定等待 250 毫秒 [S1]。",
         "answer_keywords": [
           "4 次",
           "250 毫秒"
@@ -1055,12 +1056,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 1280.8811250142753
+        "latency_ms": 1526.5344996005297
       },
       {
         "id": "CMP-07",
         "question": "平台审计日志在线保存多少天？",
-        "answer": "平台审计日志在线保留 21 天，随后转入只读归档。[S1]",
+        "answer": "平台审计日志在线保留 21 天，随后转入只读归档 [S1]。",
         "answer_keywords": [
           "21 天",
           "只读归档"
@@ -1078,12 +1079,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 1036.6383329965174
+        "latency_ms": 1153.3300830051303
       },
       {
         "id": "CMP-08",
         "question": "一个蓝色沙箱能同时执行多少作业？",
-        "answer": "一个蓝色沙箱最多同时运行 12 个作业，第 13 个作业会进入等待队列 [S1]。",
+        "answer": "一个蓝色沙箱最多同时运行 12 个作业；第 13 个作业会停留在等待队列，直到已有作业释放执行槽位 [S1]。",
         "answer_keywords": [
           "12",
           "作业"
@@ -1101,12 +1102,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 707.2825003415346
+        "latency_ms": 960.114624351263
       },
       {
         "id": "CMP-09",
         "question": "运行状态快照的生成周期是多少？",
-        "answer": "运行状态每 15 分钟生成一次快照。[S1]",
+        "answer": "运行状态每 15 分钟生成一次快照 [S1]。",
         "answer_keywords": [
           "15 分钟",
           "快照"
@@ -1124,12 +1125,12 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 532.6152918860316
+        "latency_ms": 878.3628335222602
       },
       {
         "id": "CMP-10",
         "question": "自动故障恢复最多允许损失多少笔事务？",
-        "answer": "自动故障恢复最多允许丢失 2 笔事务。[S2]",
+        "answer": "自动故障恢复最多允许丢失 2 笔事务；若预计丢失超过 2 笔，系统必须停止自动恢复并等待管理员确认 [S2]。",
         "answer_keywords": [
           "2 笔",
           "事务"
@@ -1147,7 +1148,7 @@
         ],
         "citation_precision": 1.0,
         "has_relevant_citation": true,
-        "latency_ms": 703.6554999649525
+        "latency_ms": 1103.7662494927645
       }
     ]
   }
