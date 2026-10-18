@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-05T09:37:06.038366+00:00",
-  "git_revision": "12f8f9f",
+  "generated_at": "2026-10-18T00:03:58.534886+00:00",
+  "git_revision": "d65ae46",
   "benchmark_sha256": "ec45105fbcc5271d5222074adaaca66b371e54cf04dfbbf091e7ad1a7cb1993d",
   "public_pdf_manifest_sha256": "42c846e47f4cbbb82bac54f3861da4391b74121fbe93594d213bc9b05fa648a4",
   "all_content_fictional": true,
@@ -24,7 +24,7 @@
       "unanswerable_count": 6,
       "answerable_count": 6,
       "refusal_accuracy": 1.0,
-      "answer_accuracy": 0.8333333333333334,
+      "answer_accuracy": 1.0,
       "retrieval_evidence_recall": 1.0
     }
   },
@@ -41,7 +41,7 @@
       "refusal_correct": null,
       "citation_evidence_precision": 1.0,
       "external_llm_called": true,
-      "answer": "主镜完成冷启动后需要预热 11 分钟才能开始正式观测。[S2]",
+      "answer": "主镜完成冷启动后需要预热 **11 分钟**，之后才能开始正式观测 [S1][S2]。",
       "status": "answered"
     },
     {
@@ -56,7 +56,7 @@
       "refusal_correct": null,
       "citation_evidence_precision": 1.0,
       "external_llm_called": true,
-      "answer": "备用通信频段只传输状态摘要和告警，不传输完整图像。[S2]",
+      "answer": "备用通信频段只传输状态摘要和告警，不传输完整图像 [S2]。",
       "status": "answered"
     },
     {
@@ -71,7 +71,7 @@
       "refusal_correct": null,
       "citation_evidence_precision": 1.0,
       "external_llm_called": true,
-      "answer": "休眠种子在 -6 摄氏度冷藏 14 天后进入唤醒流程。[S1]",
+      "answer": "休眠种子在开始唤醒流程之前，需要在 **-6 摄氏度** 下冷藏 **14 天** [S1]。资料还指出，如果冷藏时间不足，发芽同步性会降低，并且不能通过提高温度来补偿 [S1]。",
       "status": "answered"
     },
     {
@@ -86,7 +86,7 @@
       "refusal_correct": null,
       "citation_evidence_precision": 1.0,
       "external_llm_called": true,
-      "answer": "不能重新从零计算使用次数。清洗只能恢复洁净度，不能重置使用次数；绿色样本瓶盖最多使用 8 次，达到次数后必须更换。[S1]",
+      "answer": "不能。清洗只能恢复洁净度，不能重置使用次数 [S1]。绿色样本瓶盖最多使用 8 次，达到次数后必须更换 [S1]。",
       "status": "answered"
     },
     {
@@ -97,11 +97,11 @@
       "top_similarity": 0.5975249939206383,
       "gate_rejected": false,
       "retrieval_has_evidence": true,
-      "answer_correct": false,
+      "answer_correct": true,
       "refusal_correct": null,
       "citation_evidence_precision": 1.0,
       "external_llm_called": true,
-      "answer": "第十三个作业进入蓝色沙箱后，会停留在等待队列中，直到已有作业释放执行槽位。[S1]",
+      "answer": "第十三个作业会停留在等待队列中，直到已有作业释放执行槽位 [S1]。因为单个蓝色沙箱最多同时运行 12 个作业 [S1]。",
       "status": "answered"
     },
     {
@@ -116,7 +116,7 @@
       "refusal_correct": null,
       "citation_evidence_precision": 1.0,
       "external_llm_called": true,
-      "answer": "高优先级队列与普通队列按照 3:1 的次数比例获得执行机会。[S1]",
+      "answer": "灯塔调度器的高优先级队列与普通队列按照 3:1 的次数比例获得执行机会 [S1]。",
       "status": "answered"
     },
     {

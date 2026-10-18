@@ -13,14 +13,15 @@ This release adds a second answer model provider and the operational hardening f
 
 ## Evaluation
 
-- All recorded answer metrics remain DeepSeek runs; Gemini was verified live (question and summary paths, course library) but not benchmarked: the free tier allows 5 requests per minute and 20 per day, and the project's prepaid credit was depleted (HTTP 402) before a benchmark run was possible.
-- The Docker E2E evidence is the 2026-10-16 DeepSeek run; both providers reported exhausted credit on 2026-10-17, so it was not re-run after the provider switch.
+- All answer evidence was refreshed on 2026-10-18 with DeepSeek on this release's code: public benchmark 30/30 keyword checks with 100.00% cited-page accuracy, hard set 24/24 with 97.92% citation support, answerability 12/12 refusals and 6/6 held-out answers, isolated Docker E2E with `llm_provider=deepseek` and the 150 s summary budget, and summary concurrency medians of 27.93 s sequential versus 12.99 s with four workers (2.15x).
+- Gemini was verified live (question and summary paths, course library) but not benchmarked: the free tier allows 5 requests per minute and 20 per day, and the project's prepaid credit was depleted (HTTP 402).
 - Hybrid retrieval was measured offline with reciprocal-rank fusion of the BGE and n-gram rankings: public hard R@1 62.5%, real-course hard R@6 53.3% (unchanged from BGE alone), so the serving path still uses dense retrieval only. See `docs/hard-evaluation.md`.
 
 ## Verification
 
 - `scripts/test.sh`: Ruff, 168 tests, backend coverage above 88 %, dependency check
 - Live with Gemini: `scripts/verify_llm_provider.py`, and the course library driven through the browser (question with page-7 citation, 76-page summary with 2 concurrent sections)
+- Live with DeepSeek (2026-10-18): `scripts/verify_llm_provider.py`, `scripts/evaluate_rag.py --with-llm`, `scripts/evaluate_answerability.py --with-llm`, `scripts/evaluate_hard.py --with-llm`, `scripts/verify_summary_concurrency.py`, `scripts/run_docker_e2e.py`
 
 ## Upgrade notes
 
